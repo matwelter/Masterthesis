@@ -1,16 +1,26 @@
 \chapter{Systemarchitektur des Quadrocopters}
 \label{chap:Systemarchitektur}
+Zu Beginn wird in diesem Kapitel die Hardwarearchitektur sowie die Kommunikationsstruktur vorgestellt. Ziel ist es einen Überblick der verbauten Sensoren und Recheneinheiten sowie deren Vernetzung untereinander zu erlangen. 
+\section{Hardwareaufbau}
+\label{sec:Hardwareaufbau}
+Zum Einsatz kommt der AscTec Pelican der Firma ASCENDING TECHNOLOGIES. Dieser Quadrocopter ist speziell für die Forschung entworfen worden. Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. 
 
-\section{Hardwarearchitektur}
-\label{sec:Hardwarearchitektur}
+In der Grundausstattung enthalten ist das AutoPilot Board auch \gls{FCU}  genannt. Wie sich aus dem Name schließen lässt ist diese Einheit zur Steuerung und Regelung des UAV () 
+Darauf integriert sind die Inertialsensoren wie Beschleunigungssensor, Lagesensor(Gyro), Kompass und Drucksensor. 
 
 
-\section{Kommunikationsarchitektur}
+\begin{figure}
+	\includegraphics[width = 0.75\textwidth]{images/quad_odroid}
+	\caption[Hardwareaufbau]{Hardwareaufbau des Quadrocopters...DIESE GRAFIK IST EIN PLATZHALTER GRAFIK NUR MIT NAMEN DER KOMPONENTEN}
+	\label{fig:hardwareaufbau}
+\end{figure}
+
+\section{Kommunikationsstruktur}
 \label{sec:Kommunikationsarchitekur}
 
-Die Kommunikationsstruktur wird in Abbildung \ref{fig:Kommunikationsarchitektur}
+Die Kommunikationsstruktur wird in Abbildung \ref{fig:Kommunikationsstruktur}
 \begin{figure}
 	\includegraphics[width = \textwidth]{images/Kommunikationsarchitektur}
-		\caption[Kommunikationsarchitektur]{Kommunikationsarchitektur des Quadrocopters}
-		\label{fig:Kommunikationsarchitektur}
+		\caption[Kommunikationsstruktur]{Kommunikationsstruktur des Quadrocopters  In Grafik fehlt das Modul zur Höhenmessung Kompass auf deutsch}
+		\label{fig:Kommunikationsstruktur}
 \end{figure}
