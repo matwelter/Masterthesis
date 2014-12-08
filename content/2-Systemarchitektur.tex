@@ -3,10 +3,27 @@
 Zu Beginn wird in diesem Kapitel die Hardwarearchitektur sowie die Kommunikationsstruktur vorgestellt. Ziel ist es einen Überblick der verbauten Sensoren und Recheneinheiten sowie deren Vernetzung untereinander zu erlangen. 
 \section{Hardwareaufbau}
 \label{sec:Hardwareaufbau}
-Zum Einsatz kommt der AscTec Pelican der Firma ASCENDING TECHNOLOGIES. Dieser Quadrocopter ist speziell für die Forschung entworfen worden. Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. 
+Zum Einsatz kommt der AscTec Pelican der Firma ASCENDING TECHNOLOGIES. Dieser Quadrocopter ist speziell für die Forschung entworfen worden. Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. Durch diese Flexibilität im Aufbau ist es Ziel dieses Teilkapitels einen Überblick zu geben, wo die einzelnen Komponenten positioniert sind. Begleitend zum Text ist der Aufbau in Abbildung \ref{fig:hardwareaufbau} sowie etwas ausführlicher, mit den Daten der Komponenten, im Anhang dargestellt.
 
-In der Grundausstattung enthalten ist das AutoPilot Board auch \gls{FCU}  genannt. Wie sich aus dem Name schließen lässt ist diese Einheit zur Steuerung und Regelung des UAV () 
-Darauf integriert sind die Inertialsensoren wie Beschleunigungssensor, Lagesensor(Gyro), Kompass und Drucksensor. 
+
+Für jeder der vier mit einem Propellor verbundenen Elektromotoren, ist ein separate Motorcontroller zuständig. Diese sorgen dafür, dass sich die von der \gls{FCU} angeforderten Drehzahlen einstellt. Die FCU ist die zentrale Steuer- und Regeleinheit des Quadrocopters. Zusätzlich ist auf ihr die Inertialsensorik integriert. Diese besteht aus einem Beschleunigungssensor, einem Lagesensor sowie einem Drucksensor zur Messung der Flughöhe. Ein Drucksensor ist zur Höhenbestimmung in geschlossenen Räumen nicht eignet, da erst ab einer Höhe von 5m zuverlässige Werte liefert. Deshalb wurde in einer vorangegangen Arbeit die Hardware (lITERAURVERWIES JAN) um ein Modul zur Messung der Höhe im Indoorbereich erweitert. Auf diesem Modul befinden sich ein zwei Infarotsensoren für den Nahbereich (HIER MUSS NOCH DIE RANGE EINGETRAGEN WERDEN JAN) und einem Ultrashallsenor für Entfernungen von bis zu 5 m. Da für diese Arbeit die Navigation in der horizontale Ebene den Schwerpunkt darstellt, wird dieses Modul nicht weiter behandelt.
+
+
+Um in der horizontalen navigieren zu können muss, die Position in der x-y Ebene (VGL kOORDINATENSYSTEME) bekannt sein. Damit diese bestimmt werden kann wurde in die Turmstruktur ein Lasersanner der Firma Hokuyo integriert.
+
+Damit zur Berechnung der Position sowie Implementierung weiterer Algorithmen und Funktionen ausreichend Rechenleistung vorhanden ist, wurde der Quadrocopter mit einem zusätzlichen Odroid-X Mikrocomputer ausgestattet.
+
+
+Nun sollte man einen Überblick über die im Quadrocopter verbauten Komponenten besitzen. Darauf wie diese Einheiten untereinander vernetzt sind, wird im folgenden Kapitel \ref{sec:Kommunikationsarchitekur} eingegangen.
+
+     
+
+%In der Grundausstattung enthalten ist das AutoPilot Board auch \gls{FCU}  genannt. Diese Board ist die Steuer- und Regeleinheit des \gls{UAV}, zu deutsch \glqq unbemanntes Luftfahrzeug \grqq. Die Inertialsensorik befindet sich ebenfalls auf dieser Platine. Diese beinhaltet einen Beschleunigungssensor, einen Lagesensor sowie einen Drucksensor zur Höhenbestimmung.
+
+
+
+ %Wie sich aus dem Name schließen lässt ist diese Einheit zur Steuerung und Regelung des \gls{UAV}, zu deutsch unbemanntes Luftfahrzeug. 
+%Darauf integriert sind die Inertialsensoren wie Beschleunigungssensor, Lagesensor(Gyro), Kompass und Drucksensor. 
 
 
 \begin{figure}
