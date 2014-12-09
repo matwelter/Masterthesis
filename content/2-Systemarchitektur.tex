@@ -3,18 +3,35 @@
 Zu Beginn wird in diesem Kapitel die Hardwarearchitektur sowie die Kommunikationsstruktur vorgestellt. Ziel ist es einen Überblick der verbauten Sensoren und Recheneinheiten sowie deren Vernetzung untereinander zu erlangen. 
 \section{Hardwareaufbau}
 \label{sec:Hardwareaufbau}
-Zum Einsatz kommt der AscTec Pelican der Firma ASCENDING TECHNOLOGIES. Dieser Quadrocopter ist speziell für die Forschung entworfen worden. Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. Durch diese Flexibilität im Aufbau ist es Ziel dieses Teilkapitels einen Überblick zu geben, wo die einzelnen Komponenten positioniert sind. Begleitend zum Text ist der Aufbau in Abbildung \ref{fig:hardwareaufbau} sowie etwas ausführlicher, mit den Daten der Komponenten, im Anhang dargestellt.
+Zum Einsatz kommt der AscTec Pelican der Firma ASCENDING TECHNOLOGIES. Dieser Quadrocopter ist speziell für die Forschung entworfen worden. Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. Durch diese Flexibilität im Aufbau ist es Ziel dieses Teilkapitels einen Überblick zu geben, wo die einzelnen Komponenten positioniert sind. Begleitend zum Text ist der Aufbau in Abbildung \ref{fig:hardwareaufbau} sowie etwas ausführlicher, mit den Daten der Komponenten, im Anhang dargestellt.\\
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 0.75\textwidth]{images/quad_odroid}
+		\caption[Hardwareaufbau]{Hardwareaufbau des Quadrocopters...DIESE GRAFIK IST EIN PLATZHALTER GRAFIK NUR MIT NAMEN DER KOMPONENTEN}
+		\label{fig:hardwareaufbau}
+	\end{figure}
+
+Für jeder der vier mit einem Propellor verbundenen Elektromotoren, ist ein separate Motorcontroller zuständig. Diese sorgen dafür, dass sich die von der \gls{FCU} angeforderten Drehzahlen einstellen. 
+
+Die FCU ist die zentrale Steuer- und Regeleinheit des Quadrocopters. Sie besitzt zwei ARM7 Prozessoren, einen \gls{LLP} und einen \gls{HLP}. Außerdem verschiedene Kommunikationsschnittstellen (vgl. Kapitel \ref{fig:Kommunikationsstruktur}). Zusätzlich dient sie als inertiale Messeinheit (engl. \gls{IMU}). Diese Einheit wird zur Bewegungsdetektion sowie zur Bestimmung der Lage und Ausrichtung benötigt. Sie ist nicht zur Positionsbestimmung in einem ortsfesten Koordinatensystem (Koordinatensysteme siehe Kapitel HIER MUSS EINE REF hin) geeignet. Bestandteile der IMU sind ein 3D-Beschleunigungssensor, drei Drehratensensoren(Gyros), einem Kompass sowie einem Drucksensor zur Ermittlung der Flughöhe anhand des Luftdrucks. Verbaut sind die Sensoren mit Ausnahme des Kompass direkt auf der Platine (siehe Abbildung \ref{fig:fcuplatien}).
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 0.75\textwidth]{images/FCU_Platine}
+		\caption[fcuplatine]{Platine der \gls{FCU}}
+		\label{fig:fcuplatien}
+	\end{figure}
+
+Da der Einsatzbereich im Indoorbereich liegt, ist Drucksensor ist zur Höhenbestimmung in geschlossenen Räumen nicht eignet, da er erst ab einer Höhe von 5m zuverlässige Werte liefert. Daher wurde in einer vorangegangen Arbeit von Jan Kallwies (lITERAURVERWIES JAN) die Hardware um ein Modul zur Messung der Höhe im Indoorbereich erweitert. Auf diesem Modul befinden sich ein zwei Infrarotsensoren für den Nahbereich. Diese decken, aufgrund der Einbauhöhe, den Bereich von 0 cm bis 146 ab. Erweitert wird der Messbereich durch einen Ultraschallsensor für Entfernungen von bis zu 5 m. Aus diesen drei Sensordaten wird über einen Extended-Kalman-Filter die Flughöhe bestimmt. Eine genaue Beschreibung dieses Fusionsfilters kann in der Arbeit von Jan Kallwies [LITERATURVERZEICHNIS] nachgelesen werden. Da in dieser Arbeit die Navigation in der horizontale Ebene den Schwerpunkt darstellt, wird dieses Modul nicht weiter behandelt.
 
 
-Für jeder der vier mit einem Propellor verbundenen Elektromotoren, ist ein separate Motorcontroller zuständig. Diese sorgen dafür, dass sich die von der \gls{FCU} angeforderten Drehzahlen einstellt. Die FCU ist die zentrale Steuer- und Regeleinheit des Quadrocopters. Zusätzlich ist auf ihr die Inertialsensorik integriert. Diese besteht aus einem Beschleunigungssensor, einem Lagesensor sowie einem Drucksensor zur Messung der Flughöhe. Ein Drucksensor ist zur Höhenbestimmung in geschlossenen Räumen nicht eignet, da erst ab einer Höhe von 5m zuverlässige Werte liefert. Deshalb wurde in einer vorangegangen Arbeit die Hardware (lITERAURVERWIES JAN) um ein Modul zur Messung der Höhe im Indoorbereich erweitert. Auf diesem Modul befinden sich ein zwei Infarotsensoren für den Nahbereich (HIER MUSS NOCH DIE RANGE EINGETRAGEN WERDEN JAN) und einem Ultrashallsenor für Entfernungen von bis zu 5 m. Da für diese Arbeit die Navigation in der horizontale Ebene den Schwerpunkt darstellt, wird dieses Modul nicht weiter behandelt.
+Um allerdings in der Horizontalen navigieren zu können, muss die Position des Flugkörpers in der x-y Ebene (VGL kOORDINATENSYSTEME) bekannt sein. Da dies, wie schon beschrieben, nicht mit der Inertialsenorik möglich ist, wurde in die Turmstruktur der Laserscanner UTM-30LX der Firma Hokuyo integriert. Dieser Scanner hat eine maximale Reichweite von 30 m und Abtastbereich von 270°. Die Umlaufdauer beträgt dabei 40 Hz, d.h. alle 25 ms wird ein neuer Umgebungssan zur Verfügung gestellt.    
+
+Damit zur Berechnung der Position sowie Implementierung weiterer Algorithmen und Funktionen ausreichend Rechenleistung vorhanden ist, befindet sich auf dem Quadrocopter ein zusätzlicher Odroid-X Mikrocomputer mit einem Quad Core Prozessor mit 1.4 Ghz und einen 1024MB LP-DDR2 Arbeitsspeicher. Außerdem befinden sich auf dieser Entwicklungsplattform  sechs USB-Anschlüsse sowie ein 10/100Mbps Ethernet-Anschluss.\\
 
 
-Um in der horizontalen navigieren zu können muss, die Position in der x-y Ebene (VGL kOORDINATENSYSTEME) bekannt sein. Damit diese bestimmt werden kann wurde in die Turmstruktur ein Lasersanner der Firma Hokuyo integriert.
-
-Damit zur Berechnung der Position sowie Implementierung weiterer Algorithmen und Funktionen ausreichend Rechenleistung vorhanden ist, wurde der Quadrocopter mit einem zusätzlichen Odroid-X Mikrocomputer ausgestattet.
-
-
-Nun sollte man einen Überblick über die im Quadrocopter verbauten Komponenten besitzen. Darauf wie diese Einheiten untereinander vernetzt sind, wird im folgenden Kapitel \ref{sec:Kommunikationsarchitekur} eingegangen.
+Nun sollte man einen Überblick über die im Quadrocopter verbauten Komponenten besitzen. Wie die Einheiten untereinander vernetzt sind, darauf wird im folgenden Kapitel \ref{sec:Kommunikationsarchitekur} eingegangen.
 
      
 
@@ -26,16 +43,16 @@ Nun sollte man einen Überblick über die im Quadrocopter verbauten Komponenten be
 %Darauf integriert sind die Inertialsensoren wie Beschleunigungssensor, Lagesensor(Gyro), Kompass und Drucksensor. 
 
 
-\begin{figure}
-	\includegraphics[width = 0.75\textwidth]{images/quad_odroid}
-	\caption[Hardwareaufbau]{Hardwareaufbau des Quadrocopters...DIESE GRAFIK IST EIN PLATZHALTER GRAFIK NUR MIT NAMEN DER KOMPONENTEN}
-	\label{fig:hardwareaufbau}
-\end{figure}
+
 
 \section{Kommunikationsstruktur}
 \label{sec:Kommunikationsarchitekur}
 
-Die Kommunikationsstruktur wird in Abbildung \ref{fig:Kommunikationsstruktur}
+Nachdem im vorigen Kapitel \ref{sec:Hardwareaufbau} der Hardwareaufbau des Flugobjekts vorgestellt wurde, geht es in diesem Teilkapitel um 
+
+die Kommunikationsstruktur und Verwendungszwecke der Hardwarekomponenten.  
+
+
 \begin{figure}
 	\includegraphics[width = \textwidth]{images/Kommunikationsarchitektur}
 		\caption[Kommunikationsstruktur]{Kommunikationsstruktur des Quadrocopters  In Grafik fehlt das Modul zur Höhenmessung Kompass auf deutsch}
