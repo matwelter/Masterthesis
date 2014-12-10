@@ -3,7 +3,7 @@
 Zu Beginn wird in diesem Kapitel die Hardwarearchitektur sowie die Kommunikationsstruktur vorgestellt. Ziel ist es einen Überblick der verbauten Sensoren und Recheneinheiten sowie deren Vernetzung untereinander zu erlangen. 
 \section{Hardwareaufbau}
 \label{sec:Hardwareaufbau}
-Zum Einsatz kommt der AscTec Pelican der Firma ASCENDING TECHNOLOGIES. Dieser Quadrocopter ist speziell für die Forschung entworfen worden. Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. Durch diese Flexibilität im Aufbau ist es Ziel dieses Teilkapitels einen Überblick zu geben, wo die einzelnen Komponenten positioniert sind. Begleitend zum Text ist der Aufbau in Abbildung \ref{fig:hardwareaufbau} sowie etwas ausführlicher, mit den Daten der Komponenten, im Anhang dargestellt.\\
+Zum Einsatz kommt der AscTec Pelican der Firma \gls{asctec}. Dieser Quadrocopter ist speziell für die Forschung entworfen worden. Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. Durch diese Flexibilität im Aufbau ist es Ziel dieses Teilkapitels einen Überblick zu geben, wo die einzelnen Komponenten positioniert sind. Begleitend zum Text ist der Aufbau in Abbildung \ref{fig:hardwareaufbau} sowie etwas ausführlicher, mit den Daten der Komponenten, im Anhang dargestellt.\\
 
 	\begin{figure}
 		\centering
@@ -12,49 +12,45 @@ Zum Einsatz kommt der AscTec Pelican der Firma ASCENDING TECHNOLOGIES. Dieser Qu
 		\label{fig:hardwareaufbau}
 	\end{figure}
 
-Für jeder der vier mit einem Propellor verbundenen Elektromotoren, ist ein separate Motorcontroller zuständig. Diese sorgen dafür, dass sich die von der \gls{FCU} angeforderten Drehzahlen einstellen. 
+Für jeder der vier mit einem Propellor verbundenen Elektromotoren, ist ein separate Motorcontroller zuständig. Diese sorgen dafür, dass sich die von der \gls{fcu} angeforderten Drehzahlen einstellen. 
 
-Die FCU ist die zentrale Steuer- und Regeleinheit des Quadrocopters. Sie besitzt zwei ARM7 Prozessoren, einen \gls{LLP} und einen \gls{HLP}. Außerdem verschiedene Kommunikationsschnittstellen (vgl. Kapitel \ref{fig:Kommunikationsstruktur}). Zusätzlich dient sie als inertiale Messeinheit (engl. \gls{IMU}). Diese Einheit wird zur Bewegungsdetektion sowie zur Bestimmung der Lage und Ausrichtung benötigt. Sie ist nicht zur Positionsbestimmung in einem ortsfesten Koordinatensystem (Koordinatensysteme siehe Kapitel HIER MUSS EINE REF hin) geeignet. Bestandteile der IMU sind ein 3D-Beschleunigungssensor, drei Drehratensensoren(Gyros), einem Kompass sowie einem Drucksensor zur Ermittlung der Flughöhe anhand des Luftdrucks. Verbaut sind die Sensoren mit Ausnahme des Kompass direkt auf der Platine (siehe Abbildung \ref{fig:fcuplatien}).
+Die \gls{fcu} ist die zentrale Steuer- und Regeleinheit des Quadrocopters. Sie besitzt zwei ARM7 Prozessoren, einen \gls{llp} und einen \gls{hlp}. Außerdem verschiedene Kommunikationsschnittstellen (vgl. Kapitel \ref{fig:Kommunikationsstruktur}). Zusätzlich dient sie als inertiale Messeinheit (engl. \gls{imu}). Diese Einheit wird zur Bewegungsdetektion sowie zur Bestimmung der Lage und Ausrichtung benötigt. Sie ist nicht zur Positionsbestimmung in einem ortsfesten Koordinatensystem (Koordinatensysteme siehe Kapitel HIER MUSS EINE REF hin) geeignet. Bestandteile der IMU sind ein 3D-Beschleunigungssensor, drei Drehratensensoren(Gyros), einem Kompass sowie einem Drucksensor zur Ermittlung der Flughöhe anhand des Luftdrucks. Verbaut sind die Sensoren mit Ausnahme des Kompass direkt auf der Platine (siehe Abbildung \ref{fig:fcuplatien}).
 
 	\begin{figure}
 		\centering
 		\includegraphics[width = 0.75\textwidth]{images/FCU_Platine}
-		\caption[fcuplatine]{Platine der \gls{FCU}}
+		\caption[fcuplatine]{Platine der \gls{fcu}}
 		\label{fig:fcuplatien}
 	\end{figure}
 
-Da der Einsatzbereich im Indoorbereich liegt, ist Drucksensor ist zur Höhenbestimmung in geschlossenen Räumen nicht eignet, da er erst ab einer Höhe von 5m zuverlässige Werte liefert. Daher wurde in einer vorangegangen Arbeit von Jan Kallwies (lITERAURVERWIES JAN) die Hardware um ein Modul zur Messung der Höhe im Indoorbereich erweitert. Auf diesem Modul befinden sich ein zwei Infrarotsensoren für den Nahbereich. Diese decken, aufgrund der Einbauhöhe, den Bereich von 0 cm bis 146 ab. Erweitert wird der Messbereich durch einen Ultraschallsensor für Entfernungen von bis zu 5 m. Aus diesen drei Sensordaten wird über einen Extended-Kalman-Filter die Flughöhe bestimmt. Eine genaue Beschreibung dieses Fusionsfilters kann in der Arbeit von Jan Kallwies [LITERATURVERZEICHNIS] nachgelesen werden. Da in dieser Arbeit die Navigation in der horizontale Ebene den Schwerpunkt darstellt, wird dieses Modul nicht weiter behandelt.
+Da der Einsatzbereich im Indoorbereich liegt, ist Drucksensor ist zur Höhenbestimmung in geschlossenen Räumen nicht eignet, da er erst ab einer Höhe von 5m zuverlässige Werte liefert. Daher wurde in einer vorangegangen Arbeit von Jan Kallwies (lITERAURVERWIES JAN) die Hardware um ein Modul zur Messung der Höhe im Indoorbereich erweitert. Auf diesem Modul befinden sich ein zwei Infrarotsensoren für den Nahbereich. Beide zusammen decken einen Messbereich von Bereich von 4 cm bis 142 ab. Erweitert wird der Messbereich durch einen Ultraschallsensor für Entfernungen von bis zu 5 m. Aus diesen drei Sensordaten wird über einen Extended-Kalman-Filter die Flughöhe bestimmt. Eine genaue Beschreibung dieses Fusionsfilters kann in der Arbeit von Jan Kallwies [LITERATURVERZEICHNIS] nachgelesen werden. Da in dieser Arbeit die Navigation in der horizontale Ebene den Schwerpunkt darstellt, wird dieses Modul nicht weiter behandelt.
 
 
-Um allerdings in der Horizontalen navigieren zu können, muss die Position des Flugkörpers in der x-y Ebene (VGL kOORDINATENSYSTEME) bekannt sein. Da dies, wie schon beschrieben, nicht mit der Inertialsenorik möglich ist, wurde in die Turmstruktur der Laserscanner UTM-30LX der Firma Hokuyo integriert. Dieser Scanner hat eine maximale Reichweite von 30 m und Abtastbereich von 270°. Die Umlaufdauer beträgt dabei 40 Hz, d.h. alle 25 ms wird ein neuer Umgebungssan zur Verfügung gestellt.    
+Um allerdings in der Horizontalen navigieren zu können, muss die Position des Flugkörpers in der x-y Ebene (VGL kOORDINATENSYSTEME) bekannt sein. Da dies, wie schon beschrieben, nicht mit der Inertialsenorik möglich ist, wurde in die Turmstruktur der Laserscanner UTM-30LX der Firma Hokuyo integriert. Dieser Scanner hat eine maximale Reichweite von 30 m und Abtastbereich von 270°. Die Umlaufdauer beträgt dabei 40 Hz, d.h. alle 25 ms steht ein neuer Umgebungssan zur Verfügung.    
 
-Damit zur Berechnung der Position sowie Implementierung weiterer Algorithmen und Funktionen ausreichend Rechenleistung vorhanden ist, befindet sich auf dem Quadrocopter ein zusätzlicher Odroid-X Mikrocomputer mit einem Quad Core Prozessor mit 1.4 Ghz und einen 1024MB LP-DDR2 Arbeitsspeicher. Außerdem befinden sich auf dieser Entwicklungsplattform  sechs USB-Anschlüsse sowie ein 10/100Mbps Ethernet-Anschluss.\\
+Damit zur Berechnung der Position sowie Implementierung weiterer Algorithmen und Funktionen ausreichend Rechenleistung vorhanden ist, befindet sich auf dem Quadrocopter ein zusätzlicher Odroid-X Mikrocomputer mit einem Quad Core Prozessor mit 1.4 Ghz und einen 1024MB LP-DDR2 Arbeitsspeicher. Außerdem besitzt diese Entwicklungsplattform sechs USB-Schnittstellen sowie ein 10/100Mbps Ethernet-Anschluss.\\
 
 
 Nun sollte man einen Überblick über die im Quadrocopter verbauten Komponenten besitzen. Wie die Einheiten untereinander vernetzt sind, darauf wird im folgenden Kapitel \ref{sec:Kommunikationsarchitekur} eingegangen.
 
      
-
-%In der Grundausstattung enthalten ist das AutoPilot Board auch \gls{FCU}  genannt. Diese Board ist die Steuer- und Regeleinheit des \gls{UAV}, zu deutsch \glqq unbemanntes Luftfahrzeug \grqq. Die Inertialsensorik befindet sich ebenfalls auf dieser Platine. Diese beinhaltet einen Beschleunigungssensor, einen Lagesensor sowie einen Drucksensor zur Höhenbestimmung.
-
-
-
- %Wie sich aus dem Name schließen lässt ist diese Einheit zur Steuerung und Regelung des \gls{UAV}, zu deutsch unbemanntes Luftfahrzeug. 
-%Darauf integriert sind die Inertialsensoren wie Beschleunigungssensor, Lagesensor(Gyro), Kompass und Drucksensor. 
-
-
-
-
-\section{Kommunikationsstruktur}
+\section{Softwarestruktur}
 \label{sec:Kommunikationsarchitekur}
 
-Nachdem im vorigen Kapitel \ref{sec:Hardwareaufbau} der Hardwareaufbau des Flugobjekts vorgestellt wurde, geht es in diesem Teilkapitel um 
-
-die Kommunikationsstruktur und Verwendungszwecke der Hardwarekomponenten.  
-
+Nachdem im vorhergegangen Kapitel \ref{sec:Hardwareaufbau} die verbaute Hardware vorgestellt wurde, geht es in diesem Abschnitt um die Softwarestruktur(Abbildung \ref{fig:Kommunikationsstruktur}). Es wird aufgezeigt welche Software bereits fest implementiert ist und wo adaptive Applikationen integriert werden können. Des weiteren wird die Kommunikationsstruktur dargelegt, wie und über welche Protokolle die einzelnen Komponenten mit einander kommunizieren. \\
 
 \begin{figure}
+	\centering
 	\includegraphics[width = \textwidth]{images/Kommunikationsarchitektur}
-		\caption[Kommunikationsstruktur]{Kommunikationsstruktur des Quadrocopters  In Grafik fehlt das Modul zur Höhenmessung Kompass auf deutsch}
-		\label{fig:Kommunikationsstruktur}
+	\caption[Kommunikationsstruktur]{Kommunikationsstruktur des Quadrocopters   Kompass auf deutsch ROS auch Programmierbar Namen der UART Ports einfügen}
+	\label{fig:Kommunikationsstruktur}
 \end{figure}
+Beginnend mit der \gls{fcu}, deren beiden Prozessoren \gls{llp} und \gls{hlp} die mit einer Frequenz 1kHz getakten und über einem \gls{spi} Bussystem verknüpft sind, wird zunächst der \gls{llp} betrachtet. Auf dem Low Level Prozessor befinden sich die Sensordatenfusion der \gls{imu}-Sensorik zur Lagebestimmung des Quadrocopters. Aufbauend darauf stabilisiert die implementierte Lageregelung das Flugverhalten. Dabei werden die geforderten Sollwinkel bzw. Solllage, die dem \gls{llp} über die Fernbedienung oder den \gls{hlp} übergeben wird, eingestellt. Kombiniert mit der Schubvorgabe werden den Motorreglern die jeweiligen Solldrehzahlen der Rotoren über einen \gls{i2c}-Bus, serieller synchroner Zweidraht-Bus, übergeben. Diese Algorithmen sind fest eingepflegt. \gls{asctec} stellt hier dem Benutzer eine Art White-Box zur Verfügung, d.h es ist bekannt was integriert ist, allerdings nicht wie es umgesetzt ist. Überwachen lässt sich der LLP über einen externen \gls{pc}, in Abbildung \ref{sec:Kommunikationsarchitekur} als Bodenstation bezeichnet. Zur Kommunikation benötige werden zwei XBee Funkmodule. Eines ist am \gls{uart} LL-Serial0 Port der \gls{fcu} angeschlossen, das andere am USB Port der Bodenstation. Mit der AutoPilot Software lassen sich so unter anderem der Akkustand, die \gls{imu}-Daten sowie die Stellgrößen der Fernsteuerung betrachten. Außerdem ist es möglich Parameter der Sensorfusion und Lageregelung auszulesen und zu verändern.
+
+
+Mit dem \gls{hlp} stellt \gls{asctec} eine Entwicklungsumgebung zur Implementierung eigener Algorithmen auf der \gls{fcu} zur Verfügung. Hier können erweiternde Programmteile integriert werden die den Lageregler des \gls{llp} ansprechen oder die direkt den Motorcontroller mit Solldrehzahlen speisen. Die zweite Möglichkeit ist der Grund warum keine Änderungen, abgesehen von den Parametern, am \gls{llp}  vorgenommen werden können. So gibt es bei Experimentalflügen immer eine sichere Rückfallebene. Möglich ist dies, da der \gls{hlp} über die Fernsteuerung aktiviert und deaktiviert werden kann.
+
+Wie schon in Kapitel \ref{sec:Hardwareaufbau} beschrieben, befindet sich auf dem Quadorcopter zur Erhöhung der Rechenleistung der Odroid-X. Anders wie bei den auf der \gls{fcu} befindlichen Prozessoren, besitzt das Odroid Bord ein Betriebssystem. Dabei diesem handelt es sich um das Opensource Betriebssystem Ubuntu 13.04. Dieses wurde ausgewählt, da es die Installation eines weiteren Opensource Betriebssystems ermöglicht, dem \gls{ros}. Einem Software Framework für Roboteranwendungen(siehe Kapitel \ref{sec:ros}). Zum Einsatz kommt der Odroid-X bei der Implementierung der Positionsbestimmung(Kapitel VERWEIS). Verbunden ist es zum einen über einen USB-Port mit dem Lasersanner, zum anderen ist mit einen weiteren USB-Anschluss über den HL-Serial0 Port mit dem \gls{hlp} verknüpft. Von der Bodenstation kann über WLAN eine ssh VErbindung aufgebaut werden, und somit die Entwicklungsplatform bedient werden.\\
+
+Nun ist bekannt wie die einzelnen Komponenten untereinander vernetzt sind. Somit lässt sich im weiteren Verlauf der Arbeit nachvollziehen, an welchen Stellen die Anwendungen implementiert werden und über welche Verbindungen sie untereinander kommunizieren. 
+

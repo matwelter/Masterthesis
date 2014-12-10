@@ -1,0 +1,28 @@
+\chapter{Grundlagen}
+\label{chap:grundlagen}
+Das Kapitel Grundlagen behandelt die Themen, die in mehreren Abschnitten dieser Arbeit relevant sind. Dabei handelt es sich um das Robot Operation System, die verwendeten Koordinatensysteme und die Transformation zwischen ihnen.
+
+\section{Das Robot Operation System \gls{ros}}
+\label{sec:ros}
+Ziel dieses Unterkapitel ist es das Betriebssystem \gls{ros} vorzustellen. Wie es aufgebaut ist und welche Vorzüge es besitzt.\\
+
+\gls{ros} stellt dem Softwareentwickler Bibliotheken und Werkzeuge zur Verfügung, die Helfen Roboteranwendungen zu erstellen. Das auf einem \gls{ip}-basierende  modularen Kommunikationsframework ermöglicht die Verknüpfung von Anwendungssoftware, Sensoren und Aktoren sogar unter mehreren Robotern. Die Grundlage dafür ist die sogenannte Hardwareabstraktion. Dabei wird durch hardwarespezifische Module erreicht, das Komponenten unterschiedlicher Hersteller miteinander verbunden werden können. In unserem Fall Hokuyo Lasersanner und \gls{asctec} \gls{fcu}. Außerdem ermöglicht es eine hardwareunabhängige Programmierung. Diese kann in den Programmiersprachen C/C++ oder in Python erfolgen.Jede Hardwareabstraktion oder Anwendung wird als Node, bzw. Konten bezeichnet und läuft als eigener Prozess.
+\begin{figure}
+	\centering
+	\includegraphics[width = 0.75\textwidth]{images/TopicUndService}
+	\caption[Node Kommunikation]{Kommunikation von Node1 zu Node2 über ein Topic sowie einem Service}
+	\label{fig:node_kommunikation}
+\end{figure}
+
+
+Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung \ref{fig:node_kommunikation}]. Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und somit veröffentlicht (publication). Benötigt ein weiter Knoten den Inhalt dieses Topic kann er dieses abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert wurde, wird sie dem abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt. Es können beliebig viele Topics beschrieben oder empfangen werden. Alternative dieser Art der asynchronen Datenübertragung, biete eine Synchrone Kommunikation zwischen zwei Nodes über Services. Dabei wird auf einem Knoten ein Service gestartet. Dieser dient nun als Server und agiert nach dem Anfrage-Antwort-Prinzip. Schickt nun ein anderer Knoten eine Anfrage, wird im die Nachricht zu gesendet.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/MasterAndNode}
+	\caption[Registrierung der Knoten]{Registrierung der Knoten}
+	\label{fig:node_master}
+\end{figure}
+
+Die Verwaltung aller Nodes, Topics sowie Services erfolgt über einen Master dem ROSCore (Abbildung\ref{fig:node_master}).  Hier melden sich alle Knoten an. Durch die zentrale Registrierung können  Nodes sich gegenseitig finden. Sobald sie sich gefunden haben, kommunizieren diese direkt miteinander.
+

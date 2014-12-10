@@ -21,35 +21,36 @@ sort=symbollambda, type=symbolslist
 %%%
 %Abkürzungen
 %%%
-\newacronym{FCU}{FCU}{Flight-Contorl-Unit}
-\newacronym{IMU}{IMU}{Inertial-Measurement-Unit}
-\newacronym{LLP}{LLP}{Low-Level-Processor}
-\newacronym{HLP}{HLP}{High-Level-Processor}
-\newacronym{UAV}{UAV}{Unmanned-Aerial-Vehicle}
-\newacronym{MS}{MS}{Microsoft}
-\newacronym{CD}{CD}{Compact Disc}
+\newacronym{fcu}{FCU}{Flight Contorl Unit}
+\newacronym{imu}{IMU}{Inertial Measurement Unit}
+\newacronym{llp}{LLP}{Low Level Processor}
+\newacronym{hlp}{HLP}{High Level Processor}
+\newacronym{uav}{UAV}{Unmanned Aerial Vehicle}
+\newacronym{ros}{ROS}{Robot Operation System}
+\newacronym{asctec}{AscTec}{ASCENDING TECHNOLOGIES}
+
+
+\newacronym{pc}{PC}{Personal Computer}
+
 
 %Eine Abkürzung mit Glossareintrag
-\newacronym{AD}{AD}{Active Directory\protect\glsadd{glos:AD}}
-
+\newacronym{spi}{SPI}{Serial Peripheral Interface \protect\glsadd{glos:spi}}
+\newacronym{uart}{UART}{Universal Asynchronous Receiver/Transmitter\protect\glsadd{glos:uart}}
+\newacronym{i2c}{I $^2$C}{Inter Integrated Circuit\protect\glsadd{glos:i2c}}
+\newacronym{ip}{IP}{Internet Protocol\protect\glsadd{glos:ip}}
 
 %%%
 %Glossareinträge
 %%%
-\newglossaryentry{glos:AD}{
-name=Active Directory,
-description={Active Directory ist in einem Windows 2000/" "Windows
-Server 2003-Netzwerk der Verzeichnisdienst, der die zentrale
-Organisation und Verwaltung aller Netzwerkressourcen erlaubt. Es
-ermöglicht den Benutzern über eine einzige zentrale Anmeldung den
-Zugriff auf alle Ressourcen und den Administratoren die zentral
-organisierte Verwaltung, transparent von der Netzwerktopologie und
-den eingesetzten Netzwerkprotokollen. Das dafür benötigte
-Betriebssystem ist entweder Windows 2000 Server oder
-Windows Server 2003, welches auf dem zentralen
-Domänencontroller installiert wird. Dieser hält alle Daten des
-Active Directory vor, wie z.B. Benutzernamen und
-Kennwörter.}
-}
-\newglossaryentry{glos:AntwD}{name=Antwortdatei, description={Informationen zum
-Installieren einer Anwendung oder des Betriebssystems.}}
+\newglossaryentry{glos:spi}{
+	name=Serial Peripherial Interface,
+	description={Ein von Motorola entwickelter Standard eines synchronen seriellen Datenbus zur Vernetzung zweier digitaler Schaltungen nach dem Master-Slave-Prinzip}}
+\newglossaryentry{glos:uart}{
+	name= Asynchronous Receiver/Transmitter,
+	description={Eine gängige serielle Schnittstelle zum Senden und Empfangen von Daten über eine Datenleitung. Bildet den Standard der seriellen Schnittstellen an \gls{PC}s und Mikrocontrollern.}}
+\newglossaryentry{glos:i2c}{
+	name= Inter Integrated Circuit,
+	description={Von Philips Semiconductor entwickelter serielles Bussystem. Hauptsächlich zur gerätinternen Kommunikation zwischen verschieden Schaltungsteilen eingesetzt.}}
+\newglossaryentry{glos:ip}{
+	name= Internet Protocol,
+	description={Ist das am weitverbreitete Netzwerkprotokoll in Computernetzen und stellt die Grundlage des Internets dar}}
