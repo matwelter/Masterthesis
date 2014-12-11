@@ -4,9 +4,9 @@ Das Kapitel Grundlagen behandelt die Themen, die in mehreren Abschnitten dieser 
 
 \section{Das Robot Operation System \gls{ros}}
 \label{sec:ros}
-Ziel dieses Unterkapitel ist es das Betriebssystem \gls{ros} vorzustellen. Wie es aufgebaut ist und welche Vorzüge es besitzt.\\
+Ziel dieses Unterkapitel ist es das Opensource Betriebssystem \gls{ros} vorzustellen. Wie es aufgebaut ist und welche Vorzüge es besitzt.\\
 
-\gls{ros} stellt dem Softwareentwickler Bibliotheken und Werkzeuge zur Verfügung, die Helfen Roboteranwendungen zu erstellen. Das auf einem \gls{ip}-basierende  modularen Kommunikationsframework ermöglicht die Verknüpfung von Anwendungssoftware, Sensoren und Aktoren sogar unter mehreren Robotern. Die Grundlage dafür ist die sogenannte Hardwareabstraktion. Dabei wird durch hardwarespezifische Module erreicht, das Komponenten unterschiedlicher Hersteller miteinander verbunden werden können. In unserem Fall Hokuyo Lasersanner und \gls{asctec} \gls{fcu}. Außerdem ermöglicht es eine hardwareunabhängige Programmierung. Diese kann in den Programmiersprachen C/C++ oder in Python erfolgen.Jede Hardwareabstraktion oder Anwendung wird als Node, bzw. Konten bezeichnet und läuft als eigener Prozess.
+\gls{ros} stellt dem Softwareentwickler Bibliotheken und Werkzeuge zur Verfügung, die Helfen Roboteranwendungen zu erstellen. Das auf einem \gls{ip}-basierende  modulare Kommunikationsframework ermöglicht die Verknüpfung von Anwendungssoftware, Sensoren und Aktoren sogar unter mehreren Robotern. Die Grundlage dafür ist die sogenannte Hardwareabstraktion. Dabei wird durch hardwarespezifische Module erreicht, das Komponenten unterschiedlicher Hersteller miteinander verbunden werden können. In unserem Fall Hokuyo Lasersanner und \gls{asctec} \gls{fcu}. Außerdem ermöglicht es eine hardwareunabhängige Programmierung, die  in den Programmiersprachen C/C++ oder in Python erfolgen kann. Jede Hardwareabstraktion oder Anwendung wird als Node, bzw. Konten bezeichnet und läuft als eigener Prozess.
 \begin{figure}
 	\centering
 	\includegraphics[width = 0.75\textwidth]{images/TopicUndService}
@@ -15,7 +15,9 @@ Ziel dieses Unterkapitel ist es das Betriebssystem \gls{ros} vorzustellen. Wie e
 \end{figure}
 
 
-Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung \ref{fig:node_kommunikation}]. Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und somit veröffentlicht (publication). Benötigt ein weiter Knoten den Inhalt dieses Topic kann er dieses abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert wurde, wird sie dem abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt. Es können beliebig viele Topics beschrieben oder empfangen werden. Alternative dieser Art der asynchronen Datenübertragung, biete eine Synchrone Kommunikation zwischen zwei Nodes über Services. Dabei wird auf einem Knoten ein Service gestartet. Dieser dient nun als Server und agiert nach dem Anfrage-Antwort-Prinzip. Schickt nun ein anderer Knoten eine Anfrage, wird im die Nachricht zu gesendet.
+Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung \ref{fig:node_kommunikation}]. Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und somit veröffentlicht (publication). Benötigt ein weiter Knoten den Inhalt dieses Topic kann er es abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert wurde, wird sie den abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt, es können beliebig viele Topics beschrieben oder empfangen werden. Alternative zu dieser Art der asynchronen Datenübertragung, biete \gls{ros} die Möglichkeit einer Synchrone Kommunikation zwischen zwei Nodes über Services. Dabei wird auf einem Knoten ein Service gestartet. Dieser dient als Server und agiert nach dem Anfrage-Antwort-Prinzip. Schickt ein anderer Knoten eine Anfrage, wird ihm die geforderte Nachricht zu gesendet. 
+
+Anzumerken ist, das durch das verwendete \gls{ip}-Protokoll keine deterministische Versendung der Nachrichten nicht gewährleistet ist, da es sein kann, das Nachrichten gleichen Types in Paketen zusammengefasst werden. Bei der Programmierung empfiehlt es sich daher auf Topics mit einem Zeitstempel (engl. timestamp) zurückzugreifen. Die Echtzeitfähigkeit des \gls{ros} ist durch allerdings nicht gefährdet. 
 
 \begin{figure}
 	\centering
@@ -24,5 +26,17 @@ Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbi
 	\label{fig:node_master}
 \end{figure}
 
-Die Verwaltung aller Nodes, Topics sowie Services erfolgt über einen Master dem ROSCore (Abbildung\ref{fig:node_master}).  Hier melden sich alle Knoten an. Durch die zentrale Registrierung können  Nodes sich gegenseitig finden. Sobald sie sich gefunden haben, kommunizieren diese direkt miteinander.
+
+Der wohl größte Vorteil von \gls{ros} ist die ständig wachsende Community. So stellen Forscher aus der ganze Welt ihre Algorithmen und Hardwareabstraktionen zur Verfügung. Dadurch ist es möglich bei der Erstellung einer Roboteranwendung auf Bausteine zurück zugreifen, die ohne diese Plattform selbst zu implementieren wären.
+
+
+\section{Einführung in die Koordinatensysteme und Koordinatentransformationen}
+\label{sec:koordinatensysteme&transformationen}
+
+\subsection{Koordinatensysteme}
+\label{subsec:koordinatensysteme}
+ 
+\subsection{Koordinatentransformationen}
+\label{subsec:koordinatentransformation}
+
 
