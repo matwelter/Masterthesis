@@ -32,9 +32,33 @@ Der wohl größte Vorteil von \gls{ros} ist die ständig wachsende Community. So st
 
 \section{Einführung in die Koordinatensysteme und Koordinatentransformationen}
 \label{sec:koordinatensysteme&transformationen}
+Anhand von Koordinatensystemen und Transformationen lässt sich die Lage eines Objektes in einen Raum mathematisch beschreiben. Die Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (siehe Kapitel HIER MUSS NOCH EINE REFERENZ HIN). Außerdem ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters und stellt somit die Grundlage zur Modellbildung und Reglerentwurf (siehe Kapitel so und so).  
 
 \subsection{Koordinatensysteme}
 \label{subsec:koordinatensysteme}
+Über ein Koordinatensystem lässt sich die Position eines Punktes bezogen den Koordinatenursprung als Bezugspunkt, in einer zweidimensionalen Ebene, bzw in einem dreidimensionalen Raum über einen Vektor beschreiben.  
+
+
+Es ist drauf hinzuweisen, dass es zur Navigation auf dem Erdball rotationsellipsische Koordinatensysteme benötigt werden [THIELECKE]. Diese Krümmung kann bei 
+
+Bei der Indoornavigation kann die Krümmung der Erde vernachlässigt werden.
+\begin{figure}
+	
+	\centering{
+		\subfloat[ENU-Koordinatensystem]{
+			\includegraphics[width=0.3\textwidth]{images/ENU-koordinatensystem}
+			\label{fig:enu}
+		}
+		\subfloat[NED-Koordimatemsystem]{
+			\includegraphics[width=0.3\textwidth]{images/ned-koordinatensystem}
+			\label{fig:ned}
+		}
+	}
+	\caption[Kovention ]{test}
+
+\end{figure}
+
+
  \begin{figure}
  	\centering
  	\includegraphics[width = \textwidth]{images/Koordinatensysteme}
