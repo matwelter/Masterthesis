@@ -27,8 +27,7 @@ Anzumerken ist, das durch das verwendete \gls{ip}-Protokoll keine deterministisc
 \end{figure}
 
 
-Der wohl größte Vorteil von \gls{ros} ist die ständig wachsende Community. So stellen Forscher aus der ganze Welt ihre Algorithmen und Hardwareabstraktionen zur Verfügung. Dadurch ist es möglich bei der Erstellung einer Roboteranwendung auf Bausteine zurück zugreifen, die ohne diese Plattform selbst zu implementieren wären.
-
+Der wohl größte Vorteil von \gls{ros} ist die ständig wachsende Community. So stellen Forscher aus der ganze Welt ihre Algorithmen und Hardwareabstraktionen zur Verfügung. Dadurch ist es möglich bei der Erstellung einer Roboteranwendung auf Bausteine zurück zugreifen, die ohne diese Plattform selbst zu implementieren wären. Abgesehen davon stellt ROS eine Vielzahl von Hilfsmitteln wie zum Beispiel die Transferfunktion (/tf) bereit. Hier lassen sich Koordinatensysteme definieren. Die Transformation der Daten wird dann automatisch von \gls{ros} durchgeführt.
 
 \section{Einführung in die Koordinatensysteme und Koordinatentransformationen}
 \label{sec:koordinatensysteme&transformationen}
@@ -36,12 +35,8 @@ Anhand von Koordinatensystemen und Transformationen lässt sich die Lage eines Ob
 
 \subsection{Koordinatensysteme}
 \label{subsec:koordinatensysteme}
-Über ein Koordinatensystem lässt sich die Position eines Punktes bezogen den Koordinatenursprung als Bezugspunkt, in einer zweidimensionalen Ebene, bzw in einem dreidimensionalen Raum über einen Vektor beschreiben.  
+Über ein Koordinatensystem lässt sich ein Vektor oder die Position eines Punktes bezogen auf den Koordinatenursprung in einer zweidimensionalen Ebene, bzw in einem dreidimensionalen Raum beschreiben. Ziel diese Teilabschnittes ist die Erläuterung der in dieser Arbeit eingeführten Koordinatensysteme.\\
 
-
-Es ist drauf hinzuweisen, dass es zur Navigation auf dem Erdball rotationsellipsische Koordinatensysteme benötigt werden [THIELECKE]. Diese Krümmung kann bei 
-
-Bei der Indoornavigation kann die Krümmung der Erde vernachlässigt werden.
 \begin{figure}
 	
 	\centering{
@@ -55,16 +50,37 @@ Bei der Indoornavigation kann die Krümmung der Erde vernachlässigt werden.
 		}
 	}
 	\caption[Kovention ]{test}
-
+	\label{fig:konventionen}
+	
 \end{figure}
 
+Zuvor müssen jedoch zwei Konventionen bezüglich der Bezugssysteme vorgestell werden. Nummer eins, die in Abbildung \ref{fig:enu} dargestellte \gls{enu} Konvention. Diese wird in vor allem bei der Landnavigation eingesetzt. Hier zeigt die z-Achse nach oben. Bei der zweiten Konvention, hauptsächlich in der Wasser-, Luft- und Raumfahrt eingesetzt, handelt es sich um das \gls{ned} Bezugssystem (Abbildung \ref{fig:ned}). Die z-Achse zeigt nach unten. Anzumerken ist, das in dieser Arbeit die Ausrichtung der x- und y -Achse nicht wie in Abbildung \ref{fig:konventionen} und auch der Namensgebung entsprechend den Himmelsrichtungen entspricht. Die Begriffe \gls{enu} und \gls{ned} dienen ausschließlich zur Beschreibung der Ausrichtung der Koordinatenachsen in Abhängigkeit der positiven z-Achse.
 
- \begin{figure}
- 	\centering
- 	\includegraphics[width = \textwidth]{images/Koordinatensysteme}
- 	\caption[Koordinatensysteme]{In der Arbeit angewandte Koordinatensysteme }
- 	\label{fig:koordinatensysteme}
- \end{figure}
+Bei der nun folgenden Einführung der Koordinatensysteme (Abbildung \ref{fig:koordinatensysteme}) handelt es ausschließlich um kartesische, das heißt orthogonale Koordinatensysteme, die nach der \gls{enu} Konvention ausgerichtet sind. Dies steht in soweit im Widerspruch, da im Abschnitt zuvor das \gls{ned} als Koordinatensystem für Flugkörper bezeichnet worden ist. Es ist allerdings so, dass die \gls{ros} Koordinatensysteme auf \gls{enu} basieren. Deshalb die Wahl von Bezugssystemen mit positiver z-Achse nach oben.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/Koordinatensysteme}
+	\caption[Koordinatensysteme]{In der Arbeit angewandte Koordinatensysteme }
+	\label{fig:koordinatensysteme}
+\end{figure}
+
+Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen sind vier Koordinatensysteme definiert. Sinn und Zweck der einzelnen Bezugssysteme ist in der nachfolgenden Liste aufgeführt.
+
+\begin{itemize}
+	\item \textbf{n-frame:}
+\end{itemize}
+
+ 
+
+
+Es ist drauf hinzuweisen, dass es zur Navigation auf dem Erdball rotationsellipsische Koordinatensysteme benötigt werden [THIELECKE]. Diese Krümmung kann bei 
+
+Bei der Indoornavigation kann die Krümmung der Erde vernachlässigt werden.
+
+
+
+ 
 \subsection{Koordinatentransformationen}
 \label{subsec:koordinatentransformation}
 
