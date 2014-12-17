@@ -56,7 +56,7 @@ Anhand von Koordinatensystemen und Transformationen lässt sich die Lage eines Ob
 
 Zuvor müssen jedoch zwei Konventionen bezüglich der Bezugssysteme vorgestell werden. Nummer eins, die in Abbildung \ref{fig:enu} dargestellte \gls{enu} Konvention. Diese wird in vor allem bei der Landnavigation eingesetzt. Hier zeigt die z-Achse nach oben. Bei der zweiten Konvention, hauptsächlich in der Wasser-, Luft- und Raumfahrt eingesetzt, handelt es sich um das \gls{ned} Bezugssystem (Abbildung \ref{fig:ned}). Die z-Achse zeigt nach unten. Anzumerken ist, das in dieser Arbeit die Ausrichtung der x- und y -Achse nicht wie in Abbildung \ref{fig:konventionen} und auch der Namensgebung entsprechend den Himmelsrichtungen entspricht. Die Begriffe \gls{enu} und \gls{ned} dienen hier zur Beschreibung der Ausrichtung der Koordinatenachsen in Abhängigkeit der positiven z-Achse.
 
-Bei der nun folgenden Einführung der Koordinatensysteme (Abbildung \ref{fig:koordinatensysteme}) handelt es ausschließlich um kartesische, das heißt orthogonale Koordinatensysteme, die nach der \gls{enu} Konvention ausgerichtet sind. Dies steht in soweit im Widerspruch, da im Abschnitt zuvor das \gls{ned} als Koordinatensystem für Flugkörper bezeichnet worden ist. Es ist allerdings so, dass die \gls{ros} Koordinatensysteme auf \gls{enu} basieren. Deshalb die Wahl von Bezugssystemen mit positiver z-Achse nach oben.
+Bei der nun folgenden Einführung der Koordinatensysteme (Abbildung \ref{fig:koordinatensysteme}) handelt es ausschließlich um kartesische, das heißt orthogonale Koordinatensysteme, die nach der \gls{enu} Konvention ausgerichtet sind. Dies steht erstmal im Widerspruch mit dem Abschnitt zuvor, dort ist das \gls{ned} als Koordinatensystem für Flugkörper bezeichnet worden. Es ist allerdings so, dass die \gls{ros} Koordinatensysteme auf \gls{enu} basieren. Deshalb die Wahl von Bezugssystemen mit positiver z-Achse nach oben.
 
 \begin{figure}
 	\centering
@@ -75,13 +75,14 @@ Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen sind vier xyz-Koordi
 
 	\item \textbf{b-frame(Bodyframe):} Dieses Koordinatensystem ist fest mit dem Rahmen des Quadrocopters verbunden. Man spricht dabei von einen körperfesten Koordinatensystem. Dabei befindet sich der Ursprung des Systems im Schwerpunkt, die x-Achse zeigt in die als Vorne definierte Richtung. Die y- und z-Achse sind abhängig davon nach der \gls{enu} Konvention angeordnet.
 	 	
-	\item \textbf{l-frame(laserframe):} Ebenfalls ein körperfestes Koordinatensystem. Der Ursprung liegt hier in der Sendequelle des Lasers. Die Ausrichtung der Achsen entspricht der des b-frames, mit Ausnahme des Offsets in z-Richtung.
-		
-	\item \textbf{o-frame(laserframe):}
-\end{itemize}
+	\item \textbf{l-frame(laserframe):} Ebenfalls ein körperfestes Koordinatensystem. Der Ursprung liegt hier in der Sendequelle des Lasers. Die Ausrichtung der Achsen entspricht der des b-frames, mit Ausnahme eines Offsets in z-Richtung.
+	
+	\item \textbf{o-frame(Orthogonalframe):} Hierbei handelt es sich um ein objektbezogenes Bezugssystem, dessen Orientierung um seine z-Achse und die Position des Ursprungs im n-frame abhängig von dem Orthogonal über der Ebene befindlichen b-frame ist. 
+	
+	 \end{itemize}
 
  
-
+Wie Abbildung \ref{fig:koordinatensysteme} 
 
 
 

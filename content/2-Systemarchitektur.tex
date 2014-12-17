@@ -1,6 +1,60 @@
 \chapter{Systemarchitektur des Quadrocopters}
 \label{chap:Systemarchitektur}
 Zu Beginn wird in diesem Kapitel die Hardwarearchitektur sowie die Kommunikationsstruktur vorgestellt. Ziel ist es einen Überblick der verbauten Sensoren und Recheneinheiten sowie deren Vernetzung untereinander zu erlangen. 
+\section{Grundlegende Funktionsweise eines Quadrocopters}
+Anhand der Drehzahl $n_i$ der Rotorblätter lässt sich individuell der Schub der Rotoren einstellen. Dabei ergibt sich für den Schubvektor $S^b$ die Gesamtkraft aller Rotoren.
+
+\label{sec:grundlegenefunktionsweiseQuadrocopter }
+\begin{figure}
+	\centering
+	\includegraphics[width = 0.75\textwidth]{images/funktionsprinzip_quadrocopter}
+	\caption[Hardwareaufbau]{Momente und Kräfte an einem Quadrocopter}
+	\label{fig:funktionsprinzip}
+\end{figure}
+
+\begin{equation}
+S^b = \begin{bmatrix}
+S^{b}_x\\
+S^{b}_y\\
+S^{b}_z\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+0\\
+0\\
+F_1+F_2+F_3+F_4\\
+\end{bmatrix}
+\end{equation}
+
+Damit der Qudrocopter eine Bewegung im Raum vollziehen kann muss dieser Vektor ausgelenkt werden. Dies wird durch eine Änderung der Lage realisiert. Reduziert man zum Beispiel die Drehzahl $n_1$ und erhöht gleichzeitig die Drehzahl $n_3$, hat das resultierende Kräfteungleichgewicht ein positives Moment um die $y^b$-Achse zur Folge. Der Quadrocopter dreht sich um die $y^b$-Achse. Der Pitch-Winkel ändert sich und erfährt eine Beschleunigung in der horizontalen Ebene. Gleiches Prinzip gilt auch für den Roll-Winkel, sprich Rotation um die $x^b$-Achse. Hier ist allerdings der Drehzahlenunterschied zwischen $n_2$ und $n_4$ verantwortlich für die Rotation.
+
+Eine Änderung der Orientierung um die Hochachse z , sprich Änderung des Yaw-Winkels ist ebenfalls über Variation der Rotordrehzahlen möglich. Dabei wird der Effekt ausgenutzt, das die durch die umgebende Luft entgegen der Drehrichtung eine Kraft auf die Rotorblätter wirk und somit eine Moment auf den Quadrocopter.
+Diese Momente die an Armen des Quadrocopters angreifen lassen sich zur Vereinfachung der Gleichungen in den Schwerpunkt verschieben. Damit bei gleicher Drehzahl aller Rotorblätter, einen Momentengleichgewicht herrscht drehen sich die Motoren eins und drei gegen, die Motoren zwei und vier mit dem Uhrzeigersinn. Um nun die gewünschte Rotation zu erzielen erhöht man die Drehzahl $n_1$ und $n_3$, reduziert dabei gleichzeitig $n_2$ und $n_4$. Das Ergebnis wäre in diesem Fall eine Rotation in positiver Richtung.
+
+Zusammenfassend lassen sich die für die Rotation um die Quadrocopter-Achsen verantwortlichen Momente ein einem Vektor.  
+
+\begin{equation}
+M^b = \begin{bmatrix}
+M^{b}_x\\
+M^{b}_y\\
+M^{b}_z\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+l(F_3-F_1)\\
+l(F_2-F_4)\\
+M_1-M_2+M_3-M_4\\
+\end{bmatrix}
+\end{equation}
+
+Anzumerken ist noch warum bei eine Erhöhung der Drehzahl immer auch eine Reduzierung des Gegenparts verknüpft ist. Die Begründung ist, das der Schubvektor $S^b$ durch eine Rotation möglichst wenig beeinflusst werden soll. Dadurch kann er über eine Gesamtschubvorgabe ganze einfach bestimmt werden.
+
+
+
+
+
+
+
 \section{Hardwareaufbau}
 \label{sec:Hardwareaufbau}
 Zum Einsatz kommt der AscTec Pelican der Firma \gls{asctec}. Dieser Quadrocopter ist speziell für die Forschung entworfen worden. Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. Durch diese Flexibilität im Aufbau ist es Ziel dieses Teilkapitels einen Überblick zu geben, wo die einzelnen Komponenten positioniert sind. Begleitend zum Text ist der Aufbau in Abbildung \ref{fig:hardwareaufbau} sowie etwas ausführlicher, mit den Daten der Komponenten, im Anhang dargestellt.\\
