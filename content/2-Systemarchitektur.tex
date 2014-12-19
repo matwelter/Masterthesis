@@ -1,13 +1,16 @@
 \chapter{Systemarchitektur des Quadrocopters}
 \label{chap:Systemarchitektur}
-Zu Beginn wird in diesem Kapitel die Hardwarearchitektur sowie die Kommunikationsstruktur vorgestellt. Ziel ist es einen Überblick der verbauten Sensoren und Recheneinheiten sowie deren Vernetzung untereinander zu erlangen. 
+Zu Beginn wird in diesem Kapitel die Grundlegende Funktionsweise des Quadrocopters erläutert. Anschließend die bei dieser Arbeit zum Einsatz kommende Hardware dargelegt und wie die einzelne Komponenten miteinander verknüpft sind. Dabei geht darum aufzuzeigen, an welchen Stellen Software bereits fest implementiert ist und wo eigene Algorithmen integriert werden können. 
+
 \section{Grundlegende Funktionsweise eines Quadrocopters}
-Anhand der Drehzahl $n_i$ der Rotorblätter lässt sich individuell der Schub der Rotoren einstellen. Dabei ergibt sich für den Schubvektor $S^b$ die Gesamtkraft aller Rotoren.
+Ziel dieses Kapitel ist es ein Verständnis dafür zu erlangen, wie über die gezielte Ansteuerungen der vier Rotoren eine Bewegung des Quadrocopters  hervorgerufen werden kann. Dabei wird auf die wirkende Kräfte und Momente eingegangen, ohne tief in Physik einzusteigen.\\
+
+Anhand der Drehzahl $n_i$ der Rotorblätter lässt sich individuell der Schub der Rotoren einstellen. Somit lässt sich die Kraft $F_i$ jedes Quadrocopterarme vorgeben. Die Gesamtkraft aller Rotoren ergibt den Schubvektor $S^b$.
 
 \label{sec:grundlegenefunktionsweiseQuadrocopter }
 \begin{figure}
 	\centering
-	\includegraphics[width = 0.75\textwidth]{images/funktionsprinzip_quadrocopter}
+	\includegraphics[width = 0.9\textwidth]{images/funktionsweise_quadrocopter}
 	\caption[Hardwareaufbau]{Momente und Kräfte an einem Quadrocopter}
 	\label{fig:funktionsprinzip}
 \end{figure}
@@ -26,12 +29,12 @@ F_1+F_2+F_3+F_4\\
 \end{bmatrix}
 \end{equation}
 
-Damit der Qudrocopter eine Bewegung im Raum vollziehen kann muss dieser Vektor ausgelenkt werden. Dies wird durch eine Änderung der Lage realisiert. Reduziert man zum Beispiel die Drehzahl $n_1$ und erhöht gleichzeitig die Drehzahl $n_3$, hat das resultierende Kräfteungleichgewicht ein positives Moment um die $y^b$-Achse zur Folge. Der Quadrocopter dreht sich um die $y^b$-Achse. Der Pitch-Winkel ändert sich und erfährt eine Beschleunigung in der horizontalen Ebene. Gleiches Prinzip gilt auch für den Roll-Winkel, sprich Rotation um die $x^b$-Achse. Hier ist allerdings der Drehzahlenunterschied zwischen $n_2$ und $n_4$ verantwortlich für die Rotation.
+Damit der Qudrocopter eine Bewegung im Raum vollziehen kann muss dieser Vektor aus der Vertikalen ausgelenkt werden. Dies wird durch eine Änderung der Lage realisiert. Reduziert man zum Beispiel die Drehzahl $n_1$ und erhöht gleichzeitig die Drehzahl $n_3$, hat das resultierende Kräfteungleichgewicht ein positives Moment um die $y^b$-Achse zur Folge. Der Quadrocopter dreht sich um die $y^b$-Achse. Der Pitch-Winkel ändert sich. Der Quadrocopter erfährt in der horizontalen Ebene des Raums eine Beschleunigung. Das gleiches Prinzip gilt auch für den Roll-Winkel, sprich Rotation um die $x^b$-Achse. Hier ist allerdings der Drehzahlenunterschied zwischen $n_2$ und $n_4$ verantwortlich für die Rotation.
 
-Eine Änderung der Orientierung um die Hochachse z , sprich Änderung des Yaw-Winkels ist ebenfalls über Variation der Rotordrehzahlen möglich. Dabei wird der Effekt ausgenutzt, das die durch die umgebende Luft entgegen der Drehrichtung eine Kraft auf die Rotorblätter wirk und somit eine Moment auf den Quadrocopter.
-Diese Momente die an Armen des Quadrocopters angreifen lassen sich zur Vereinfachung der Gleichungen in den Schwerpunkt verschieben. Damit bei gleicher Drehzahl aller Rotorblätter, einen Momentengleichgewicht herrscht drehen sich die Motoren eins und drei gegen, die Motoren zwei und vier mit dem Uhrzeigersinn. Um nun die gewünschte Rotation zu erzielen erhöht man die Drehzahl $n_1$ und $n_3$, reduziert dabei gleichzeitig $n_2$ und $n_4$. Das Ergebnis wäre in diesem Fall eine Rotation in positiver Richtung.
+Eine Änderung der Orientierung um die Hochachse z , sprich Änderung des Yaw-Winkels ist lässt sich ebenfalls über Variation der Rotordrehzahlen hervorrufen. Dabei kommt der Effekt zum tragen, das die umgebende Luft entgegen der Drehrichtung der Motoren eine Kraft auf die Rotorblätter erzeugt und somit eine Moment auf den Quadrocopter.
+Diese Momente die an Armen des Quadrocopters angreifen lassen sich zur Vereinfachung in den Schwerpunkt verschieben. Damit bei gleicher Drehzahl aller Rotorblätter, einen Momentengleichgewicht herrscht drehen sich die Motoren eins und drei gegen, die Motoren zwei und vier mit dem Uhrzeigersinn. Um nun die gewünschte Rotation zu erzielen erhöht man die Drehzahl $n_1$ und $n_3$, reduziert dabei gleichzeitig $n_2$ und $n_4$. Das Ergebnis wäre in diesem Fall eine Rotation in positiver Richtung.
 
-Zusammenfassend lassen sich die für die Rotation um die Quadrocopter-Achsen verantwortlichen Momente ein einem Vektor.  
+Zusammenfassen lassen sich die für die Rotation um die Quadrocopter-Achsen verantwortlichen Momente $M^{b}_{x,y,z}$ ein einem Vektor $M^b$.  
 
 \begin{equation}
 M^b = \begin{bmatrix}
@@ -47,12 +50,7 @@ M_1-M_2+M_3-M_4\\
 \end{bmatrix}
 \end{equation}
 
-Anzumerken ist noch warum bei eine Erhöhung der Drehzahl immer auch eine Reduzierung des Gegenparts verknüpft ist. Die Begründung ist, das der Schubvektor $S^b$ durch eine Rotation möglichst wenig beeinflusst werden soll. Dadurch kann er über eine Gesamtschubvorgabe ganze einfach bestimmt werden.
-
-
-
-
-
+Aufzuklären ist warum mir einer Erhöhung der Drehzahl immer auch eine Reduzierung des Gegenparts verknüpft ist. Die Begründung ist, das der Schubvektor $S^b$ durch eine Rotation möglichst wenig beeinflusst werden soll. Damit er durch die Gesamtschubvorgabe ganze einfach bestimmt werden.
 
 
 \section{Hardwareaufbau}
@@ -61,7 +59,7 @@ Zum Einsatz kommt der AscTec Pelican der Firma \gls{asctec}. Dieser Quadrocopter
 
 	\begin{figure}
 		\centering
-		\includegraphics[width = 0.75\textwidth]{images/quad_odroid}
+		\includegraphics[width = 0.75\textwidth]{images/Hardwareaufbau}
 		\caption[Hardwareaufbau]{Hardwareaufbau des Quadrocopters...DIESE GRAFIK IST EIN PLATZHALTER GRAFIK NUR MIT NAMEN DER KOMPONENTEN}
 		\label{fig:hardwareaufbau}
 	\end{figure}
@@ -70,16 +68,15 @@ Für jeder der vier mit einem Propellor verbundenen Elektromotoren, ist ein separ
 
 Die \gls{fcu} ist die zentrale Steuer- und Regeleinheit des Quadrocopters. Sie besitzt zwei ARM7 Prozessoren, einen \gls{llp} und einen \gls{hlp}. Außerdem verschiedene Kommunikationsschnittstellen (vgl. Kapitel \ref{fig:Kommunikationsstruktur}). Zusätzlich dient sie als inertiale Messeinheit (engl. \gls{imu}). Diese Einheit wird zur Bewegungsdetektion sowie zur Bestimmung der Lage und Ausrichtung benötigt. Sie ist nicht zur Positionsbestimmung in einem ortsfesten Koordinatensystem (Koordinatensysteme siehe Kapitel HIER MUSS EINE REF hin) geeignet. Bestandteile der IMU sind ein 3D-Beschleunigungssensor, drei Drehratensensoren(Gyros), einem Kompass sowie einem Drucksensor zur Ermittlung der Flughöhe anhand des Luftdrucks. Verbaut sind die Sensoren mit Ausnahme des Kompass direkt auf der Platine (siehe Abbildung \ref{fig:fcuplatien}).
 
+Da der Einsatzbereich im Indoorbereich liegt, ist Drucksensor ist zur Höhenbestimmung in geschlossenen Räumen nicht eignet, da er erst ab einer Höhe von 5m zuverlässige Werte liefert. Daher wurde in einer vorangegangen Arbeit von Jan Kallwies (lITERAURVERWIES JAN) die Hardware um ein Modul zur Messung der Höhe im Indoorbereich erweitert. Auf diesem Modul befinden sich ein zwei Infrarotsensoren für den Nahbereich. Beide zusammen decken einen Messbereich von Bereich von 4 cm bis 142 ab. Erweitert wird der Messbereich durch einen Ultraschallsensor für Entfernungen von bis zu 5 m. Aus diesen drei Sensordaten wird über einen Extended-Kalman-Filter die Flughöhe bestimmt. Eine genaue Beschreibung dieses Fusionsfilters kann in der Arbeit von Jan Kallwies [LITERATURVERZEICHNIS] nachgelesen werden. Da in dieser Arbeit die Navigation in der horizontale Ebene den Schwerpunkt darstellt, wird dieses Modul nicht weiter behandelt.
+
 	\begin{figure}
 		\centering
 		\includegraphics[width = 0.75\textwidth]{images/FCU_Platine}
 		\caption[fcuplatine]{Platine der \gls{fcu}}
 		\label{fig:fcuplatien}
 	\end{figure}
-
-Da der Einsatzbereich im Indoorbereich liegt, ist Drucksensor ist zur Höhenbestimmung in geschlossenen Räumen nicht eignet, da er erst ab einer Höhe von 5m zuverlässige Werte liefert. Daher wurde in einer vorangegangen Arbeit von Jan Kallwies (lITERAURVERWIES JAN) die Hardware um ein Modul zur Messung der Höhe im Indoorbereich erweitert. Auf diesem Modul befinden sich ein zwei Infrarotsensoren für den Nahbereich. Beide zusammen decken einen Messbereich von Bereich von 4 cm bis 142 ab. Erweitert wird der Messbereich durch einen Ultraschallsensor für Entfernungen von bis zu 5 m. Aus diesen drei Sensordaten wird über einen Extended-Kalman-Filter die Flughöhe bestimmt. Eine genaue Beschreibung dieses Fusionsfilters kann in der Arbeit von Jan Kallwies [LITERATURVERZEICHNIS] nachgelesen werden. Da in dieser Arbeit die Navigation in der horizontale Ebene den Schwerpunkt darstellt, wird dieses Modul nicht weiter behandelt.
-
-
+	
 Um allerdings in der Horizontalen navigieren zu können, muss die Position des Flugkörpers in der x-y Ebene (VGL kOORDINATENSYSTEME) bekannt sein. Da dies, wie schon beschrieben, nicht mit der Inertialsenorik möglich ist, wurde in die Turmstruktur der Laserscanner UTM-30LX der Firma Hokuyo integriert. Dieser Scanner hat eine maximale Reichweite von 30 m und Abtastbereich von 270°. Die Umlaufdauer beträgt dabei 40 Hz, d.h. alle 25 ms steht ein neuer Umgebungssan zur Verfügung.    
 
 Damit zur Berechnung der Position sowie Implementierung weiterer Algorithmen und Funktionen ausreichend Rechenleistung vorhanden ist, befindet sich auf dem Quadrocopter ein zusätzlicher Odroid-X Mikrocomputer mit einem Quad Core Prozessor mit 1.4 Ghz und einen 1024MB LP-DDR2 Arbeitsspeicher. Außerdem besitzt diese Entwicklungsplattform sechs USB-Schnittstellen sowie ein 10/100Mbps Ethernet-Anschluss.\\

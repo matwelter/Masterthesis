@@ -31,7 +31,7 @@ Der wohl größte Vorteil von \gls{ros} ist die ständig wachsende Community. So st
 
 \section{Einführung in die Koordinatensysteme und Koordinatentransformationen}
 \label{sec:koordinatensysteme&transformationen}
-Anhand von Koordinatensystemen und Transformationen lässt sich die Lage eines Objektes in einen Raum mathematisch beschreiben. Die Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (siehe Kapitel HIER MUSS NOCH EINE REFERENZ HIN). Außerdem ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters und stellt somit die Grundlage zur Modellbildung und Reglerentwurf (siehe Kapitel so und so).  
+Anhand von Koordinatensystemen und Transformationen lässt sich die Lage von Punkten und  Objekten in einen Raum mathematisch beschreiben. Die Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (siehe Kapitel HIER MUSS NOCH EINE REFERENZ HIN). Außerdem ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters und stellt somit die Grundlage zur Modellbildung und Reglerentwurf (siehe Kapitel so und so).  
 
 \subsection{Koordinatensysteme}
 \label{subsec:koordinatensysteme}
@@ -54,9 +54,9 @@ Anhand von Koordinatensystemen und Transformationen lässt sich die Lage eines Ob
 	
 \end{figure}
 
-Zuvor müssen jedoch zwei Konventionen bezüglich der Bezugssysteme vorgestell werden. Nummer eins, die in Abbildung \ref{fig:enu} dargestellte \gls{enu} Konvention. Diese wird in vor allem bei der Landnavigation eingesetzt. Hier zeigt die z-Achse nach oben. Bei der zweiten Konvention, hauptsächlich in der Wasser-, Luft- und Raumfahrt eingesetzt, handelt es sich um das \gls{ned} Bezugssystem (Abbildung \ref{fig:ned}). Die z-Achse zeigt nach unten. Anzumerken ist, das in dieser Arbeit die Ausrichtung der x- und y -Achse nicht wie in Abbildung \ref{fig:konventionen} und auch der Namensgebung entsprechend den Himmelsrichtungen entspricht. Die Begriffe \gls{enu} und \gls{ned} dienen hier zur Beschreibung der Ausrichtung der Koordinatenachsen in Abhängigkeit der positiven z-Achse.
+Zu Beginn werden nun zwei Konventionen bezüglich der Bezugssysteme vorgestellt. Nummer eins, die in Abbildung \ref{fig:enu} dargestellte \gls{enu} Konvention. Diese wird in vor allem bei der Landnavigation eingesetzt. Hier zeigt die z-Achse nach oben. Bei der zweiten Konvention, hauptsächlich in der Wasser-, Luft- und Raumfahrt eingesetzt, handelt es sich um das \gls{ned} Bezugssystem (Abbildung \ref{fig:ned}). Die z-Achse zeigt nach unten. Anzumerken ist, das in dieser Arbeit die Ausrichtung der x- und y -Achse nicht wie in Abbildung \ref{fig:konventionen} und auch der Namensgebung entsprechend den Himmelsrichtungen entspricht. Die Begriffe \gls{enu} und \gls{ned} dienen hier zur Beschreibung der Ausrichtung der Koordinatenachsen in Abhängigkeit der positiven z-Achse.
 
-Bei der nun folgenden Einführung der Koordinatensysteme (Abbildung \ref{fig:koordinatensysteme}) handelt es ausschließlich um kartesische, das heißt orthogonale Koordinatensysteme, die nach der \gls{enu} Konvention ausgerichtet sind. Dies steht erstmal im Widerspruch mit dem Abschnitt zuvor, dort ist das \gls{ned} als Koordinatensystem für Flugkörper bezeichnet worden. Es ist allerdings so, dass die \gls{ros} Koordinatensysteme auf \gls{enu} basieren. Deshalb die Wahl von Bezugssystemen mit positiver z-Achse nach oben.
+Bei der nun folgenden Einführung der Koordinatensysteme (Abbildung \ref{fig:koordinatensysteme}) handelt es ausschließlich um kartesische, das heißt orthogonale Koordinatensysteme, die nach der \gls{enu} Konvention ausgerichtet sind. Dies steht erstmal im Widerspruch mit dem Abschnitt zuvor, dort ist das \gls{ned} als Koordinatensystem für Flugkörper eingeführt worden. Es ist allerdings so, dass die \gls{ros} Koordinatensysteme auf \gls{enu} basieren. Deshalb die Wahl von Bezugssystemen mit positiver z-Achse nach oben.
 
 \begin{figure}
 	\centering
@@ -65,7 +65,7 @@ Bei der nun folgenden Einführung der Koordinatensysteme (Abbildung \ref{fig:koor
 	\label{fig:koordinatensysteme}
 \end{figure}
 
-Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen sind vier xyz-Koordinatensysteme definiert. Sinn und Zweck der einzelnen Bezugssysteme ist in der nachfolgenden Liste aufgeführt.
+Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen sind vier xyz-Koordinatensysteme definiert. 
 
 \begin{itemize}
 	\item \textbf{n-frame(Lokaler Navigationsframe):} Ortsfestes Koordinatensystem zur Beschreibung der Position im Raum. Da es in dieser Arbeit um die horizontale Positionsregelung geht, ist hier ausschließlich die xy-Ebene von Interesse. Der Ursprung des Koordinatensystem wird bei jedem Systemstart neu initialisiert. Zu beachten ist dies beim vollautonomen Flug in Räumen, dabei beziehen sich die Sollpositionen nicht auf ein Raumkoordinatensystem mit festem Ursprung, sondern auf den beim Systemstart initialsierten Bezugspunkt. Keinen Einfluss hat diese Tatsache auf die Geschwindigkeitsregelung per Fernsteuerung, da hier die relative Bewegung von Interesse ist.
@@ -73,23 +73,46 @@ Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen sind vier xyz-Koordi
 	Es sei darauf hingewiesen, dass die Verwendung eines xyz Navigationsframes die Krümmung der Erdoberfläche vernachlässigt. Diese ist legitim, da die Drohne in Gebäuden zum Einsatz kommt. Möchte man jedoch Weltweit navigieren, benötigt man ein  
 	rotationsellipsische Koordinatensysteme[THIELECKE LITVERWEIS]
 
-	\item \textbf{b-frame(Bodyframe):} Dieses Koordinatensystem ist fest mit dem Rahmen des Quadrocopters verbunden. Man spricht dabei von einen körperfesten Koordinatensystem. Dabei befindet sich der Ursprung des Systems im Schwerpunkt, die x-Achse zeigt in die als Vorne definierte Richtung. Die y- und z-Achse sind abhängig davon nach der \gls{enu} Konvention angeordnet.
+	\item \textbf{b-frame(Bodyframe):} Dieses Koordinatensystem ist fest mit dem Rahmen des Quadrocopters verbunden. Man spricht dabei von einen körperfesten Koordinatensystem. Dabei befindet sich der Ursprung des Systems im Schwerpunkt, die x-Achse zeigt in die als Vorne definierte Richtung. Die y- und z-Achse sind abhängig davon nach der \gls{enu} Konvention angeordnet. Informationen die sich auf dieses Referenzsystem beziehen sind unter anderen die \gls{imu}-Daten. Außerdem lässt sich mit diesem System die Lage des Quadrocoters im n-frame über die Position des Nullpunkts und Drehwinkel beschreiben. 
 	 	
-	\item \textbf{l-frame(laserframe):} Ebenfalls ein körperfestes Koordinatensystem. Der Ursprung liegt hier in der Sendequelle des Lasers. Die Ausrichtung der Achsen entspricht der des b-frames, mit Ausnahme eines Offsets in z-Richtung.
+	\item \textbf{l-frame(laserframe):} Ebenfalls ein körperfestes Koordinatensystem. In die dem Entfernungsmessungen des Lasers aufgetragen werden. Der Bezugspunkt liegt dabei in der Sendequelle des Lasers. Die Ausrichtung der Achsen entspricht der des b-frames, mit Ausnahme eines Offsets in z-Richtung.
 	
-	\item \textbf{o-frame(Orthogonalframe):} Hierbei handelt es sich um ein objektbezogenes Bezugssystem, dessen Orientierung um seine z-Achse und die Position des Ursprungs im n-frame abhängig von dem Orthogonal über der Ebene befindlichen b-frame ist. 
+	\item \textbf{o-frame(Orthogonalframe):} Hierbei handelt es sich um ein objektbezogenes Bezugssystem, dessen Orientierung um seine z-Achse und die Position des Ursprungs im n-frame abhängig von dem Orthogonal über der Ebene befindlichen b-frame ist. Dadurch wird der Quadrocopter in der zu Navigierenden xy-Ebene abgebildet.  
 	
 	 \end{itemize}
-
  
-Wie Abbildung \ref{fig:koordinatensysteme} 
-
-
-
-
+Da sich Messwerte wie zum Beispiel die \gls{imu}-Daten oder die Laserdaten auf unterschiedlichen Koordinatensysteme beziehen, benötigt man Koordinatentransformation(Kapitel \ref{subsec:koordinatentransformation}). Mit Hilfe derer lassen sich die Daten in die verschiedenen Koordinatensysteme übertragen.
 
  
 \subsection{Koordinatentransformationen}
 \label{subsec:koordinatentransformation}
+Damit Daten eines Referenzsystem in einen anderes Transformiert werden können, muss deren Orientierung zueinander beschreibbar sein. Nach  [Buchholz Flugregelung] ist dies über die Rotationswinkel $\phi$ (roll), Rotation um die x-Achse sowie der Winkel $\theta$ (pitch) und $\psi$ (yaw) für die y- und z-Achse möglich.
 
 
+\begin{figure}
+	
+	\centering{
+		\subfloat[Drehung um z-Achse]{
+			\includegraphics[width=0.3\textwidth]{images/trans_z}
+			\label{fig:trans_z}
+		}
+		\subfloat[Drehung um die x'-Achse]{
+			\includegraphics[width=0.3\textwidth]{images/trans_x'}
+			\label{fig:trans_x'}
+		}
+		\subfloat[Drehung um die z'-Achse]{
+			\includegraphics[width=0.3\textwidth]{images/trans_z'}
+			\label{fig:trans_z'}
+		}
+	}
+	\caption[Kovention ]{z x' z' Konvention zur Koordinatentransformation}
+	\label{fig:eulertransformation}
+	
+\end{figure}
+
+
+
+
+Nichtbeachtung der Reihenfolge hat eine falsche Orientierung zum Ergebnis, dazu veranschauliches Beispiel ist in den Unterlagen von Herr Thielecke zu finden.
+
+Von Ursprung zu Ursprung ist eine einfache Beschreibung über einen x,y,z Offset.
