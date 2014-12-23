@@ -81,38 +81,109 @@ Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen sind vier xyz-Koordi
 	
 	 \end{itemize}
  
-Da sich Messwerte wie zum Beispiel die \gls{imu}-Daten oder die Laserdaten auf unterschiedlichen Koordinatensysteme beziehen, benötigt man Koordinatentransformation(Kapitel \ref{subsec:koordinatentransformation}). Mit Hilfe derer lassen sich die Daten in die verschiedenen Koordinatensysteme übertragen.
+Da sich Messwerte wie zum Beispiel die \gls{imu}-Daten oder die Laserdaten auf unterschiedlichen Koordinatensysteme beziehen, benötigt man Koordinatentransformation(Kapitel \ref{subsec:koordinatentransformation}). Mit Hilfe derer lassen sich die Vektoren und Koordinaten in die verschiedenen Bezugssysteme übertragen.
 
  
 \subsection{Koordinatentransformationen}
 \label{subsec:koordinatentransformation}
-Damit Daten eines Referenzsystem in einen anderes Transformiert werden können, muss deren Orientierung zueinander beschreibbar sein. Nach  [Buchholz Flugregelung] ist dies über die Rotationswinkel $\phi$ (roll), Rotation um die x-Achse sowie der Winkel $\theta$ (pitch) und $\psi$ (yaw) für die y- und z-Achse möglich.
-
+Damit Daten eines Referenzsystem in einen anderes Transformiert werden können, muss deren Orientierung zueinander beschreibbar sein. Nach  [Buchholz Flugregelung] ist dies über die Rotationswinkel $\phi$ (Rollwinkel/engl. roll), Rotation um die x-Achse sowie der Winkel $\theta$ (Nickwinkel/engl. pitch) und $\psi$ (Gierwinkel/engl. yaw) für die y- und z-Achse möglich. Die Reihenfolge um die die Achsen gedreht werden, ist dabei nicht beliebig. Sie ist in verschiedenen Konventionen festgelegt. In dieser Arbeit wird die in der Luftfahrt- und Fahrzeugtechnik gebräuchliche z,y',x''- Konvention (Abbildung \ref{fig:zyx_konvention}) angewendet.   
 
 \begin{figure}
-	
-	\centering{
-		\subfloat[Drehung um z-Achse]{
-			\includegraphics[width=0.3\textwidth]{images/trans_z}
-			\label{fig:trans_z}
-		}
-		\subfloat[Drehung um die x'-Achse]{
-			\includegraphics[width=0.3\textwidth]{images/trans_x'}
-			\label{fig:trans_x'}
-		}
-		\subfloat[Drehung um die z'-Achse]{
-			\includegraphics[width=0.3\textwidth]{images/trans_z'}
-			\label{fig:trans_z'}
-		}
-	}
-	\caption[Kovention ]{z x' z' Konvention zur Koordinatentransformation}
-	\label{fig:eulertransformation}
-	
+	\centering
+	\includegraphics[width = .75\textwidth]{images/zyx_konvention}
+	\caption[z,y',x''-Konvention]{z,y',x''-Konvention}
+	\label{fig:zyx_konvention}
 \end{figure}
 
+Das Koordinatensystem wird zu beginn um den Winkel $\psi$, d.h. um die z-Achse gedreht. Daraus ergibt sich das in Abbildung \ref{fig:zyx_konvention} grün eingezeichnet Koordinatensystem. Dieses rotiert man anschließend um die Achse y', sprich den Winkel $\theta$. Zuletzt erfolgt eine Drehung mit dem Winkel $\phi$ um die x''-Achse. Das Ergebnis ist das rote x'',y'',z''-Koordinatensystem. Es sein nochmal darauf hinzuweisen, das die Reihenfolge der Winkel einzuhalten ist, da sonst die beschriebene von der tatsächlichen Lage abweicht. Ein veranschaulichendes Beispiel worin unterschiedliche Abfolgen bei der Rotation führen ist in der Literatur [Literaturverzeichnis] von Herr Thielecke zu finden.  
 
+Nach Luftfahrtkonvention lässt sich eine Transformationsmatrix $M$ aufstellen, mit der Vektoren und Koordinaten vom xyz-Koordinatensystem (Bsp.: n-frame) in das x''y''z''-Koordinatensystem (Bsp.: b-frame) überführen lassen. Dafür benötigt man zunächst die drei Transformationsmatrizen, die jeweils eine Rotation um eine Koordinatenachse beschreiben[Literaturverzeichnis]. Diese sind wie folgt definiert:
 
+\begin{itemize}
+	\item Drehung um die z-Achse mit dem Winkel $\psi$
+	\begin{equation}
+		M_z = \begin{bmatrix}
+		\cos\psi 	& \sin\psi	& 0\\
+		-\sin\psi	& \cos\psi	& 0\\
+		0			& 0 		& 1\\
+		\end{bmatrix}
+	\end{equation}
+	\item Drehung um die y-Achse mit dem Winkel $\theta$
+	\begin{equation}
+	M_y = \begin{bmatrix}
+	\cos\theta  & 0	& -\sin\theta\\
+	0			& 1	& 0\\
+	\sin\theta	& 0 & \cos\theta\\
+	\end{bmatrix}
+	\end{equation}
+	\item Drehung um die x-Achse mit dem Winkel $\phi$
+	\begin{equation}
+	M_x = \begin{bmatrix}
+	1	& 0			& 0\\
+	0	& \cos\phi	& \sin\phi\\
+	0	& -\sin\phi 	& \cos\phi\\
+	\end{bmatrix}
+	\end{equation}
+\end{itemize}
 
-Nichtbeachtung der Reihenfolge hat eine falsche Orientierung zum Ergebnis, dazu veranschauliches Beispiel ist in den Unterlagen von Herr Thielecke zu finden.
+Aus diesen Rotationsmatrizen lässt sich über Matrizenmultiplikation eine Gesamttransformationsmatrix aufstellen. Die Reihenfolge der Multiplikation entspricht der in der Konvention festgelegten Drehfolge, von rechts nach links gelesen. Somit er gibt sich:
 
-Von Ursprung zu Ursprung ist eine einfache Beschreibung über einen x,y,z Offset.
+	\begin{equation}
+	\begin{split}
+	M_{bn} &	= M_x \cdot M_y \cdot M_z \\
+	&= \begin{bmatrix}
+	\cos\theta\cos\psi	& \cos\theta\sin\psi	& -sin\theta\\
+	\sin\phi\sin\theta\cos\psi-\cos\phi\sin\psi	& \sin\phi\sin\theta\sin\psi+\cos\phi\cos\psi	& \sin\phi\cos\theta\\
+	\cos\phi\sin\theta\cos\psi+\sin\phi\sin\psi	& \cos\phi\sin\theta\sin\psi-\sin\phi\cos\psi 	& \cos\phi\cos\theta\\
+	\end{bmatrix}
+	\end{split}
+	\end{equation}
+
+Mit Hilfe dieser Transformationmatrix lässt sich jetzt ein Vektor zum Beispiel aus dem n-frame ins b-frame übertragen.
+
+\begin{equation}
+\begin{bmatrix}
+x_b\\
+y_b\\
+z_b\\	
+\end{bmatrix} = M_{bn} \cdot 
+\begin{bmatrix}
+x_n\\
+y_n\\
+z_n\\	
+\end{bmatrix} 
+\end{equation}
+
+Handelt es sich bei um eine Koordinate, ist zusätzlich noch der Abstand der Koordinatenursprünge zu addieren. Für die Rücktransformation muss die Gesamttransformationsmatrix transponiert werden. Daraus folgt,
+
+   \begin{equation}
+   \begin{bmatrix}
+   x_n\\
+   y_n\\
+   z_n\\	
+   \end{bmatrix} = M_{bn}^T \cdot 
+   \begin{bmatrix}
+   x_b\\
+   y_b\\
+   z_b\\	
+   \end{bmatrix} = M_nb \cdot 
+   \begin{bmatrix}
+   x_b\\
+   y_b\\
+   z_b\\	
+   \end{bmatrix}
+   \end{equation}
+
+Nun lassen sich Vektoren in beide Richtungen in die verschiedenen Bezugssysteme überführen. Nachteil der Methode mit Eulerwinkel ist, das diese auf Grund der trigonometrischen Funktionen nur für Winkel $\phi, \theta, \psi = \{x \in  \mathbb{R}| -\pi \le x \le \pi\}$ eindeutig durchführbar ist. Wird dieser Bereich überschritten, lässt sich die Lage über Quaternionen beschreiben. Durch die Beschreibung der dreidimensionalen Orientierung in einem vierdimensionalen Raum lassen, ist die Lage auch für Rotationen um eine vielfaches von $2\pi$ eindeutig charakterisiert. Die genaue Definition findet sich in der  Literatur [THIELECKE] und [YOUTUBE]. Da die Definitionsbereich der Eulerwinkel für den in der Arbeit betrachteten Bereich ausreicht ist ausschließlich die Umrechnung der in Quaternion ($w_q$, $x_q$, $y_q$, $z_q$) angegebenen Orientierungsdaten der \gls{imu} in Eulerwinkel($\phi$, $\theta$, $\psi$). Zu beachten ist, das die nun folgende Umwandlung nur für die $z,y',x''$-Konvention Gültigkeit besitzt. 
+  
+   \begin{equation}
+	   \phi = \arctan(\frac{2(y_qz_q+w_qx_q)}{w_q^2-x_q^2-y_q^2+z_q^2})\\
+	\end{equation}
+   \begin{equation}
+	  \theta =\arcsin(2(w_q y_q -x_q z_q))\\
+   \end{equation}
+   \begin{equation}
+     \psi = \arctan(\frac{2(x_q y_q + w_q z_q)}{w_q^2+x_q^2-y_q^2-z_q^2})
+   \end{equation}
+ 
+ Mit dieser letzten Umrechnung sind alle Grundlagen für die Arbeit gelegt. So bilden die Koordinatensystem und Transformationen die Basis für die nachkommende Positionsbestimmung. 
