@@ -5,7 +5,7 @@ Wie schon in der Einleitung (Kapitel \ref{chap:Einleitung}) sowie der Aufgabenst
 
 \begin{figure}
 	\centering
-	\includegraphics[width = .55\textwidth]{images/ros_ortho_scan_node}
+	\includegraphics[width = .95\textwidth]{images/ros_ortho_scan_node}
 	\caption[Verknüpfung der Scantools]{Verknüpfung des \glqq laser\_ortho\_projector \grqq - und des \glqq laser\_scan\_matcher\grqq -Knoten GRAFIK EVENTUELL ÜBERARBEITEN DA ASCTEC\_HL\_INTERFACE KNOTEN DER FÜR DIE KOMMUNIKATION VERANTWORTLICH IST FEHLT} %
 	\label{fig:verkn_scantools}
 \end{figure}
@@ -18,9 +18,7 @@ ANMERKUNG ES FEHLT NOCH EIN LITERATURVERZEICHNIS!
 
 \section{Projektion der Laserdaten in das o-frame auf der xy-Ebene des n-frames (\glqq laser\_ortho\_projector\grqq) }
 \label{sec:laser_ortho}
-Bei der Laserprojektion werden die Laserdaten des l-frame orthogonal zur xy-Ebene des n-frames in die des o-frame transformiert. In allgemeiner Form ist dies in Abbildung \ref{fig:laser_proj_allg} dargestellt. Möglich ist diese Art der Projektion nur unter der Annahme, das es sich bei den erfassten Objekten um Gegenstände handelt, die Aufgrund ihrer rechtwinkligen Eigenschaften unabhängig der Höhe in der sie erfasst werden die gleich Formen aufweisen. In geschlossen Räumen ist diese Annahme zutreffend, da es sich bei den Objekten hauptsächlich um Wände handelt. Durch Erfüllung dieser Voraussetzungen kann die Flughöhe des Quadrocopters vernachlässigt werden. Dies kann man aus Abbildung \ref{fig:laser_proj_pi} entnehmen. Eine Verschiebung des Koordinaten Ursprungs des b-frames auf der z-Achse des o-frames hat demzufolge keinen Einfluss auf die Projektion. Folglich kann für beide Koordinatensystem der identischen Ursprung angenommen werden. Unter Beachtung dieser Annahmen wird im Folgenden die Transformation der Laserdaten das o-frame dargestellt.\\
-
-  
+Bei der Laserprojektion werden die Laserdaten des l-frame orthogonal zur xy-Ebene des n-frames in die des o-frame transformiert. In allgemeiner Form ist dies in Abbildung \ref{fig:laser_proj_allg} dargestellt. Das o-frame definiert später in Kapitel \ref{sec:laser_scan_matching} die Position und Orientierung des Quadrocopters in der zweidimensionalen Ebene des n-frame. 
 \begin{figure}
 	
 	\centering{
@@ -37,34 +35,13 @@ Bei der Laserprojektion werden die Laserdaten des l-frame orthogonal zur xy-Eben
 	\label{fig:laser_proj}
 	
 \end{figure}
+Möglich ist die orthogonalen Projektion nur unter der Annahme, das es sich bei den erfassten Objekten um Gegenstände mit rechtwinkligen Eigenschaften handelt. Das bedeutet sie weisen unabhängig der Höhe in der sie erfasst werden die gleich Formen auf. Für geschlossen Räumen ist diese Annahme zutreffend, da es sich bei den Objekten hauptsächlich um senkrechte Wände handelt. Durch Erfüllung dieser Voraussetzungen kann die Flughöhe des Quadrocopters vernachlässigt werden. Dies kann man aus Abbildung \ref{fig:laser_proj_pi} entnehmen. Eine Verschiebung des Koordinaten Ursprungs des b-frames auf der z-Achse des o-frames hat demzufolge keinen Einfluss auf die Projektion. Folglich kann für beide Koordinatensystem der identischen Ursprung angenommen werden. Unter Beachtung dieser Annahmen kann der Einfluss des Roll-($\phi$) und Nickwinkels ($\theta$) auf die Entfernungsmessung eliminiert werden. Die Winkelgrößen liefert die \gls{imu}. Der mathematische Ablauf der orthogonalen Transformation wir im Folgenden dargelegt.\\
 
-Die Entfernungsdaten eines Umlaufs besteht aus mehreren diskreten Abtastungen. Übergeben werden sie in Form von Entfernung $r_i$ in einem Array $r$. Mittels der Schrittweite von $0.25^\circ$ lässt sich anhand des Indizes $i$ jeder Messung einen Winkel $\gamma$ zuweisen. 
+
+Entfernungsdaten eines Laserumlaufs besteht aus mehreren diskreten Abtastungen (Abbildung~\ref{fig:l-frame}). Übergeben werden sie in Form von Entfernung $r_i$ in einem Array (Topic \textbackslash laser Abbildung \ref{fig:verkn_scantools}). Mittels der Schrittweite von $0.25^\circ$ lässt sich anhand des Indizes $i$ für jeden Messpunkt einen Winkel $\gamma_i$ zuweisen. 
 \begin{equation}
 \gamma_i = 135^\circ - 0.25^\circ \cdot i
 \end{equation}
-Die Entfernung eines Punktes $P_i$ ist somit über $\{r_i, \gamma_i\}$ definiert. Zur weiteren Verwendung ist es notwendig die Messungen im kartesischen Koordinatensystem des l-frame zu übertragen.
-
-  \begin{equation}
-  P_{il} = 
-  \begin{bmatrix}
-  \cos(\gamma_i)\cdot r_i, & \sin(\gamma_i)\cdot r_i, & 0
-  \end{bmatrix}^T
-  \end{equation}
-  
-Da der Bezugspunkt des o-frames im Schwerpunkt des Quadrocoptes liegen soll, in dem auch der b-frame seinen Ursprung hat, ist es von nöten die Laserdaten vom l-frame ins b-frame zu transformieren. Wie schon in Kapitel \ref{sec:koordinatensysteme&transformationen} erwähnt handelt es sich dabei um eine Konstante Transformation. Genauer gesagt um einen Offset von $10cm$ auf der $z^b$-Achse, da der Laser Oberhalb des Quadrocopterschwerpunktes montiert ist.
-
-\begin{equation}
-P_{ib} = 
-\begin{bmatrix}
-\cos(\gamma_i)\cdot r_i, & \sin(\gamma_i)\cdot r_i, & 0,1
-\end{bmatrix}^T
-\end{equation}
- 
- %Bemerkungen:
-% keine Rotation um yaw
- %Orientierung der x-Achse identisch da zu erst um y-achse gedreht siehe Konvention
- %Transformationsmatrix auf richtung achten
- %Überprüfung der berechnung der nein gamma winkel des Lasers. Und Sinn dahinter .Wahrschienlich unnütz
 
 \begin{figure}
 	\centering
@@ -73,5 +50,57 @@ P_{ib} =
 	\label{fig:l-frame}
 \end{figure}
 
+Die Entfernung eines Punktes $P_i$ ist somit über $\{r_i, \gamma_i\}$ definiert. Zur weiteren Verwendung ist es notwendig die Messungen im kartesischen Koordinatensystem des l-frame zu übertragen.
+
+  \begin{equation}
+  P_i^l = 
+  \begin{bmatrix}
+  \cos(\gamma_i)\cdot r_i, & \sin(\gamma_i)\cdot r_i, & 0
+  \end{bmatrix}^T
+  \end{equation}
+  
+Da der Bezugspunkt des o-frames im Schwerpunkt des Quadrocoptes liegen soll, in dem auch der b-frame seinen Ursprung hat, ist es von nöten die Laserdaten vom l-frame ins b-frame zu transformieren. Wie schon in Kapitel \ref{sec:koordinatensysteme&transformationen} erwähnt handelt es sich dabei um eine konstante Transformation. Genauer gesagt um einen Offset von $10cm$ auf der $z^b$-Achse, da der Laser oberhalb des Quadrocopterschwerpunktes montiert ist.
+
+\begin{equation}
+P_i^b = 
+\begin{bmatrix}
+\cos(\gamma_i)\cdot r_i, & \sin(\gamma_i)\cdot r_i, & 0.1
+\end{bmatrix}^T
+\end{equation}
+
+Nun da die Laserpunkte im b-frame definiert sind, kann die Transformation der Umgebungsdaten in die xy-Ebene des o-frames erfolgen. Angesichts der Tatsache, das die Winkel $\phi$ und $\theta$ als Verdrehung um die Achsen des o-frames definiert sind, benötigt man zur Umrechnung der Laserdaten die in Kapitel \ref{sec:koordinatensysteme&transformationen} eingeführte Gleichung \ref{eq:inverse_transM} zur inversen Koordinatentransformation. Dabei wird der Yaw-Winkel zu Null gesetzt. Grund hierfür ist, das Ausrichtung der Flugrichtung in der zweidimensionalen Ebene mit der des b-frames übereinstimmen sollen. Daraus ergibt sich für die Transformationsmatrix   
+
+\begin{equation}
+M_{no} = 
+\begin{bmatrix}
+\cos\theta\cdot r_i, 	& \sin\phi \sin\theta 	& \cos\phi \sin\theta\\
+0 						& \cos\phi 				& -\sin\phi \\
+-\sin\theta				& \sin\phi \cos\theta	& \cos\phi \cos\theta
+\end{bmatrix}
+\end{equation},
+
+über die sich die Positionen der Laserpunkte $P_i^b$ im o-frame bestimmten lassen.  
+\begin{equation}
+P_i^o = M_{no} \cdot P_i^b
+\end{equation}
+
+Erneut kann unter der Annahme von rechtwinkligen Objekten die Höhe des Punktes in $z^o$-Achse zu Null gesetzt werden. Somit sind Punkte $P_i^l$ auf der xy-Ebene folgendermaßen abgebildet.
+
+\begin{equation}
+P_i^o =  
+\begin{bmatrix}
+\cos\theta \cos(\gamma_i)\cdot r_i + \sin\phi \sin\theta \sin(\gamma_i)\cdot r_i + cos\phi sin\theta \cdot 0.1\\
+\cos\phi\sin(\gamma_i)\cdot r_i - sin\phi \cdot  0.1\\
+0
+\end{bmatrix}
+\end{equation}
+
+Diese Beschreibung der Lasermesspunkte im o-frame ist die Basis für die im anschließende Kapitel \ref{sec:laser_scan_matching} behandelte Positionsbestimmung in der zweidimensionalen Ebene des n-frames.  
+
+
+
+
+ 
+
 \section{Positionsbestimmung anhand der ins o-frame überführten Laserdaten über scanmatching}
-\label{sec:laser_scan_matching}
+\label{sec:laser_scan_matching}  

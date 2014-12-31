@@ -143,35 +143,37 @@ Mit Hilfe dieser Transformationmatrix lässt sich jetzt ein Vektor zum Beispiel a
 
 \begin{equation}
 \begin{bmatrix}
-x_b\\
-y_b\\
-z_b\\	
+x^b\\
+y^b\\
+z^b\\	
 \end{bmatrix} = M_{bn} \cdot 
 \begin{bmatrix}
-x_n\\
-y_n\\
-z_n\\	
-\end{bmatrix} 
+x^n\\
+y^n\\
+z^n\\	
+\end{bmatrix}
+\label{eq:inverse_transM} 
 \end{equation}
 
 Handelt es sich bei um eine Koordinate, ist zusätzlich noch der Abstand der Koordinatenursprünge zu addieren. Für die Rücktransformation muss die Gesamttransformationsmatrix transponiert werden. Daraus folgt,
 
    \begin{equation}
    \begin{bmatrix}
-   x_n\\
-   y_n\\
-   z_n\\	
+   x^n\\
+   y^n\\
+   z^n\\	
    \end{bmatrix} = M_{bn}^T \cdot 
    \begin{bmatrix}
-   x_b\\
-   y_b\\
-   z_b\\	
-   \end{bmatrix} = M_nb \cdot 
+   x^b\\
+   y^b\\
+   z^b\\	
+   \end{bmatrix} = M_{nb} \cdot 
    \begin{bmatrix}
-   x_b\\
-   y_b\\
-   z_b\\	
+   x^b\\
+   y^b\\
+   z^b\\	
    \end{bmatrix}
+   \label{eq:inverse_transM}
    \end{equation}
 
 Nun lassen sich Vektoren in beide Richtungen in die verschiedenen Bezugssysteme überführen. Nachteil der Methode mit Eulerwinkel ist, das diese auf Grund der trigonometrischen Funktionen nur für Winkel $\phi, \theta, \psi = \{x \in  \mathbb{R}| -\pi \le x \le \pi\}$ eindeutig durchführbar ist. Wird dieser Bereich überschritten, lässt sich die Lage über Quaternionen beschreiben. Durch die Beschreibung der dreidimensionalen Orientierung in einem vierdimensionalen Raum lassen, ist die Lage auch für Rotationen um eine vielfaches von $2\pi$ eindeutig charakterisiert. Die genaue Definition findet sich in der  Literatur [THIELECKE] und [YOUTUBE]. Da die Definitionsbereich der Eulerwinkel für den in der Arbeit betrachteten Bereich ausreicht ist ausschließlich die Umrechnung der in Quaternion ($w_q$, $x_q$, $y_q$, $z_q$) angegebenen Orientierungsdaten der \gls{imu} in Eulerwinkel($\phi$, $\theta$, $\psi$). Zu beachten ist, das die nun folgende Umwandlung nur für die $z,y',x''$-Konvention Gültigkeit besitzt. 
