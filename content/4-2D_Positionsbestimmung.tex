@@ -278,7 +278,17 @@ Der in Vorgang 4 berechnete quadratische Fehler wird mit dem Schwellwert des Max
 	\label{fig:icp_algorithmus}
 \end{figure}
 
-Für die Positionsbestimmung im n-frame wird mit der ersten Position $ P_{ref} $ der Bezugspunkt des Navigationskoordinatensystems gesetzt. Darauf aufbauend wird die weiteren Translationen bzw. Rotationen addiert. Anzumerken sei hier das $ P_{ref} $ nicht im Ursprung verweilt, sondern sich auf den Refernzscan $ S_{ref} $ bezieht. Dieser kann der vorige Umlauf des aktuellen Scans $ S_{neu} $ darstellen. Oder einen in der nahen Vergangenheit liegenden Scan, bei dem die Summe der quadratischen Fehler sehr gering war.
+Für die Positionsbestimmung im n-frame wird mit der ersten Position $ P_{ref} $ der Bezugspunkt des Navigationskoordinatensystems gesetzt. Darauf aufbauend wird die weiteren Translationen bzw. Rotationen addiert. 
+
+\begin{equation}
+	P_{neu}= P_{ref}+T
+\end{equation}
+\begin{equation}
+\psi^o_{neu}= \psi^o_{ref}+\Delta\psi^o
+\end{equation}
+
+
+Anzumerken sei hier das $ P_{ref} $ nicht im Ursprung verweilt, sondern sich auf den Refernzscan $ S_{ref} $ bezieht. Dieser kann der vorige Umlauf des aktuellen Scans $ S_{neu} $ darstellen. Oder einen in der nahen Vergangenheit liegenden Scan, bei dem die Summe der quadratischen Fehler sehr gering war.
 
 Der vorgestellt \gls{icp}-Algorithmus kann weiterhin verbessert werden. So kann anstelle der Point-to-Point Arithmetik in Vorgang 1 eine Point-to-Line Arthmetik zur Ermittlung der Konvergenzpunkte angewendet werden. Mit diesem Thema beschäftigt sich das Paper \cite{censi08plicp}. Außerdem ist möglich über die Inertialsenorik ausgehend von $ P_{ref} $ eine neue Position $ P_{imu} $ zu bestimmen. In $ P_{imu} $  wird der neue $ S_{neu} $ gelegt. So muss lediglich der Fehler der \gls{imu}-Positionsschätzung über den \gls{icp}-Algorithmus eliminiert werden. Dies ist besonders nützlich wenn zwei Scans weit auseinander liegen, wie zum Beispiel in Abbildung \ref{fig:scan_match}. Es vereinfacht Vorgang 1. Behandelt wird dies unter anderem in \cite{Morris2010}.\\
 
