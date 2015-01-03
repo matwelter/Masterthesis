@@ -103,25 +103,26 @@ Nach Luftfahrtkonvention lässt sich eine Transformationsmatrix $M$ aufstellen, m
 	\item Drehung um die z-Achse mit dem Winkel $\psi$
 	\begin{equation}
 		M_z = \begin{bmatrix}
-		\cos\psi 	& \sin\psi	& 0\\
-		-\sin\psi	& \cos\psi	& 0\\
+		\cos\psi 	& -\sin\psi	& 0\\
+		\sin\psi	& \cos\psi	& 0\\
 		0			& 0 		& 1\\
 		\end{bmatrix}
+		\label{eq:Mz}
 	\end{equation}
 	\item Drehung um die y-Achse mit dem Winkel $\theta$
 	\begin{equation}
 	M_y = \begin{bmatrix}
-	\cos\theta  & 0	& -\sin\theta\\
+	\cos\theta  & 0	& \sin\theta\\
 	0			& 1	& 0\\
-	\sin\theta	& 0 & \cos\theta\\
+	-\sin\theta	& 0 & \cos\theta\\
 	\end{bmatrix}
 	\end{equation}
 	\item Drehung um die x-Achse mit dem Winkel $\phi$
 	\begin{equation}
 	M_x = \begin{bmatrix}
 	1	& 0			& 0\\
-	0	& \cos\phi	& \sin\phi\\
-	0	& -\sin\phi 	& \cos\phi\\
+	0	& \cos\phi	& -\sin\phi\\
+	0	& \sin\phi 	& \cos\phi\\
 	\end{bmatrix}
 	\end{equation}
 \end{itemize}
@@ -138,7 +139,7 @@ Aus diesen Rotationsmatrizen lässt sich über Matrizenmultiplikation eine Gesamtt
 	\end{bmatrix}
 	\end{split}
 	\end{equation}
-
+FORMEL ÜBERPRÜFEN DA FEHLER IN ROATIONSMATRIZEN GEFUNDEN. DIESE SIND BEREITS BEHOBEN. NERNEUT ÜBERPRÜFEN. WAR VORHER WAHRSCHEINLICH DOCH RICHTIG IN Gleichung POSE BESTIMMUNG HANDELT ES SICH IM EINE INVERSER ALSO TRANSFORMIERTE FORM VON MZ!!!!!!!!! Mz My Mx WAHRSCHEINLICH FALSCH SO WIE SIE DA STEHEN.
 Mit Hilfe dieser Transformationmatrix lässt sich jetzt ein Vektor zum Beispiel aus dem n-frame ins b-frame übertragen.
 
 \begin{equation}

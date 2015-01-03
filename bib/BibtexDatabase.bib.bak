@@ -1,0 +1,26 @@
+This file was created with JabRef 1.8.1.
+Encoding: UTF8
+
+
+@INPROCEEDINGS{Morris2010,
+	author = {William Morris and Ivan Dryanovski and Jizhong Xiao and Senior Member},
+	title = {3d indoor mapping for micro-uavs using hybrid range finders and multi-volume occupancy grids},
+	booktitle = {In RSS 2010 workshop on RGB-D: Advanced Reasoning with Depth Cameras},
+	year = {2010}
+}
+
+@incollection{Lu94,
+	added-at = {2014-12-31T14:36:44.000+0100},
+	author = {Lu, F. and Milios, E.E},
+	biburl = {http://sandbox.academic-puma.de/bibtex/2845eb8d264ddf18c886a62bf4ac34e13/alistair},
+	booktitle = {{IEEE} {C}onference on {C}omputer {V}ision and {P}attern {R}ecognition},
+	interhash = {d9ea90ae1a29b340f6d6bd0834550666},
+	intrahash = {845eb8d264ddf18c886a62bf4ac34e13},
+	keywords = {grammar linguistic},
+	pages = {935--938},
+	timestamp = {2014-12-31T14:36:44.000+0100},
+	title = {{R}obot {P}ose {E}stimation in {U}nknown {E}nvironments by {M}atching
+	2{D} {R}ange {S}cans},
+	topics = {source.cosy,area.space},
+	year = 1994
+}
