@@ -3,6 +3,7 @@
 
 In einer Zusammenarbeit von \gls{asctec} und der ETH-Zürich wurde eine Regler zur Positionierung des Pelican Quadrocopters in geschlossenen Räumen entworfen und veröffentlicht. Der Entwurf basierte dabei auf einer monokularen Kamera über die mittels eines \gls{vslam}-Algorithmus und der Fusion der \gls{imu} die Position des Flugobjekts in der unbekannten Umgebung ermittelt wird. Regelung- und Fusionsalgortihmus sind im Paper \cite{Achtelik11} beschrieben. Aufgabe dieses Kapitel ist es die dort veröffentlichen Annahmen und Formel zu verifizieren. Dies erfolgt über Literaturrecherchen und Herleitung der publizierten Gleichungen. Unter Berücksichtigung, das die Position nun mehr vom Laser über die Kapitel \ref{chap:2Dpositionsbestimmung} vorgestellten Algortihmen bestimmt wird, ist Abschnitt \ref{sec:strukpositionsregelung} darauf ausgelegt eine Übersicht über die Bestandteile der Regelung zu geben. Herleitung der Komponenten erfolgt in den anschließend Unterkapiteln. 
 
+%*************************************************************************************************************************
 \section{Struktur der Positionsregelung}
 \label{sec:strukpositionsregelung}
 Das Hauptaugenmerk diese Unterkapitel liegt darauf, wie sich die Positionsregelung in die in Kapitel \ref{sec:Kommunikationsarchitekur} vorgestellte Systemstruktur einfügt. Welche Softwarekomponenten dafür auf dem \gls{hlp} integriert wurden. Wie die Kommunikation zwischen ihnen und der Umgebung aussieht. Mit dem Ziel ein grundlegendes Verständnis für die Funktionsweise der Regelung zu generieren.\\
@@ -14,9 +15,15 @@ Das Hauptaugenmerk diese Unterkapitel liegt darauf, wie sich die Positionsregelu
 \end{figure}
 
 
-Die Positionsregelung wird auf die Lageregelung (engl. Attitudecontrol) aufgesetzt. Daraus resultiert eine Kaskadenstruktur (Abbildung \ref{fig:kaskstruc}). Diese Vorgehensweise ist nachvollziehbar, da die Lageregelung bereits Fest auf dem \gls{llp} implementiert ist. Diese besteht aus einem Regelalgorithmus der anhand der Regeldifferenz der Orientierung $e_{ori}$, resultierend aus der Abweichung Soll-Orientierung $O_s$ und Ist-Orientierung $ O  $, in Verbindung mit der Sollschubvorgabe $ T_s $ die Drehzahlen $ n_{1..4} $ der Rotoren berechnet und einstellt. Die Ist-Orientierung $ O =\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T $ wird mittels eines Fusionsfilter bestimmt. Dieser fusioniert die Messwerte der auf der \gls{imu} befindlichen Gyroscope mit den Daten des 3D-Kompass. Wie dieser unterlagerte Regler und der dazugehörige Zustandsschätzer genau ausgeführt sind ist nicht bekannt. Eine mögliche Ausführung ist in Paper \cite{hoffmann10} beschrieben. Die Ungewissheit über den Regleraufbau der Lageregelung stellt für den Entwurf der überlagerten Positionsregelung kein Problem dar. Von Interesse ist lediglich, das die Annahme einer sehr hohen Dynamik des Reglers zur einer Vereinfachung des für die Positionsregelung benötigen Modells (Kapitel \ref{sec:Modelbildung}) führt. Hohe Dynamik bedeutet, das der die Sollwinkel in einer sehr kurzen Zeit $ t \rightarrow 0~s $ erreicht wird. 
+Die Positionsregelung wird auf die Lageregelung (engl. Attitudecontrol) aufgesetzt. Daraus resultiert eine Kaskadenstruktur (Abbildung \ref{fig:kaskstruc}). Diese Vorgehensweise ist nachvollziehbar, da die Lageregelung bereits Fest auf dem \gls{llp} implementiert ist. Diese besteht aus einem Regelalgorithmus der anhand der Regeldifferenz der Orientierung $e_{ori}$, resultierend aus der Abweichung Soll-Orientierung $O_s$ und Ist-Orientierung $ O  $, in Verbindung mit der Sollschubvorgabe $ T_s $ die Drehzahlen $ n_{1..4} $ der Rotoren berechnet und einstellt. Die Ist-Orientierung $ O =\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T $ wird mittels eines Fusionsfilter bestimmt. Dieser fusioniert die Messwerte der auf der \gls{imu} befindlichen Gyroscope mit den Daten des 3D-Kompass. Wie dieser unterlagerte Regler und der dazugehörige Zustandsschätzer genau ausgeführt sind ist nicht bekannt. Eine mögliche Ausführung ist in Paper \cite{hoffmann10} beschrieben. Die Ungewissheit über den Regleraufbau der Lageregelung stellt für den Entwurf der überlagerten Positionsregelung kein Problem dar. Von Interesse ist lediglich, das die Annahme einer sehr hohen Dynamik dieses Reglers zur einer Vereinfachung des für die Positionsregelung benötigen Modells (Kapitel \ref{sec:Modelbildung}) führt. Hohe Dynamik bedeutet, das der Sollwinkel in einer sehr kurzen Zeit $ t \rightarrow 0~s $ erreicht wird. Basierend auf einer Exakten Ein-/Ausgangslinearisierung der inneren Schleife (Kapitel \ref{sec:exkt.ealin}), ist die äußere Reglerschleife zur Positionsregelung auf dem \gls{hlp} realisiert. Dank der Inversion, realisiert Ein-/Ausgangslinearisierung, kann für die Positionierung des Quadrocopters eine linerare zwei Freiheitsgrade Regelung angewandt werden.
+\begin{figure}
+	\centering
+	\includegraphics[width = .55\textwidth]{images/Platzhalter}
+	\caption[Gesamtstruktur Regelung]{Struktur zwei Freiheitsgraderegelung} %
+	\label{fig:zweifgr}
+\end{figure} Diese besteht aus einer Vorsteuerung und einem Folgeregler. Die Vorsteuerung auf dem \gls{hlp} ist in Form eines Referenzmodell (Kapitel \ref{sec:referenzmodell}), das dem Ein-/Ausgangslinearisierung nachempfunden ist, ausgeführt. Anhand der vorgegebenen Soll-Position $P^n_s = \begin{bmatrix} x&y&z\end{bmatrix}^T_s $ wird eine Referenz-Trajektorie \footnote{Trajektorien beschreiben einen zeitabhängigen Verlauf eines Wertes in einem Bezugssystem} zur Überführung des Quadrocopters aus der aktuellen Ist-Position in die Soll-Position berechnet. Ergebnis ist ein Stellwert für die Inversion, der unter theoretischer Betrachtung die gewünschte Bahnbewegung des Quadrocopters zur Ursache hat. In einem realen System ist dies durch ein Flüsse der Umgebung, bsp. Wind nicht gewährleiste. Deshalb ist zusätzlich der Folgeregler (Kapitel \ref{sec:folgeregeler}) implementiert, dessen Aufgabe besteht darin Abweichung der realen Zustände des Quadrocopters von den Referenzwerten auszuregelen. Die dafür benötigten Zustandsgrößen des Flugsystems (Kapitel \ref{sec:Zustandsbestimmung}) werden durch die Fusion der in über den Laser bestimmten Position(Kapitel \ref{chap:2Dpositionsbestimmung}) mit den mit den Beschleunigungswerten der \gls{imu} ermittelt.
 
- 
+Bevor jede einzelne Komponente in den Folgekapiteln hergeleitet wird, ist in Abbildung~\ref{fig:strucregelung} die Verknüpfung aller Komponenten noch einmal grafisch dargestellt.
 \begin{figure}
 	\centering
 	\includegraphics[width = .55\textwidth]{images/Platzhalter}
@@ -25,5 +32,31 @@ Die Positionsregelung wird auf die Lageregelung (engl. Attitudecontrol) aufgeset
 \end{figure}
 
 
+Anzumerken ist, das die in Verbindung mit \gls{asctec} entworfene Positionsregelung, zur Ausrichtung des Quadrocopters in einem dreidimensionalen Raum entworfen ist. Für die vertikale Positionierung ist jedoch in der vorrangegangen Arbeit\cite{JanKal13} von Jan Kallwies bereits eine Regelung entworfen worden. Da diese Regelung Effekte wie den Groundeffekt \footnote{In Bodennähe verhindert der Untergrund das schnelle Abströmen des durch die Rotoren erzeugten Luftstroms. Die daraus resultierende Krafterhöhung bei gleichbleibender Drehzahl der Rotoren, wird als Groundeffekt bezeichnet. } berücksichtigt, ist es Aufgabe einer dieser Arbeit folgenden Studentischen Projekt diese in das System der ETH-Zürich einzupflegen. Somit reduziert sich die Validierung der Reglerstrukutur auf den horizontale Ebene. 
+
+ 
+
+%*************************************************************************************************************************
+
 \section{Modellbildung}
 \label{sec:Modelbildung}
+Die Modellbildung ist die Grundlage für den systematischen Entwurf einer Zustandsregelung. Dabei wird das Systemverhalten in Form von mathematischen bzw. physikalischen Gleichungen abgebildet.
+
+
+
+
+
+
+
+
+\section{Exakte Ein-/Ausgangslinearisierung}
+\label{sec:exkt.ealin}
+Regelung der Orientierung unabhängig!!!!! Daraus resultiert insgesamt eine 3 Freiheitsgrade Regelung?!
+\section{Vorsteuerung/Referenzmodell}
+\label{sec:referenzmodell}
+Alternative ist eine Berechnung der Solltrajektorie über splines
+\section{Folgeregler}
+\label{sec:folgeregeler}
+
+\section{Zustandsschätzung}
+\label{sec:Zustandsbestimmung}

@@ -1,26 +1,63 @@
-This file was created with JabRef 1.8.1.
-Encoding: UTF8
+% This file was created with JabRef 2.10.
+% Encoding: UTF8
 
 
-@INPROCEEDINGS{Morris2010,
-	author = {William Morris and Ivan Dryanovski and Jizhong Xiao and Senior Member},
-	title = {3d indoor mapping for micro-uavs using hybrid range finders and multi-volume occupancy grids},
-	booktitle = {In RSS 2010 workshop on RGB-D: Advanced Reasoning with Depth Cameras},
-	year = {2010}
+@InCollection{Lu94,
+  Title                    = {{R}obot {P}ose {E}stimation in {U}nknown {E}nvironments by {M}atching 2{D} {R}ange {S}cans},
+  Author                   = {Lu, F. and Milios, E.E},
+  Booktitle                = {{IEEE} {C}onference on {C}omputer {V}ision and {P}attern {R}ecognition},
+  Year                     = {1994},
+  Pages                    = {935--938},
+
+  Added-at                 = {2014-12-31T14:36:44.000+0100},
+  Biburl                   = {http://sandbox.academic-puma.de/bibtex/2845eb8d264ddf18c886a62bf4ac34e13/alistair},
+  Interhash                = {d9ea90ae1a29b340f6d6bd0834550666},
+  Intrahash                = {845eb8d264ddf18c886a62bf4ac34e13},
+  Keywords                 = {grammar linguistic},
+  Timestamp                = {2014-12-31T14:36:44.000+0100},
+  Topics                   = {source.cosy,area.space}
 }
 
-@incollection{Lu94,
-	added-at = {2014-12-31T14:36:44.000+0100},
-	author = {Lu, F. and Milios, E.E},
-	biburl = {http://sandbox.academic-puma.de/bibtex/2845eb8d264ddf18c886a62bf4ac34e13/alistair},
-	booktitle = {{IEEE} {C}onference on {C}omputer {V}ision and {P}attern {R}ecognition},
-	interhash = {d9ea90ae1a29b340f6d6bd0834550666},
-	intrahash = {845eb8d264ddf18c886a62bf4ac34e13},
-	keywords = {grammar linguistic},
-	pages = {935--938},
-	timestamp = {2014-12-31T14:36:44.000+0100},
-	title = {{R}obot {P}ose {E}stimation in {U}nknown {E}nvironments by {M}atching
-	2{D} {R}ange {S}cans},
-	topics = {source.cosy,area.space},
-	year = 1994
+@InProceedings{Morris2010,
+  Title                    = {3D indoor mapping for micro-uavs using hybrid range finders and multi-volume occupancy grids},
+  Author                   = {William Morris and Ivan Dryanovski and Jizhong Xiao and Senior Member},
+  Booktitle                = {In RSS 2010 workshop on RGB-D: Advanced Reasoning with Depth Cameras},
+  Year                     = {2010}
+}
+
+@Standard{aut4,
+  Title                    = {Skriptum AUT4 Mobile Robotik},
+
+  Owner                    = {Matthias},
+  Timestamp                = {2015.01.02}
+}
+
+@inproceedings{censi08plicp,
+	author = "Censi, Andrea",
+	doi = "10.1109/ROBOT.2008.4543181",
+	title = "An {ICP} variant using a point-to-line metric",
+	url = "http://purl.org/censi/2007/plicp",
+	booktitle = "Proceedings of the {IEEE} International Conference on Robotics and Automation ({ICRA})",
+	year = "2008",
+	month = "May",
+	slides = "http://purl.org/censi/research/2008-icra-plicp-slides.pdf",
+	address = "Pasadena, CA",
+	pdf = "http://purl.org/censi/research/2008-icra-plicp.pdf",
+	abstract = "This paper describes PLICP, an ICP (Iterative Closest/Corresponding Point) variant that uses a point-to-line metric, and an exact closed-form for minimizing such metric. The resulting algorithm has some interesting properties: it converges quadratically, and in a finite number of steps. The method is validated against vanilla ICP, IDC (Iterative Dual Correspondences), and MbICP (Metric-Based ICP) by reproducing the experiments performed in Minguez et al. (2006). The experiments suggest that PLICP is more precise, and requires less iterations. However, it is less robust to very large initial displacement errors. The last part of the paper is devoted to purely algorithmic optimization of the correspondence search; this allows for significant speed-up of the computation. The source code is available for download."
+}
+
+@inproceedings{Achtelik11,
+	author = {Achtelik, Markus and Achtelik, Michael and Weiss, Stephan and Siegwart, Roland},
+	booktitle = {ICRA},
+	timestamp = {2011-08-17T00:00:00.000+0200},
+	title = {Onboard IMU and monocular vision based control for MAVs in unknown in- and outdoor environments.},
+	year = 2011
+}
+
+@INPROCEEDINGS{ hoffmann10,
+	AUTHOR = "Frank Hoffmann and Niklas Goddemeier and Torsten Bertram",
+	TITLE = "Attitude estimation and control of a quadrocopter",
+	BOOKTITLE = "IROS'10",
+	PAGES = {1072-1077},
+	YEAR = {2010}, 
 }
