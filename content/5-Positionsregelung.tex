@@ -15,13 +15,13 @@ Das Hauptaugenmerk diese Unterkapitel liegt darauf, wie sich die Positionsregelu
 \end{figure}
 
 
-Die Positionsregelung wird auf die Lageregelung (engl. Attitudecontrol) aufgesetzt. Daraus resultiert eine Kaskadenstruktur (Abbildung \ref{fig:kaskstruc}). Diese Vorgehensweise ist nachvollziehbar, da die Lageregelung bereits Fest auf dem \gls{llp} implementiert ist. Diese besteht aus einem Regelalgorithmus der anhand der Regeldifferenz der Orientierung $e_{ori}$, resultierend aus der Abweichung Soll-Orientierung $O_s$ und Ist-Orientierung $ O  $, in Verbindung mit der Sollschubvorgabe $ T_s $ die Drehzahlen $ n_{1..4} $ der Rotoren berechnet und einstellt. Die Ist-Orientierung $ O =\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T $ wird mittels eines Fusionsfilter bestimmt. Dieser fusioniert die Messwerte der auf der \gls{imu} befindlichen Gyroscope mit den Daten des 3D-Kompass. Wie dieser unterlagerte Regler und der dazugehörige Zustandsschätzer genau ausgeführt sind ist nicht bekannt. Eine mögliche Ausführung ist in Paper \cite{hoffmann10} beschrieben. Die Ungewissheit über den Regleraufbau der Lageregelung stellt für den Entwurf der überlagerten Positionsregelung kein Problem dar. Von Interesse ist lediglich, das die Annahme einer sehr hohen Dynamik dieses Reglers zur einer Vereinfachung des für die Positionsregelung benötigen Modells (Kapitel \ref{sec:Modelbildung}) führt. Hohe Dynamik bedeutet, das der Sollwinkel in einer sehr kurzen Zeit $ t \rightarrow 0~s $ erreicht wird. Basierend auf einer Exakten Ein-/Ausgangslinearisierung der inneren Schleife (Kapitel \ref{sec:exkt.ealin}), ist die äußere Reglerschleife zur Positionsregelung auf dem \gls{hlp} realisiert. Dank der Inversion, realisiert Ein-/Ausgangslinearisierung, kann für die Positionierung des Quadrocopters eine linerare zwei Freiheitsgrade Regelung angewandt werden.
+Die Positionsregelung wird auf die Lageregelung (engl. Attitudecontrol) aufgesetzt. Daraus resultiert eine Kaskadenstruktur (Abbildung \ref{fig:kaskstruc}). Diese Vorgehensweise ist nachvollziehbar, da die Lageregelung bereits Fest auf dem \gls{llp} implementiert ist. Diese besteht aus einem Regelalgorithmus der anhand der Regeldifferenz der Orientierung $e_{ori}$, resultierend aus der Abweichung Soll-Orientierung $O_{des}$ und Ist-Orientierung $ O  $, in Verbindung mit der Sollschubvorgabe $ T_s $ die Drehzahlen $ n_{1..4} $ der Rotoren berechnet und einstellt. Die Ist-Orientierung $ O =\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T $ wird mittels eines Fusionsfilter bestimmt. Dieser fusioniert die Messwerte der auf der \gls{imu} befindlichen Gyroscope mit den Daten des 3D-Kompass. Wie dieser unterlagerte Regler und der dazugehörige Zustandsschätzer genau ausgeführt sind ist nicht bekannt. Eine mögliche Ausführung ist in Paper \cite{hoffmann10} beschrieben. Die Ungewissheit über den Regleraufbau der Lageregelung stellt für den Entwurf der überlagerten Positionsregelung kein Problem dar. Von Interesse ist lediglich, das die Annahme einer sehr hohen Dynamik dieses Reglers zur einer Vereinfachung des für die Positionsregelung benötigen Modells (Kapitel \ref{sec:Modelbildung}) führt. Hohe Dynamik bedeutet, das der Sollwinkel in einer sehr kurzen Zeit $ t \rightarrow 0~s $ erreicht wird. Basierend auf einer Exakten Ein-/Ausgangslinearisierung der inneren Schleife (Kapitel \ref{sec:exkt.ealin}), ist die äußere Reglerschleife zur Positionsregelung auf dem \gls{hlp} realisiert. Dank der Inversion, realisiert Ein-/Ausgangslinearisierung, kann für die Positionierung des Quadrocopters eine linerare zwei Freiheitsgrade Regelung angewandt werden.
 \begin{figure}
 	\centering
 	\includegraphics[width = .95\textwidth]{images/2-FHG-R}
 	\caption[Gesamtstruktur Regelung]{Struktur zwei Freiheitsgraderegelung} %
 	\label{fig:zweifgr}
-\end{figure} Diese besteht aus einer Vorsteuerung und einem Folgeregler. Die Vorsteuerung auf dem \gls{hlp} ist in Form eines Referenzmodell (Kapitel \ref{sec:referenzmodell}), das dem Ein-/Ausgangslinearisierung nachempfunden ist, ausgeführt. Anhand der vorgegebenen Soll-Position $P^n_s = \begin{bmatrix} x&y&z\end{bmatrix}^T_s $ wird eine Referenz-Trajektorie \footnote{Trajektorien beschreiben einen zeitabhängigen Verlauf eines Wertes in einem Bezugssystem} zur Überführung des Quadrocopters aus der aktuellen Ist-Position in die Soll-Position berechnet. Ergebnis ist ein Stellwert für die Inversion, der unter theoretischer Betrachtung die gewünschte Bahnbewegung des Quadrocopters zur Ursache hat. In einem realen System ist dies durch ein Flüsse der Umgebung, bsp. Wind nicht gewährleiste. Deshalb ist zusätzlich der Folgeregler (Kapitel \ref{sec:folgeregeler}) implementiert, dessen Aufgabe besteht darin Abweichung der realen Zustände des Quadrocopters von den Referenzwerten auszuregelen. Die dafür benötigten Zustandsgrößen des Flugsystems (Kapitel \ref{sec:Zustandsbestimmung}) werden durch die Fusion der in über den Laser bestimmten Position(Kapitel \ref{chap:2Dpositionsbestimmung}) mit den mit den Beschleunigungswerten der \gls{imu} ermittelt.
+\end{figure} Diese besteht aus einer Vorsteuerung und einem Folgeregler. Die Vorsteuerung auf dem \gls{hlp} ist in Form eines Referenzmodell (Kapitel \ref{sec:referenzmodell}), das dem Ein-/Ausgangslinearisierung nachempfunden ist, ausgeführt. Anhand der vorgegebenen Soll-Position $P^n_{des} = \begin{bmatrix} x&y&z\end{bmatrix}^T_{des} $ wird eine Referenz-Trajektorie \footnote{Trajektorien beschreiben einen zeitabhängigen Verlauf eines Wertes in einem Bezugssystem} zur Überführung des Quadrocopters aus der aktuellen Ist-Position in die Soll-Position berechnet. Ergebnis ist ein Stellwert für die Inversion, der unter theoretischer Betrachtung die gewünschte Bahnbewegung des Quadrocopters zur Ursache hat. In einem realen System ist dies durch ein Flüsse der Umgebung, bsp. Wind nicht gewährleiste. Deshalb ist zusätzlich der Folgeregler (Kapitel \ref{sec:folgeregeler}) implementiert, dessen Aufgabe besteht darin Abweichung der realen Zustände des Quadrocopters von den Referenzwerten auszuregelen. Die dafür benötigten Zustandsgrößen des Flugsystems (Kapitel \ref{sec:Zustandsbestimmung}) werden durch die Fusion der in über den Laser bestimmten Position(Kapitel \ref{chap:2Dpositionsbestimmung}) mit den mit den Beschleunigungswerten der \gls{imu} ermittelt.
 
 Bevor jede einzelne Komponente in den Folgekapiteln hergeleitet wird, ist in Abbildung~\ref{fig:strucregelung} die Verknüpfung aller Komponenten noch einmal grafisch dargestellt.
 \begin{figure}
@@ -40,23 +40,228 @@ Anzumerken ist, das die in Verbindung mit \gls{asctec} entworfene Positionsregel
 
 \section{Modellbildung}
 \label{sec:Modelbildung}
-Die Modellbildung ist die Grundlage für den systematischen Entwurf einer Zustandsregelung. Dabei wird das Systemverhalten in Form von mathematischen bzw. physikalischen Gleichungen abgebildet.
+Die Modellbildung ist die Grundlage für den systematischen Entwurf einer Zustandsregelung. Dabei wird das Systemverhalten in Form von Differentialgleichungen abgebildet. Diese beschreiben die zeitliche Veränderung einer Ausgangsgröße in Abhängigkeit ihrer zeitlichen Ableitungen sowie veränderlicher Eingangsgrößen. So lassen sich unter Beachtung der physikalischen Gesetze Bewegungsgleichungen aufstellen, welche das räumliche und zeitliche Verhalten einen mechatronischen Systems abbilden. 
+
+Bevor jedoch die Bewegungsgleichungen des Quadrocopter aufgestellt werden können, ist es notwendig die Freiheitsgrade des dynamischen Systems gegenüber des Bezugssystem zu bestimmen. Da zwischen dem n-frame(Bezugssystem) und dem b-frame(Quadrocopter) keine mechanische Verbindung oder konstante Koordinatentransformation existiert besitzt das Flugsystem sechs Freiheitsgrade. Bestehend aus drei rotativen $\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T$ und drei translatorischen $\begin{bmatrix} x&y&z\end{bmatrix}^T$. Sechs Freiheitsgrade sind gleichzusetzen mit sechs Differentialgleichungen zur Beschreibung der Bewegung im Raum. Damit ist jedoch nicht alle Dynamiken des Systems abgebildet. So sind zur Beschreiben des Gesamtsystems weitere Differentialgleichungen aufzustellen. Zum einen ist hier die Dynamik der Elektromotoren zu einzukalkulieren welche die Rotoren antreiben. Als auch die durch die Rotation der Rotorblätter ausgelöste Schubentwicklung nach den Gesetzen der Strömungslehre. Unter Beachtung aller Aspekte entsteht so eine mathematisch meist nichtlineare sowie sehr aufwendige und komplexe Systembeschreibung. Da mit der steigender Größe auch die Fehleranfälligkeit steigt, wird in der Modellbildung folgender Leitsatz immer wieder aufgeführt. \glqq Ein Modell sollte das zu regelende Verhalten so einfach wie möglich, aber so detailliert wie nötig darstellen.\grqq  Betrachtet nun die Struktur des implementierten Flugregelung (Abbildung \ref{fig:strucregelung}) so lässt sich das Modell aus Sicht der Positionsregelung stark reduzieren.  
+
+Grund hierfür ist die in Bild \ref{fig:kaskstruc} dargestellte Kaskadenstruktur der Regelung. In Verbindung mit Abbildung \ref{fig:strucregelung} ist zu erkennen, das der Lageregelung als Eingangsgrößen eine Soll-Orientierung $ O_{des} =\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T $ und ein Schubvorgabe $T_{des}$ übergeben wird. Aus Sicht der Positionsregelung sind dies auch die Eingänge des zu regelnden Modells. Fest steht somit, das die rotative Dynamik als auch die Schubentwicklung über den auf dem \gls{llp} befindliche Regler eingestellt wird. Dieser ist ab Werk so gut parametriert, das die Zeitkonstante zwischen Vorgabe und Einstellen des Sollwerts sehr gering ist. Dies wurde auch durch einen Versuch bestätigt. Da der Aufbau der Lageregelung nicht bekannt ist wurde dazu das experimentelle Systemidentifikationstool von Manfred Ottens herangezogen. Um die Zeitkonstante schätzen zu können wurde das Übertagungsverhalten von Ist- zu Soll-Winkel als PT1-Glied abstrahiert. Aus den Messdaten des Sollwert und Istwert wurde daraus die Zeitkonstante T ermittelt. Dabei ergab das mittel über mehrere Messungen einen Zeitkonstante von T$\approx0.1~s$. Mit der Gewissheit, das die Dynamik der Positionsregelung um ein vielfaches geringer ausfällt lässt sich beim Entwurf dieser die Zeitkonstante T vernachlässigen. Es gilt somit Soll- entspricht Ist-Winkel.
+ \begin{equation}
+  O_{des} = O = \begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T
+ \end{equation}
+     
+Somit reduziert sich die für Positionsregelung zu modellierende Dynamik auf die translatorische Differenzialgleichungen. Um zur Bestimmung dieser die Newtonsche Gesetze anwenden zu können, werden diese im n-frame definiert. Dabei kann der Quadrocopter als widerstandsfreie Kugel im dreidimensionalen Raum des Navigationskoordinatensystems abgebildet werden. Auf diese wirkt parallel zur z-Achse des n-frames die Gravitationskraft $ F^n_g $ und die in Richtung der $ z^b $-Achse angreifender Gesamtschub $ T $ (Gleichung \ref{eq:Schubvektor}) der Rotoren. Letzt genannte Kraft muss zur Anwendung der Newtonischen Gesetze in Kraftkomponenten des n-frames zerlegt werden (Abbildung \ref{fig:F_nframe}).
+\begin{figure}
+	\centering
+	\includegraphics[width = .85\textwidth]{images/Platzhalter}
+	\caption[]{Auf den Quadrocopter wirkende Kraft. Definiert im n-frame} %
+	\label{fig:F_nframe}
+\end{figure}     
+Da die Dynamik der Lageregelung vernachlässigt wird, ist dies über eine einfache Koordinatentransformation vom b-frame ins n-frame realisierbar. Die entsprechende Transformation wurde in Kapitel \ref{subsec:koordinatentransformation} in Formel \ref{eq:inverse_transM} eingeführt. Daraus ergibt sich,
+
+\begin{equation}
+ F^n =	\begin{bmatrix}
+	F^n_x \\
+	F^n_y \\
+	F^n_z \\
+	\end{bmatrix}
+	=
+	M_{nb} \cdot F^b - F_g 
+	=
+	M_{nb} \cdot 
+	\begin{bmatrix}
+	0 \\
+	0 \\
+	T \\
+	\end{bmatrix}
+	-
+	\begin{bmatrix}
+	0 \\
+	0 \\
+	F_g \\
+	\end{bmatrix}.
+	\label{eq:superposF}
+\end{equation} 
+ 
+Nach dem zweiten Newtonschen Gesetz lässt sich nun die Beschleunigung $ a $ des Körpers bestimmen. Dieses besagt, eine Änderung der Bewegung resultiert proportional und gradlinig in Richtung der wirkenden Kraft. Dabei gilt die Beziehung. 
+  
+\begin{equation}
+F^n =	\begin{bmatrix}
+F^n_x \\
+F^n_y \\
+F^n_z \\
+\end{bmatrix}
+= m \cdot a = m \cdot	
+\begin{bmatrix}
+a^n_x \\
+a^n_y \\
+a^n_z \\
+\end{bmatrix}
+\label{eq:fma}
+\end{equation} 
+
+Für die konstante Masse $ m (= 1.863~kg) $ des Quadrocoters, lassen sich die Beschleunigungen des Körpers im dreidimensionalen Raum durch einsetzen von (\ref{eq:superposF}) in (\ref{eq:fma}) berechnen.
+\begin{equation}
+\begin{bmatrix}
+a^n_x \\
+a^n_y \\
+a^n_z \\
+\end{bmatrix}
+=
+\frac{1}{m} \cdot (
+M_{nb} \cdot 
+\begin{bmatrix}
+0 \\
+0 \\
+T \\
+\end{bmatrix}
+-
+\begin{bmatrix}
+0 \\
+0 \\
+F_g \\
+\end{bmatrix}
+)
+\label{eq:beschl}
+\end{equation}
+
+Basierend auf dem Weg-Zeit-Gesetz lässt sich für eine Anfangsgeschwindigkeit $ v^n_0  $ und eine Startposition $ P^n_0 $ die Position des Quadrocopters über die doppelte Integration der Beschleunigung aus Gleichung (\ref{eq:beschl}) bestimmen.
+\begin{equation}
+\begin{split}
+a^n &= \dot{v}^n = \ddot{P}^n\\
+v^n &= \dot{a}^n = \int a^n dt + v^n_0\\
+P^n &= \int v^n dt + P^n_0
+\end{split}
+\label{eq:weg-zeit}
+\end{equation}
+
+Mit diesen Gleichung \ref{eq:weg-zeit} und \ref{eq:beschl} ist das translatorische Systemverhalten des Quadrocopters im n-frame mathematisch beschreibbar. Abhängig der Einganggrößen $ O_des $ und $ T_des $. Die resultierende Beschreibung der Zustände $ x =\begin{bmatrix}
+v_x &
+v_y &
+v_z &
+x &
+y &
+z 
+\end{bmatrix}^T $ des Modells ergibt.
+
+\begin{equation}
+\begin{split}
+\dot{x}_1 &= \frac{1}{m} \cdot ((\cos\phi\sin\theta\cos\psi+\sin\phi\sin\psi)\cdot T)\\
+\dot{x}_2 &= \frac{1}{m} \cdot ((\cos\phi\sin\theta\sin\psi-\sin\phi\cos\psi)\cdot T)\\
+\dot{x}_3 &= \frac{1}{m} \cdot ((\cos\phi\cos\theta)\cdot T)-g\\
+\dot{x}_4 &= x_1\\
+\dot{x}_5 &= x_2\\
+\dot{x}_6 &= x_3\\
+\end{split}
+\label{eq:zstd}
+\end{equation}
+
+Zur Veranschaulichung ist das Modell zusätzlich in Abbildung \label{fig:modstrukquad} visualisiert. 
+\begin{figure}
+	\centering
+	\includegraphics[width = .85\textwidth]{images/Platzhalter}
+	\caption[]{Modellstruktur des Quadrocopters} %
+	\label{fig:modstrukquad}
+\end{figure}
+
+ 
+Durch die Koordinatentransformation bzw. die trigonometrichen Funktionen ist die Systembeschreibung nichtlinear. Das bedeutet, das von der Änderung der Eingangsgrößen keine direkt porportionale Änderung der Ausgangsgröße ableitbar ist. Somit ist eine direkte Ansteuerung der Lageregelung über einen linearen Positionsregler nicht möglich ist. Da allerdings einen ein solche linearer Regler vorgesehen ist, benötigt man einen Baustein. Der für fiktive Eingänge das Systemverhalten linearisiert.    
+
+
+\section{Exakte Zustandslinearisierung}
+\label{sec:exkt.zstdlin}
+Betrachtet man die Modellstruktur für die translatorische Bewegung (Abbildung \ref{fig:modstrukquad}) so kann man erkennen, das für fiktive Eingänge $ u_f = \begin{bmatrix}
+a^n_x &
+a^n_y &
+y^n_z 
+\end{bmatrix}^T$ das Modell aus drei unabhängigen entkoppelten Integriererketten 2.Ordnung bestehen würde. Die per Definition der Linearität \cite{lunze08} ein lineares Zustandsverhalten aufweisen. Gesucht ist also ein Stellgesetz, das für die fiktiven Eingängen $ u_f $ die Stellgrößen der realen Eingänge $ u = \begin{bmatrix} 
+\phi &
+\theta &
+\psi &
+T  
+\end{bmatrix} $ generiert. Eine sogenannte Inversion. \\
+
+Damit aus dem nichtlinearen Modell Kapitel \ref{sec:Modelbildung} ein Exakt zustandslinearisierendes Stellgesetz (Inversion) generiert werden kann, muss es sich bei dem Ausgang $ y =  \begin{bmatrix} 
+x &
+y &
+z &  
+\end{bmatrix} $  um einen sogenannten flachen Ausgang $ y_f = \begin{bmatrix} 
+y_{f1} &
+y_{f2} &
+y_{f3} 
+\end{bmatrix}$ handeln. Per Definition (siehe ANHANG DEFINITION FLACHHEIT NICHTLINEARER MEHRGRÖ?ENSYSTEME)  kann es sich bei dem gewünschten flachen Ausgang $ y_f = \begin{bmatrix} 
+x &
+y &
+z 
+\end{bmatrix}$ nur um einen solchen Handeln wenn die Anzahl der flachen Ausgänge $ p $ derer der realen Eingänge $ u $ entspricht. Dies ist nicht der Fall. Damit dennoch eine Inversion durchgeführt werden kann, ist es möglich ein flacher Ausgang mit der selben Anzahl an Ausgängen wie Eingängen zu suchen. Dieser würde nicht mehr mit der Position $ P^n $ übereinstimmen. Deshalb wurde in Paper \cite{Achtelik11} ein anderer Weg eingeschlagen. Um die Position als flachen Ausgang zu erhalten, wurde ein Koordinatensystem eingefügt welches im Kapitel \ref{subsec:koordinatensysteme} als o-frame beschrieben ist. So können die Beschleunigungsvorgaben für den gewünschten fiktiven Eingang $ u_f $ über eine einfache Transformation (Gleichung \ref{eq:Mz}) um den Winkel $ \psi $ ins o-frame übertragen werden. Durch diesen Trick reduziert sich die Anzahl der Eingänge der für Inversion um einen. Somit entspricht die Anzahl der verbliebenen Eingängen $ \tilde{u} = \begin{bmatrix} 
+\phi &
+\theta &
+T  
+\end{bmatrix} $ denen des gewünschten flachen Ausgangs. Damit ist die Flachheit des Ausgangs $ y_f $ nicht erwiesen. Es fehlt per Definition (vgl. ANHANG) noch der Beweis, das sich alle Zustände $ x $ und die reduzierten Eingänge $ \tilde{u} $ durch die flachen Ausgänge und deren Ableitungen darstellen lassen. Für die Zustände ist dies ohne großen Rechenaufwand möglich.
+
+\begin{equation}
+\begin{split}
+x_4 &= x = y_f1\\
+x_5 &= y = y_f2\\
+x_6 &= z = y_f3\\
+\\x_1 &= \dot{x} = \dot{y}_{f1}\\
+x_2 &= \dot{y} = \dot{y}_{f2}\\
+x_3 &= \dot{z} = \dot{y}_{f3}\\
+\end{split}
+\end{equation}
+
+Für die Eingangsgrößen $ \tilde{u} $ müssen die Zustandsgleichungen für $ \dot{x}_1$,$ \dot{x}_2 $ und $ \dot{x}_3 $ nach $ \phi $, $ \theta $ und $ T $ aufgelöst werden. Dabei entspricht $ \dot{x}_1 = a_x = \ddot{y}_{f1} = u_{f1}$, $ \dot{x}_1 = a_y = \ddot{y}_{f2} = u_{f2}$ sowie $ \dot{x}_1 = a_x = \ddot{y}_{f3} = u_{f3}$. Damit kann der Schub $ T $ als Betrag der wirkenden, bzw. geforderten Beschleunigungen multipliziert mit der Masse dargestellt werden.
+
+\begin{equation}
+\begin{split}
+T &= m \cdot \sqrt{a_x^2 +a_y^2+(a_z+g )^2 }\\
+& = m \cdot \sqrt{\ddot{y}_{f1}^2 +\ddot{y}_{f}^2+(\ddot{y}_{f3}+g )^2 }
+\end{split}
+\label{eq:invT}
+\end{equation}    
+
+Nun da $ T $ bestimmt ist, kann unter Beachtung das $ \psi = 0 $ durch die vorgelagerte Transformation $ \dot{x}_2 $ aus  Gleichung \ref{eq:zstd} nach  $ \phi $ auflösen. Damit ergibt sich,
+
+\begin{equation}
+\begin{split}
+\phi &= -\arcsin(\frac{\ddot{y}_{f2}\cdot m}{T})\\
+& = -\arcsin(\frac{a_y\cdot m}{T}).
+\end{split}
+\label{eq:invphi}
+\end{equation}
+
+$ \theta $lässt sich aufgrund der trigonometrischen Beziehung $ tan\alpha = \frac{\sin\alpha}{\cos\alpha} $ aus den Zustandsgleichungen für $ x_1 $ und $ x_3 $ berechnen.
+\begin{equation}
+\begin{split}
+\theta &= \arctan(\frac{\ddot{y}_{f3}-g}{\ddot{y}_{f1}})\\
+&=\arctan(\frac{a_z-g}{a_x}
+\end{split}
+\label{eq:invtheta}
+\end{equation}
+
+Die Stellgesetze der Inversion sind damit Gleichung (\ref{eq:invT}), (\ref{eq:invphi}) und (\ref{eq:invtheta}) mathematisch beschrieben. In Verbindung mit der Koordinatentransformation von $ \psi $ ergibt sich die in Abbildung \ref{fig:Gesamtinversion} dargestellte Gesamtinversion.
+\begin{figure}
+	\centering
+	\includegraphics[width = .85\textwidth]{images/Platzhalter}
+	\caption[]{Gesamtinversion} %
+	\label{fig:Gesamtinversion}
+\end{figure} Aussicht der noch zu implementieren Positionsregelung besteht das zu Regelende System nun aus drei entkoppelten Integrierketten(Abbildung\ref{fig:drIntket}), 
+
+\begin{figure}
+	\centering
+	\includegraphics[width = .85\textwidth]{images/Platzhalter}
+	\caption[]{Modell aus Sicht der Positionsregelung dank Inversion} %
+	\label{fig:drIntket}
+\end{figure}
 
 
 
 
-
-
-
-
-\section{Exakte Ein-/Ausgangslinearisierung}
-\label{sec:exkt.ealin}
-Regelung der Orientierung unabhängig!!!!! Daraus resultiert insgesamt eine 3 Freiheitsgrade Regelung?!
 \section{Vorsteuerung/Referenzmodell}
 \label{sec:referenzmodell}
-Alternative ist eine Berechnung der Solltrajektorie über splines
+Alternative ist eine Berechnung der Solltrajektorie über splines Zur Geschwindikeitsregelung wird entfernung in o-frame achse weiter auf integiert diese dann ins n-frame transfomiert.
 \section{Folgeregler}
 \label{sec:folgeregeler}
-
+Regelung für psi wegelassen ja da jeder punkt im raum nur über variantion von phi und theta erreichbar. Daher kann psi gleich der Lageregelung übergeben werden. Die per Definition der Linearität \cite{lunze08} ein lineares Zustandsverhalten aufweisen.
+Die Orientierung kann direkt dem Lageregler übergeben werden
 \section{Zustandsschätzung}
 \label{sec:Zustandsbestimmung}
