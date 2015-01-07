@@ -244,7 +244,7 @@ Die Stellgesetze der Inversion sind damit Gleichung (\ref{eq:invT}), (\ref{eq:in
 	\includegraphics[width = \textwidth]{images/inversion}
 	\caption[]{Gesamtinversion} %
 	\label{fig:Gesamtinversion}
-\end{figure} Aussicht der noch zu implementieren Positionsregelung besteht das zu Regelende System nun aus drei entkoppelten Integrierketten(Abbildung\ref{fig:drIntket}), 
+\end{figure} Aussicht der noch zu implementieren Positionsregelung besteht das zu regelende System nun aus drei entkoppelten Integrierketten(Abbildung\ref{fig:drIntket}). Die nun ein lineares Ein-/Ausgangsverhalten aufweisen, welches jedoch instabil ist. Deshalb muss der Folgeregelung (Kapitel \ref{sec:folgeregeler}) eine stabile E/A-Dynamik vorgegeben werden. Dafür zuständig ist die im folgenden Kapitel \ref{sec:referenzmodell} beschriebene Vorsteuerung. 
 
 \begin{figure}
 	\centering
@@ -258,9 +258,62 @@ Die Stellgesetze der Inversion sind damit Gleichung (\ref{eq:invT}), (\ref{eq:in
 
 \section{Vorsteuerung/Referenzmodell}
 \label{sec:referenzmodell}
-Alternative ist eine Berechnung der Solltrajektorie über splines Zur Geschwindikeitsregelung wird entfernung in o-frame achse weiter auf integiert diese dann ins n-frame transfomiert. Referenz auf Titel der Arbeit.
+Zur Vorgabe des gewünschte E/A-Verhalten benötigt man als Vorsteuerung ein Referenzmodell. Diesem werden die anzufliegenden Positionen $ P^n_{cmd} $ übergeben. Aufgabe der Vorsteuerung ist es daraus eine Trajektorie zu generieren. Diese beschreibt den Pfad über den der Quadrocopter in diese Koordinate überführt wird. Da die neuen Eingangsgrößen $ u_f $ des zustandslinearisierten Modells Beschleunigungsvorgaben sind, muss der Verlauf der Positionsvorgabe der Vorsteuerung $ P^n_{ref} $ einmal stetig differenzierbar sein, sodass die zweite Ableitung existiert. Damit dies gewährleistet kann nach \cite{deutNL} die E/A Dynamik für dieses System über folgende Formel vorgegeben werden.
+\begin{equation}
+	\ddot{P}^n_{ref} + c_1 \cdot \dot{P}^n_{ref}+c_0\cdot P^n_{ref}=c_0 \cdot P^n_{cmd}
+	\label{eq:dynref}
+\end{equation}
+Stellt man hierfür die Übertragungsfunktion $ G(s) $ auf.
+\begin{equation}
+\begin{split}
+G(s)=\frac{P^n_{cmd}}{P^n_{ref}} &=\frac{c_0}{s^2+c_1\cdot s+c_0}\\
+&= \frac{1}{\frac{1}{c_o}s^2+\frac{c_1}{c_0}\cdot s+1}
+\end{split}	
+\label{eq:gsref}
+\end{equation}
+Kann man erkennen das diese in ihrer Form dem einem Übertragungsglied eines PT2-Glied entspricht.
+\begin{equation}
+	G_{PT2}(s)=\frac{1}{(\frac{1}{\omega_o})^2s^2+\frac{2D}{\omega_0}\cdot s+1}
+	\label{eq:gspt2}
+\end{equation}
+
+Setzt man nun (\ref{eq:gspt2}) mit (\ref{eq:gsref}) gleich kann man die Koeffizienten $ c_0 $ und $ c_1 $ abhängig der Eigenfrequenz $ \omega_0 $ und der Dämpfung $ D $ bestimmen.
+\begin{equation}
+c_0= \omega_0^2
+\end{equation}
+\begin{equation}
+c_1= 2 D\omega_0
+\end{equation}
+Somit lässt ist der Verlauf der Trajektorie für $ u_f = \ddot{P}^n_{ref}  $ (Gleichung \ref{eq:dynref}) folgendermaßen festgelegt.
+\begin{equation}
+u_f = \omega_0^2 \cdot(P^n_{cmd}-P^n_{ref})-2D\omega_0\cdot \dot{P}^n_{ref}
+\label{eq:ref_mdl}
+\end{equation}
+Vorteil dieser Darstellung ist, das die Dynamik der Vorsteuerung über die in den Grundlagen der Regelungstechnik \cite{lunze08} vermittelten Entwurfskriterien für PT2-Glieder bestimmen lässt. So ist die Schwingungsfähigkeit über die Dämpfung $ D $ beeinflussbar ($ D < 1 $, keine Schwingung). $ \omega_0 $ kann schließlich eingestellt werden wie schnell die Zielkoordinaten erreicht werden können. Das Strukturbild des resultierten Refernzmodells ist in Abbildung \ref{fig:strucref} visualisiert. Es ist anzumerken, das  aufgrund der entkoppelten Integriererketten eine separate Dynamikvorgabe für jeden Zweig des zustandslinearisierten Modells möglich ist. 
+
+Weiterhin besteht die Möglich die Vorsteuerung so auszubauen, das Geschwindigkeiten vorgegeben werden können mit den er sich aus Sicht des Quadrocoptes im Raum bewegen soll. Dabei erfolgt die Vorgabe der Soll-Geschwindigkeiten im o-frame. Diese wird Integriert und die anschließend ins n-frame transformiert.
+
+\begin{equation}
+P^n_{cmd} = M_z^T\cdot(\int v^o dt)+P^n_{cmd_0}
+\end{equation}
+
+Mit wird dem sich stetig Verändernde $ P^n_{cmd} $ wird das Referenzmodell (\ref{eq:ref_mdl}) gespeißt. Somit lassen sich zum Beispiel über die Fernbedinungen Geschwindigkeiten vorgeben, was die Handhabbarkeit des Quadrocopters deutlich vereinfacht.
+ 
+Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Simuliert man das Modell (Abbildung \ref{fig:Gesamtinversion}) inklusive des Stellgesetzes der Vorsteuerung Gleichung (\ref{eq:ref_mdl}) für konsistente Anfangsbedingungen $ P_{ref0}^n = P_0^n $ so ergibt sich die gewünschte Flugkurve. In der Realität ist die Konsistens der Angfangsbedingungen jedoch nicht immer gegeben. Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um diesen Effekten entgegen zuwirken benötigt man nun einen Folgeregler. Dessen Aufgabe besteht darin äußere Einflüsse zu eliminieren. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/Platzhalter}
+	\caption[]{Eine Integriererkette} %
+	\label{fig:strucref}
+\end{figure}
+
 \section{Folgeregler}
 \label{sec:folgeregeler}
+Durch die Entkopplung kann wie schon in Vorst der Aufbau nur für eine Integrationszweig beschrieben werden.
+
+
+
 Regelung für psi wegelassen ja da jeder punkt im raum nur über variantion von phi und theta erreichbar. Daher kann psi gleich der Lageregelung übergeben werden. Die per Definition der Linearität \cite{lunze08} ein lineares Zustandsverhalten aufweisen.
 Die Orientierung kann direkt dem Lageregler übergeben werden
 \section{Zustandsschätzung}
