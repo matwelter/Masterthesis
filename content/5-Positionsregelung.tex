@@ -52,7 +52,7 @@ Grund hierfür ist die in Bild \ref{fig:kaskstruc} dargestellte Kaskadenstruktur 
 Somit reduziert sich die für Positionsregelung zu modellierende Dynamik auf die translatorische Differenzialgleichungen. Um zur Bestimmung dieser die Newtonsche Gesetze anwenden zu können, werden diese im n-frame definiert. Dabei kann der Quadrocopter als widerstandsfreie Kugel im dreidimensionalen Raum des Navigationskoordinatensystems abgebildet werden. Auf diese wirkt parallel zur z-Achse des n-frames die Gravitationskraft $ F^n_g $ und die in Richtung der $ z^b $-Achse angreifender Gesamtschub $ T $ (Gleichung \ref{eq:Schubvektor}) der Rotoren. Letzt genannte Kraft muss zur Anwendung der Newtonischen Gesetze in Kraftkomponenten des n-frames zerlegt werden (Abbildung \ref{fig:F_nframe}).
 \begin{figure}
 	\centering
-	\includegraphics[width = .85\textwidth]{images/Platzhalter}
+	\includegraphics[width = .85\textwidth]{images/Force_nframe}
 	\caption[]{Auf den Quadrocopter wirkende Kraft. Definiert im n-frame} %
 	\label{fig:F_nframe}
 \end{figure}     
@@ -158,7 +158,7 @@ z
 Zur Veranschaulichung ist das Modell zusätzlich in Abbildung \label{fig:modstrukquad} visualisiert. 
 \begin{figure}
 	\centering
-	\includegraphics[width = .85\textwidth]{images/Platzhalter}
+	\includegraphics[width = \textwidth]{images/modell_lage_trans}
 	\caption[]{Modellstruktur des Quadrocopters} %
 	\label{fig:modstrukquad}
 \end{figure}
@@ -233,7 +233,7 @@ $ \theta $lässt sich aufgrund der trigonometrischen Beziehung $ tan\alpha = \fra
 \begin{equation}
 \begin{split}
 \theta &= \arctan(\frac{\ddot{y}_{f3}-g}{\ddot{y}_{f1}})\\
-&=\arctan(\frac{a_z-g}{a_x}
+&=\arctan(\frac{a_z-g}{a_x})
 \end{split}
 \label{eq:invtheta}
 \end{equation}
@@ -241,14 +241,14 @@ $ \theta $lässt sich aufgrund der trigonometrischen Beziehung $ tan\alpha = \fra
 Die Stellgesetze der Inversion sind damit Gleichung (\ref{eq:invT}), (\ref{eq:invphi}) und (\ref{eq:invtheta}) mathematisch beschrieben. In Verbindung mit der Koordinatentransformation von $ \psi $ ergibt sich die in Abbildung \ref{fig:Gesamtinversion} dargestellte Gesamtinversion.
 \begin{figure}
 	\centering
-	\includegraphics[width = .85\textwidth]{images/Platzhalter}
+	\includegraphics[width = \textwidth]{images/inversion}
 	\caption[]{Gesamtinversion} %
 	\label{fig:Gesamtinversion}
 \end{figure} Aussicht der noch zu implementieren Positionsregelung besteht das zu Regelende System nun aus drei entkoppelten Integrierketten(Abbildung\ref{fig:drIntket}), 
 
 \begin{figure}
 	\centering
-	\includegraphics[width = .85\textwidth]{images/Platzhalter}
+	\includegraphics[width = .85\textwidth]{images/3intket}
 	\caption[]{Modell aus Sicht der Positionsregelung dank Inversion} %
 	\label{fig:drIntket}
 \end{figure}
@@ -258,7 +258,7 @@ Die Stellgesetze der Inversion sind damit Gleichung (\ref{eq:invT}), (\ref{eq:in
 
 \section{Vorsteuerung/Referenzmodell}
 \label{sec:referenzmodell}
-Alternative ist eine Berechnung der Solltrajektorie über splines Zur Geschwindikeitsregelung wird entfernung in o-frame achse weiter auf integiert diese dann ins n-frame transfomiert.
+Alternative ist eine Berechnung der Solltrajektorie über splines Zur Geschwindikeitsregelung wird entfernung in o-frame achse weiter auf integiert diese dann ins n-frame transfomiert. Referenz auf Titel der Arbeit.
 \section{Folgeregler}
 \label{sec:folgeregeler}
 Regelung für psi wegelassen ja da jeder punkt im raum nur über variantion von phi und theta erreichbar. Daher kann psi gleich der Lageregelung übergeben werden. Die per Definition der Linearität \cite{lunze08} ein lineares Zustandsverhalten aufweisen.
