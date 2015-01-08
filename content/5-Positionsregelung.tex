@@ -284,9 +284,9 @@ c_0= \omega_0^2
 \begin{equation}
 c_1= 2 D\omega_0
 \end{equation}
-Somit lässt ist der Verlauf der Trajektorie für $ u_f = \ddot{P}^n_{ref}  $ (Gleichung \ref{eq:dynref}) folgendermaßen festgelegt.
+Somit lässt ist der Verlauf der Trajektorie für $ u_{f_{ref}} = \ddot{P}^n_{ref}  $ (Gleichung \ref{eq:dynref}) folgendermaßen festgelegt.
 \begin{equation}
-u_f = \omega_0^2 \cdot(P^n_{cmd}-P^n_{ref})-2D\omega_0\cdot \dot{P}^n_{ref}
+u_{f_{ref}} = \omega_0^2 \cdot(P^n_{cmd}-P^n_{ref})-2D\omega_0\cdot \dot{P}^n_{ref}
 \label{eq:ref_mdl}
 \end{equation}
 Vorteil dieser Darstellung ist, das die Dynamik der Vorsteuerung über die in den Grundlagen der Regelungstechnik \cite{lunze08} vermittelten Entwurfskriterien für PT2-Glieder bestimmen lässt. So ist die Schwingungsfähigkeit über die Dämpfung $ D $ beeinflussbar ($ D < 1 $, keine Schwingung). Mit $ \omega_0 $ kann schließlich eingestellt werden wie schnell die Zielkoordinaten erreicht werden sollen. $ \omega $ ist da bei durch die maximal zulässige Stellgröße beschränkt.
@@ -312,11 +312,68 @@ Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Simuliert man da
 
 \section{Folgeregler}
 \label{sec:folgeregeler}
-Durch die Entkopplung kann wie schon in Vorst der Aufbau nur für eine Integrationszweig beschrieben werden.
+Inkonsistente Anfangsbedingungen, externe Störungen sowie Modellunsicherheiten bewirken einen Ausgangsfolgefehler $e = P^n_{ref} - P^n $. Dieser ergibt sich durch die Fortpflanzung des für das reale System nicht ausreichenden Stellsignals $\ddot{e} = u_{f_{ref}} - u_f$. Das bedeutet, die Fehlerdynamik kann ebenfalls über eine zweifache Integriererkette modelliert werden. Zweifache Integriererkette ergo instabiles System. Damit der Quadrocopter auf die Soll-Trajektorie konvergiert, muss die Fehlerdynamik stabilisiert werden. Dafür ist es von nöten, die Dynamik der Folgefehler vorgeben zu können. Zu diesem Zwecke werden die Zustandsgrößen des Ausgangsfolgefehlermodells zurückgeführt (Abbildung \ref{fig:rückfolgefeh}). Daraus ergibt sich folgende Differentialgleichung.
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/Platzhalter}
+	\caption[]{Rückführung der Folgefehler} %
+	\label{fig:rückfolgefeh}
+\end{figure}
+\begin{equation}
+\ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e = 0
+\label{eq:fehlerdyn}
+\end{equation}
+ mit 
+\begin{equation}
+\begin{split}
+e &= P^n_{ref} - P^n\\
+\dot{e} &= \dot{P}^n_{ref}-\dot{P}^n\\
+\ddot{e} &= u_{f_{ref}} - u_f
+\end{split}
+\end{equation}
+ergibt sich folgendes Stellgesetz für die Eingangsgröße $ u_f $ des zustandslinearsierenten Systems das den Folgefehler ausregelt. 
+\begin{equation}
+u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n) +\tilde{c}_0\cdot (P^n_{ref} - P^n)}
+\end{equation}
+Die Annäherungsverhalten ist Abhängig von den Koeffizienten $ \tilde{c}_0 $ und $ \tilde{c}_1 $. Anhand von \ref{eq:fehlerdyn} lassen sich für diese mittels der Polvorgabe die Dynamik vorgeben.
+
+Nicht bekämpft werden durch dieses Stellgesetz konstante Dauerstörungen. Zum Beispiel hervorgerufen durch Winde die über einen längeren Zeitraum als Konstant anzusehen sind. Mit einer konstanten Kraft wirken diese auf das Flugsystem. Beachtet man die diese Kraft hervorgerufenen Beschleunigung $ a_st $ in der Fehlerdifferenzialgleichung. 
+\begin{equation}
+\ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e +a_{st}= 0
+\label{eq:fehlerdyn}
+\end{equation}
+Folgt im stationären Zustand, das heißt alle Zeitableitungen gleich Null, ein dauerhafter Positionsfehler.
+\begin{equation}
+e = -\frac{a_{st}}{\tilde{c}_0}
+\end{equation} 
+Lösung dieses Problems ist die Erweiterung des Folgeregeler mit einer Integrierenden Komponente \cite{deutNL}.
+\begin{equation}
+\ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e + \underset{I-Anteil}{\tilde{c}_{-1} \int e(\tau)d\tau} +a_{st}= 0
+\label{eq:integodif}
+\end{equation} 
+Der I-Anteil liefert jetzt einen Signalanteil zur Kompensation der Störung im stationären Zustand. Den Beweis dafür erhält man in dem man die Integro-Differentialgleichung (\ref{eq:integodif}) nach der Zeit ableitet ergibt sich Folgenden Differentialgleichung. 
+\begin{equation}
+	\dddot{e} + \tilde{c}_1 \cdot \ddot{e}+ \tilde{c}_0\cdot \dot{e} + \tilde{c}_{-1} \cdot e = 0
+	\label{eq:ifehlerdyn}
+\end{equation}
+Im eingeschwungenem Zustand, ergibt sich so für den Positionsfehler
+\begin{equation}
+ e = 0
+\end{equation}
+Das Stellgesetz für einen Regler mit I-Anteil lässt sich unter Vernachlässigung der Dauerstörung $ a_{st} $ aus Gleichung (\ref{eq:integodif} ) entwickeln (vgl. Abbildung \ref{fig:folgeregler}).
+\begin{equation}
+u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-Anteil}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n) +\tilde{c}_0\cdot (P^n_{ref} - P^n)+\tilde{c}_{-1} \int e(\tau)d\tau}
+\end{equation}
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/Platzhalter}
+	\caption[Folgeregler]{Folgeregler} %
+	\label{fig:folgeregler}
+\end{figure}
+Wie auch schon zuvor kann die Dynamik Polvorgabe vorgeben werden. Für den Folgeregler mit I-Anteil ist hierzu die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden.
+
+\subsection{Einstellung der Dynamik mittels Polvorgabe}
 
 
-
-Regelung für psi wegelassen ja da jeder punkt im raum nur über variantion von phi und theta erreichbar. Daher kann psi gleich der Lageregelung übergeben werden. Die per Definition der Linearität \cite{lunze08} ein lineares Zustandsverhalten aufweisen.
-Die Orientierung kann direkt dem Lageregler übergeben werden
 \section{Zustandsschätzung}
 \label{sec:Zustandsbestimmung}
