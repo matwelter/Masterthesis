@@ -11,6 +11,16 @@
   Timestamp                = {2011-08-17T00:00:00.000+0200}
 }
 
+@TechReport{Buch14,
+  Title                    = {Regelungstechnik und Flugregler},
+  Author                   = {J/"org J. Buchholz},
+  Institution              = {Hochschule Bremen},
+  Year                     = {2014},
+
+  Owner                    = {welterms},
+  Timestamp                = {2015.01.08}
+}
+
 @InProceedings{censi08plicp,
   Title                    = {An {ICP} variant using a point-to-line metric},
   Author                   = {Censi, Andrea},
@@ -29,7 +39,7 @@
 
 @Standard{deutNL,
   Title                    = {Regelung nichtlinearer Systeme},
-  Institution              = {FriedrichFriedrich-Alexander-Universit�t Erlangen-N�rnberg},
+  Institution              = {Friedrich-Alexander-Universit\"at Erlangen-N\"unberg},
   Author                   = {Joachim Deutscher},
   Year                     = {2013},
 
@@ -46,9 +56,9 @@
 }
 
 @MastersThesis{JanKal13,
-  Title                    = {H�henbestimmung und H�henregelung bei einem Quadrocopter},
+  Title                    = {H\"ohenbestimmung und H\"ohenregelung bei einem Quadrocopter},
   Author                   = {Jan Kallwies},
-  School                   = {Friedrich-Alexander-Universit�t Erlangen-N�rnberg},
+  School                   = {Friedrich-Alexander-Universit\"at Erlangen-N\"unberg},
   Year                     = {2013},
 
   Owner                    = {Matthias},
@@ -79,8 +89,18 @@
   Number                   = {Bd. 1},
   Series                   = {Springer-Lehrbuch},
 
-  ISBN                     = {9783540689096},
-  Url                      = {http://books.google.de/books?id=fTylHoV0DNIC}
+  ISBN                     = {9783540689096}
+}
+
+@Standard{aut4,
+  Title                    = {Skriptum AUT4 Mobile Robotik},
+  Institution              = {Georg-Simon-Ohm Hochschule N\"urnber},
+  Organization             = {Georg-Simon-Ohm Hochschule N\"urnberg},
+  Author                   = {Stefan May},
+  Year                     = {2013},
+
+  Owner                    = {Matthias},
+  Timestamp                = {2015.01.02}
 }
 
 @InProceedings{Morris2010,
@@ -88,12 +108,5 @@
   Author                   = {William Morris and Ivan Dryanovski and Jizhong Xiao and Senior Member},
   Booktitle                = {In RSS 2010 workshop on RGB-D: Advanced Reasoning with Depth Cameras},
   Year                     = {2010}
-}
-
-@Standard{aut4,
-  Title                    = {Skriptum AUT4 Mobile Robotik},
-
-  Owner                    = {Matthias},
-  Timestamp                = {2015.01.02}
 }
 

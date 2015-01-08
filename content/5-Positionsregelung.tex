@@ -289,24 +289,26 @@ Somit lässt ist der Verlauf der Trajektorie für $ u_f = \ddot{P}^n_{ref}  $ (Gle
 u_f = \omega_0^2 \cdot(P^n_{cmd}-P^n_{ref})-2D\omega_0\cdot \dot{P}^n_{ref}
 \label{eq:ref_mdl}
 \end{equation}
-Vorteil dieser Darstellung ist, das die Dynamik der Vorsteuerung über die in den Grundlagen der Regelungstechnik \cite{lunze08} vermittelten Entwurfskriterien für PT2-Glieder bestimmen lässt. So ist die Schwingungsfähigkeit über die Dämpfung $ D $ beeinflussbar ($ D < 1 $, keine Schwingung). $ \omega_0 $ kann schließlich eingestellt werden wie schnell die Zielkoordinaten erreicht werden können. Das Strukturbild des resultierten Refernzmodells ist in Abbildung \ref{fig:strucref} visualisiert. Es ist anzumerken, das  aufgrund der entkoppelten Integriererketten eine separate Dynamikvorgabe für jeden Zweig des zustandslinearisierten Modells möglich ist. 
+Vorteil dieser Darstellung ist, das die Dynamik der Vorsteuerung über die in den Grundlagen der Regelungstechnik \cite{lunze08} vermittelten Entwurfskriterien für PT2-Glieder bestimmen lässt. So ist die Schwingungsfähigkeit über die Dämpfung $ D $ beeinflussbar ($ D < 1 $, keine Schwingung). Mit $ \omega_0 $ kann schließlich eingestellt werden wie schnell die Zielkoordinaten erreicht werden sollen. $ \omega $ ist da bei durch die maximal zulässige Stellgröße beschränkt.
 
+Das Strukturbild des resultierten Refernzmodells ist in Abbildung \ref{fig:strucref} visualisiert. Es ist anzumerken, das  aufgrund der entkoppelten Integriererketten eine separate Dynamikvorgabe für jeden Zweig des zustandslinearisierten Modells möglich ist. 
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/Platzhalter}
+	\caption[]{Sturukturbild Vorsteuerung} %
+	\label{fig:strucref}
+\end{figure}
 Weiterhin besteht die Möglich die Vorsteuerung so auszubauen, das Geschwindigkeiten vorgegeben werden können mit den er sich aus Sicht des Quadrocoptes im Raum bewegen soll. Dabei erfolgt die Vorgabe der Soll-Geschwindigkeiten im o-frame. Diese wird Integriert und die anschließend ins n-frame transformiert.
 
 \begin{equation}
-P^n_{cmd} = M_z^T\cdot(\int v^o dt)+P^n_{cmd_0}
+P^n_{cmd} = \int (M_z^T\cdot v^o) dt + P^n_{cmd_0}
 \end{equation}
 
 Mit wird dem sich stetig Verändernde $ P^n_{cmd} $ wird das Referenzmodell (\ref{eq:ref_mdl}) gespeißt. Somit lassen sich zum Beispiel über die Fernbedinungen Geschwindigkeiten vorgeben, was die Handhabbarkeit des Quadrocopters deutlich vereinfacht.
  
-Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Simuliert man das Modell (Abbildung \ref{fig:Gesamtinversion}) inklusive des Stellgesetzes der Vorsteuerung Gleichung (\ref{eq:ref_mdl}) für konsistente Anfangsbedingungen $ P_{ref0}^n = P_0^n $ so ergibt sich die gewünschte Flugkurve. In der Realität ist die Konsistens der Angfangsbedingungen jedoch nicht immer gegeben. Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um diesen Effekten entgegen zuwirken benötigt man nun einen Folgeregler. Dessen Aufgabe besteht darin äußere Einflüsse zu eliminieren. 
+Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Simuliert man das Modell (Abbildung \ref{fig:Gesamtinversion}) inklusive des Stellgesetzes der Vorsteuerung Gleichung (\ref{eq:ref_mdl}) für konsistente Anfangsbedingungen $ P_{ref0}^n = P_0^n $ so ergibt sich die gewünschte Flugkurve. In der Realität ist die Konsistens der Angfangsbedingungen jedoch nicht immer gegeben. Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um diesen Effekten entgegen zuwirken benötigt man nun einen Folgeregler. Dessen Aufgabe besteht darin äußere Einflüsse zu eliminieren.
 
-\begin{figure}
-	\centering
-	\includegraphics[width = \textwidth]{images/Platzhalter}
-	\caption[]{Eine Integriererkette} %
-	\label{fig:strucref}
-\end{figure}
+
 
 \section{Folgeregler}
 \label{sec:folgeregeler}
