@@ -58,7 +58,6 @@
 @MastersThesis{JanKal13,
   Title                    = {H\"ohenbestimmung und H\"ohenregelung bei einem Quadrocopter},
   Author                   = {Jan Kallwies},
-  School                   = {Friedrich-Alexander-Universit\"at Erlangen-N\"unberg},
   Year                     = {2013},
 
   Owner                    = {Matthias},
@@ -108,5 +107,15 @@
   Author                   = {William Morris and Ivan Dryanovski and Jizhong Xiao and Senior Member},
   Booktitle                = {In RSS 2010 workshop on RGB-D: Advanced Reasoning with Depth Cameras},
   Year                     = {2010}
+}
+
+@Standard{Thiel14,
+  Title                    = {Eingebettete Navigationssysteme},
+  Institution              = {Friedrich-Alexander-Universit\"at Erlangen-N\"unberg},
+  Author                   = {J\"orn Thielecke},
+  Year                     = {2014},
+
+  Owner                    = {welterms},
+  Timestamp                = {2015.01.08}
 }
 
