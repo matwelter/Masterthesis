@@ -316,7 +316,7 @@ Inkonsistente Anfangsbedingungen, externe Störungen sowie Modellunsicherheiten b
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/Platzhalter}
-	\caption[]{Rückführung der Folgefehler} %
+	\caption[]{Ausgabgsfolgefehlermodell mit Zustandsrückführung} %
 	\label{fig:rückfolgefeh}
 \end{figure}
 \begin{equation}
@@ -370,10 +370,68 @@ u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-
 	\caption[Folgeregler]{Folgeregler} %
 	\label{fig:folgeregler}
 \end{figure}
-Wie auch schon zuvor kann die Dynamik Polvorgabe vorgeben werden. Für den Folgeregler mit I-Anteil ist hierzu die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden.
+Wie auch schon zuvor kann die Dynamik Polvorgabe festgelegt werden. Für den Folgeregler mit I-Anteil ist hierzu die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden. 
 
 \subsection{Einstellung der Dynamik mittels Polvorgabe}
+Anhand der Lage der Polstellen einer Übertragungsfunktion, können Rückschlüsse über das Einschwingverhalten und die Stabilität getroffen werden. Ziel einer Zustandsregelung, wie der Folgereregelung, ist die Pollagen der zu regelnden Strecke so zu verschieben, dass das Einausgangsverhalten die gewünschte Dynamik aufweist.
 
+Zunächst ist zu klären was die Polstellenlage in der komplexen Ebene über das Verhalten aussagt. Dabei entspricht die Anzahl der Pole $ \lambda_i $ der Ordnung $ n $ des Systems.
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/Platzhalter}
+	\caption[Stabilitätsgebiet]{Stabilitätsgebiet} %
+	\label{fig:stabgeb}
+\end{figure}
+\begin{itemize}
+	\item Befinden sich alle Pole $ \lambda_i $ links der Imaginärachse so ist das System asymptotisch stabil GLEICHUNG ansonsten instabil(Abbildung \ref{fig:stabgeb}).
+	\item Komplexe Pole können nur in Formen von Polpaaren auftauchen. Ist ein Komplexes Polpaar vorhanden, führt das System nach Anregung eine Schwingung aus . Befindet sich die Polpaare in der linken Halbebene des Imaginärteil, nimmt die Amplitude der Schwingung exponentiell ab.
+	\item Je weiter links sich die Pole auf der Reelenachse befinden desto schneller ist das System.  
+	\item Bei mehreren Polstellen wird das Verhalten hauptsächlich über die Pole mit dem größten Realteil bestimmt. Man nennt sie deshalb auch dominante Pole.
+\end{itemize}
+Betrachtet man eine Übertragungsfunktion im Bildbereich.
+\begin{equation}
+G_e(s) = \frac{Z(s)}{N(s)}
+\label{eq:Ge}
+\end{equation}  
+Entsprechen die Polstellen $ \lambda_i $ vom System, denn Nullstellen $ s_i $ des Nennerpolynom.
+\begin{equation}
+N(s)=  s^n+c_{n-1} \cdot s^{n-1}+ \cdots + c_1 \cdot s+ c_0 = \prod\limits_{n}^{i=1} (s-\lambda_i)= 0
+\label{eq:N}
+\end{equation}
+Das dynamische Verhalten kann jetzt anhand der Pollage analysiert werden. Im Umkehrschluss können für frei wählbare Koeffizienten des Nennerpolynoms die Dynamik über Vorgabe von Soll-Polestellen $ \lambda_{si} $ erfolgen. Möglich ist dies mit Hilfe einen Koeffizentenvergleichs.
+\begin{equation}
+N(s)=  s^n+c_{n-1} \cdot s^{n-1}+ \cdots + c_1 \cdot s+ c_0 =\prod\limits_{n}^{i=1} (s-\lambda_{si}) 
+\end{equation}
+Somit ist es möglich mittels (\ref{eq:fehlerdyn}) oder (\ref{eq:ifehlerdyn}) das Einschwingverhalten der Fehlerdifferenzialgleichung vorzugeben. Wie man jedoch die Polstellen optimal bestimmt, dafür gibt es keine generelle Vorgehensweise. In der Regel werden sie empirisch über Simulationen festegelegt und zum Schluss am realen Modell getestet bzw. gegebenenfalls optimiert. Dies gesieht meist händisch. Allerdings gibt es hier Algorithmen die ausgehend von einem Startwert, die Parameter automatisch an das System anpassen.  
+
+  
+\subsection{Automatische Optimierung der Reglerparameter}
+\label{sec:selftun}
+In der Simulation ermittelte Parameter müssen meist für das realen System leicht angepasst werden. Von Vorteil ist es deshalb, einen Algorithmus zu implementieren, der online und kontinuierlich die Einstellung optimiert. Diesen Vorgang bezeichnet man als selftuning. 
+
+Da der implementierte Folgeregler inklusive I-Anteil besteht aus einem Proportionalverstärker $ P $, einem Differentiellen Anteil $ D $ sowie einem Integrationsanteil $ I $.
+\begin{equation}
+u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{D-Anteil}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n)} +\underset{P-Anteil}{\tilde{c}_0\cdot (P^n_{ref} - P^n)}+\underset{I-Anteil}{\tilde{c}_{-1} \int e(\tau)d\tau}
+\end{equation}
+Das bedeutet um ihn zu optimieren, können Tuningalgorithmen angewandt werden die für einen PID-Regler entwickelt worden sind. So wurde der unter cite vorgestellte Algorithmus der die Reglerparameter über eine adaptive Interaktion tunt, in ROS integriert. Die Interaktion besteht dabei aus drei Differentialgleichungen.
+\begin{equation}
+\begin{split}
+\dot{k}_p &= \dot{\tilde{c}}_0 = \gamma \cdot e^2\\
+\dot{k}_i &= \dot{\tilde{c}}_{-1} = \gamma \cdot e \cdot \int e(\tau)d\tau\\
+\dot{k}_d &= \dot{\tilde{c}}_1 = \gamma \cdot e\cdot \dot{e}
+\end{split}
+\end{equation} 
+
+Dabei entspricht $ \gamma $ dem Anpassungskoeffizient. In cite ist $ \gamma = 10 $ empfohlen. Die Struktur des sich daraus ergebenden Folgeregler mit selbstoptimierung ist in Abbildung dargestellt. 
+  \begin{figure}
+  	\centering
+  	\includegraphics[width = \textwidth]{images/Platzhalter}
+  	\caption[Selftuning Folgeregler]{Folgeregler inklusive Selftuning} %
+  	\label{fig:selftun00}
+  \end{figure}
+Anzumerken ist das die Verbesserung der Verstärkungen gedacht ist. Das bedeutet, die Qualität der Optimierung ist Abhängig von den zu Beginn übergebenen Parameter, die zum Beispiel über die Polvorgabe bestimmt worden sind. 
 
 \section{Zustandsschätzung}
 \label{sec:Zustandsbestimmung}
+
+Beobachter dynamik Analog dem Folgeregler über die Polvorgabe vorgegeben werden
