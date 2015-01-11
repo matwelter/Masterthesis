@@ -448,15 +448,67 @@ a^b_k = a^b_{k_{tat}} +  r_{a_k}+b
 Das Problem daran, die Fehler werden mit Integriert. Damit driften geschätzte Geschwindigkeit und reele Geschwindigkeit auseinander. Somit ist eine Geschwindigkeitsbestimmung rein über die Inertialsensorik nicht möglich. 
 
 \subsection{Geschwindigkeit als Ableitung der Position}
-Ebenfalls lässt sich die Geschwindigkeit aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) über Ableitung der Quadrocopterpositionen bestimmen. Möglich ist dies, da der Laser die Umgebung mit einer festen Abtastzeit $ T_l = 25ms $ ($ 40Hz) $) die Umgebung scannt. So kann über die mittels  Scanmatchingverfahren ermittelte Positionen die Geschwindigkeit durch eine diskrete Ableitung errechnet werden.
+\label{subsec:abpos}
+Ebenfalls lässt sich die Geschwindigkeit aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) über Ableitung der Quadrocopterpositionen bestimmen. Da es bei den Positionsdaten um diskrete Werte handelt, lässt sich die Ableitung und somit die Geschwindigkeit (\ref{eq:v_eul})  anhand des Euler-Verfahren (\ref{eq:eul}) approximieren.
+\begin{equation}
+P^n_k=P^n_{k-1}+T_l \cdot v^n_k 
+\label{eq:eul}
+\end{equation}
 \begin{equation}
 v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l}
+\label{eq:v_eul}
 \end{equation}
-Dabei ist das Positionssignal aufgrund des Sensorrauschen des Lasers, der für die Projektion benötigten Gyrosskope sowie der Varianz des icp Schätzalgorithmuses verrauscht. Dieses Positonsrauschen $ r_P $ überträgt sich auch auf die Geschwindigkeit. 
+Die Abtastzeit $ T_l = 25ms $ ($f_l = 40Hz $). Dies entspricht der Updaterate mit der die Algorithmen zur Positionsbestimmung mit neuen Umgebungsscanns des Lasers gespeißt werden. Bei der Approximation der Geschwindigkeit ist zu beachten, dass das Positionssignal aufgrund von Sensorrauschen von Laser und Gyroskope sowie der Varianz des \gls{icp}-Algorithmus eine Abweichung vom tatsächlichen Positionswert $ P^n_{k_{tat}} $ aufweist. Diese Abweichung ist nicht konstant und ist als Positionsrauschen$ r_{P_k} $ darzustellen. 
+\begin{equation}
+P^n_k = P^n_{k_{tat}}+r_{P_k}
+\end{equation}
+Dieses Positonsrauschen $ r_P $ überträgt sich auf die Geschwindigkeit. 
 \begin{equation}
 v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
-\end{equation}
- Diese führt jedoch, nicht dazu das wie bei der Geschwindigkeitsbestimmung mittels der Beschleunigungssensoren, das der schätzwert und realwert weg divergiert. Nicht desto trotz ist das Rauschen unerwünscht,da es auf den differentiellen Teil des Folgereglers einwirkt. Es geht somit darum den Rauschanteil zu minimieren. Möglich ist dies zwar anhand eines digitalen Filter. Allerdings führen das IIR als auch das FIR Filter zu einer Phasenverschiebung \cite{Thede04}. Damit entspricht der ausgegebene Geschwindigkeit der des  Positionwertes zum Zeitpunk $ t =k \cdot T $. Dies führt zu einer Destabilisierung des Reglers. Der Einfluss ist umso größer je dynamischer der Flug des Quadrocopters ist. So ist eine Möglichkeit gesucht, die eine bestmögliche Filterung  aufweist und eine möglichst geringen Phasenverschiebung aufweist.
+\label{eq:vn_diskabrau}
+\end{equation} 
+ Diese führt jedoch nicht dazu, das wie bei der Geschwindigkeitsbestimmung mittels der Beschleunigungssensoren, das Schätzwert und Realwert auseinander divergiert. Nichtsdestotrotz hat das Rauschen einen Einfluss auf die Qualität der Geschwindigkeitsberechnung. So fällt bei niedrigen Geschwindigkeiten der Abstand zwischen zwei Positionswerten geringer aus. Der Betrag des Rauschanteils jedoch bleibt konstant. Dies führt vor allem bei Schwebeflügen sowie Flügen mit geringer Dynamik zu einer erhöhten Unsicherheit der Schätzung (Abbildung \ref{fig:VarPosVerschHohe}). Zwar zeigt Grafik \ref{fig:VarPosVerschNierdrig} das der Einfluss des Rauschen auf die Varianz der errechneten Geschwindigkeit (\ref{eq:vn_diskabrau}) mit der Größe der Positionsverschiebung abnimmt. Ungeachtet dessen ist es jedoch notwendig gerade für Bewegungen mir geringer Geschwindigkeit den Einfluss des Positionsrauschens zu minimieren.  
+ \begin{figure}
+ 	\centering{
+ 		\subfloat[Keine/kleine Positionsverschiebung, hohe Varianz]{
+ 			\includegraphics[width=0.4\textwidth]{images/hoheVar}
+ 			\label{fig:VarPosVerschHohe}
+ 		}
+ 		\hspace{0.1\textwidth}
+ 		\subfloat[Große Positionsverschiebung, geringe Varianz]{
+ 			\includegraphics[width=0.4\textwidth]{images/kleineVar}
+ 			\label{fig:VarPosVerschNierdrig}
+ 		}
+ 	}	
+ 	\caption[Auswirkung der Positionsverschiebung auf Varianz der Geschwindigkeit]{Auswirkung der Größe der Positionsverschiebung innerhalb eines Schätzwertes auf die Varianz der Geschwindigkeitsschätzung}
+ 	\label{fig:VarPosVersch}
+ \end{figure}
+ Geht man davon aus, das die Frequenz des Rauschanteils oberhalb des Frequenzbades der Positionsänderungen liegt. Kann das Nutzsignal mittels eines Tiefpassfilters vom Rauschanteil getrennt werden. Das Tiefpassfilter lässt sich dabei mittels eines rekursiven \gls{iir}-Filters realisieren \cite{des14}. Die gefilterte Geschwindigkeit $ \hat{v}^n_k $ hängt dabei nicht nur von vorherigen Messwerten $v^n_k $  sondern auch von den vorherigen Filterergebnissen.
+ \begin{equation}
+ \hat{v}^n_k = \sum\limits_{j = 0}^{n}a_j \cdot v^n_{k-j}+ \sum\limits_{i = 1}^{n}b_j \cdot \hat{v}^n_{k-i}
+ \label{eq:filter}
+ \end{equation}
+ Mittels der Koeffizienten $ a_j $ und $ b_i $ kann nun das gewünschte Filterverhalten, zum Beispiel das eines Butterworth-Filters, mit der benötigten Grenzfrequenz realisiert werden. Die Ordnung $ n $ des Filter beschreibt wie viele der vorangegangenen Messwerten in die Filterung mit einzubeziehen sind. Beim Design des Filters müssen jedoch Kompromisse zwischen Zeitverzögerung, Phasenverzerrung, Dämpfung und Stoppbandeigenschaften getroffen werden. Für die Folgeregelung ist es dabei Wichtig, das die beiden erste genannten Kriterien möglichst gering ausfallen. Ist dies nicht der Fall, wirkt es destabilisierend auf den Regler. 
+ 
+ Des weiteren lassen sich Aufgrund der geringe Updaterate von $ 40 Hz $ der Positionsdaten, die Dynamik des Quadrocopters und das Positionsrauschen Spektral nicht von einander trennen. Möchte man also das Positionsrauschen unterdrücken, werden auch schnelle Positionsänderungen des Quadrocoptes weg gefiltert. Für die hohe Dynamik des Quadrocopters ist die Anwendung eines Tiefpassfilter mit Grenzfrequenz nicht möglich. Gesucht ist nun eine Methode, die für Flüge mit geringer Dynamik die Varianz der Geschwindigkeitsschätzung verursacht durch Positionsrauschen möglichst stark verringert. Gleichzeitig jedoch der Hohen Dynamik des Quadrocopters folge leisten kann.  
+ 
+ \subsection{Geschwindigkeitsbestimmung über die Methode First-Order Adaptive Windowing }
+ \label{subsec:adaptwind}
+ Wie schon in Kaptiel \ref{subsec:abpos} erkannt, nimmt die Varianz der Geschwindigkeitsschätzung ab je weiter die Positionswerte auseinander liegen. Hierfür sei auf Grafik \ref{fig:VarPosVerschNierdrig} verwiesen. Der gleiche Effekt tritt auf, je mehr Abtastschritte $ n $ der für die Eulerapproximation verwendete Bezugspunkt $ P^n_{k-n} $ in der Vergangenheit liegt. 
+ \begin{equation}
+ \hat{v}^n_k = \frac{P^n_k-P^n_{k-n}}{nT_l}=
+ \label{eq:v_eul_n}
+ \end{equation}
+ Dabei ist die Verwendung der Bezugsposition $ P^n_{k-n} $ gleichzusetzen mit der Mittlung der letzten $ n $ Geschwindigkeitsschätzungen ($ v^n_k,v^n_{k-1},\cdots,v^n_{k-1} $) mittels (\ref{eq:v_eul}). Deshalb spricht man auch von Fensterung beziehungsweise Windowing. Siehe zur Veranschaulichung Abbildung~\ref{fig:Fensterung}. Vergrößert man das Fenster hat das eine äquivalente Wirkung wie die Reduzierung der Abtastrate.
+  \begin{figure}
+  	\centering
+  	\includegraphics[width = \textwidth]{images/Fensterung}
+  	\caption[Fensterung]{Fensterung} %
+  	\label{fig:Fensterung}
+  \end{figure}
+ Das Windowing verhält sich wie ein Filter. So führt ein großes Fenster bei geringen Dynamiken zu einer sehr präzisen Geschwindigkeitsschätzung. Schätzungen für Hochfrequenter Bewegungen des Quadrocopter werden jedoch gedämpft und Zeitverzögert ausgegeben. Es wirkt somit ähnlich wie das Filter (\ref{eq:filter}). Mit einem Vorteil, das Filterverhalten nur über eine Parameter einstellbar. Der Fenstergröße $ n $. So sollte das Window klein sein wenn der Quadrocopter Hochfrequente Änderungen der Bewegung vornimmt, damit die Geschwindigkeitsänderungen möglichst ungedämpft erfasst werden. Bei geringen Dynamiken soll die Fenstergröße jedoch zunehmen wodurch der Einfluss des Positionsrauschens minimiert werden soll. 
+ 
+ Dabei muss die Anpassung der Fenstergröße online Erfolgen. Im Paper \cite{adaptWin} wird dafür die Methode der \gls{foaw} vorgestellt.
+ 
+ 
 
-
-%Beobachter dynamik Analog dem Folgeregler über die Polvorgabe vorgegeben werden

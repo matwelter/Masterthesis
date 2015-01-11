@@ -1,0 +1,30 @@
+\ifglsentryexists{\glsspace }{}%
+{%
+\gls@defglossaryentry{\glsspace }%
+{%
+name={(},%
+sort={(},%
+type={acronym},%
+first={F\glsspace (()},%
+firstplural={Fs\glsspace ((s)},%
+text={(},%
+plural={(s},%
+description={F},%
+descriptionplural={F\acrpluralsuffix },%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={F},%
+longplural={Fs},%
+short={(},%
+shortplural={(s},%
+counter={page},%
+parent={},%
+%
+}%
+}%
