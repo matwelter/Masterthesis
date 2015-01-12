@@ -506,9 +506,115 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
   	\caption[Fensterung]{Fensterung} %
   	\label{fig:Fensterung}
   \end{figure}
- Das Windowing verhält sich wie ein Filter. So führt ein großes Fenster bei geringen Dynamiken zu einer sehr präzisen Geschwindigkeitsschätzung. Schätzungen für Hochfrequenter Bewegungen des Quadrocopter werden jedoch gedämpft und Zeitverzögert ausgegeben. Es wirkt somit ähnlich wie das Filter (\ref{eq:filter}). Mit einem Vorteil, das Filterverhalten nur über eine Parameter einstellbar. Der Fenstergröße $ n $. So sollte das Window klein sein wenn der Quadrocopter Hochfrequente Änderungen der Bewegung vornimmt, damit die Geschwindigkeitsänderungen möglichst ungedämpft erfasst werden. Bei geringen Dynamiken soll die Fenstergröße jedoch zunehmen wodurch der Einfluss des Positionsrauschens minimiert werden soll. 
+ Das Windowing verhält sich wie ein Filter. So führt ein großes Fenster bei geringen Dynamiken zu einer sehr präzisen Geschwindigkeitsschätzung durch Rauschunterdrückung. Schätzungen für Hochfrequenter Bewegungen des Quadrocopter werden jedoch stark gedämpft und Zeitverzögert ausgegeben, womit die Verlässlichkeit der Schätzung abnimmt. Es wirkt somit ähnlich wie das Filter (\ref{eq:filter}). Allerdings mit dem Vorteil, das Filterverhalten nur über eine Parameter einstellbar ist. Der Fenstergröße $ n $. So sollte das Window klein sein, wenn der Quadrocopter Hochfrequente Änderungen der Bewegung vornimmt, damit die abrupten Geschwindigkeitsänderungen möglichst ungedämpft erfasst werden. Bei geringen Dynamiken soll die Fenstergröße jedoch zunehmen, wodurch der Einfluss des Positionsrauschens minimiert werden soll. 
+   \begin{figure}
+   	\centering
+   	\includegraphics[width = \textwidth]{images/End-fit-foaw}
+   	\caption[End-fit \gls{foaw}]{End-fit \gls{foaw}} %
+   	\label{fig:foaw}
+   \end{figure}
+ Dabei muss die Anpassung der Fenstergröße online und für jeden Punkt Abhängig der Achse des n-frame separat erfolgen. Im Paper \cite{adaptWin} wird dafür die Methode des \gls{foaw} vorgestellt. Diese Besagt, existiert eine Grade zwischen den Positionswerten $ p^n_k $ und $ p^n_{k-n} $ einer Achse, die alle $ n $ Punkte innerhalb einer Tolerenz $ \pm d $ schneidet, stellt die Steigung dieser und somit die Geschwindigkeit einen optimalen Kompromiss zwischen Rauschunterdrückung (Präzision) und Verlässlichkeit dar. Die möglichen Schätzwerte für die Geschwindigkeit abhängig von der Fenstergröße $ n $ und der Toleranz $ d $ sind im folgenden Datensatz dargestellt.
  
- Dabei muss die Anpassung der Fenstergröße online Erfolgen. Im Paper \cite{adaptWin} wird dafür die Methode der \gls{foaw} vorgestellt.
- 
- 
+ \begin{equation}
+ \hat{v}_k \in [\frac{p^n_k-p^n_{k-n}}{n T_l}-\frac{2d}{n T_l}, \frac{p^n_k-p^n_{k-n}}{n T_l}-\frac{2d}{n T_l}]
+ \end{equation}
+  Die Toleranz $ d $ ist dabei durch den Betrag der maximalen Rauschabweichung festgelegt und somit als Konstante zu sehen.
+ \begin{equation}
+ d = ||r_{max}||
+ \end{equation}
+Zu erkennen ist, das die Varianz der Schätzung für eine steigende Fenstergröße $ n $ abnimmt. Somit ist ausgehend von der aktuellen Position $ p^n_k $ die maximale mögliche Fenstergröße $ n = max\{1,2,3,\dots\} $ zu ermitteln für die gilt,
+\begin{equation}
+|p^n_{k-i} - \hat{p}^n_{k-i}|\le d \hspace{1.5cm}\forall i \in \{1,2,\dots,n\}
+\label{eq:toleranz}
+\end{equation} 
+Dabei entspricht $ \hat{p}^n_{k-i} $ den Punkte auf der approximierenden Geradengleichung.
+\begin{equation}
+\hat{p}^n_{k-i} = a_n + b_n \cdot(k-i) T_l
+\label{eq:gradengl}
+\end{equation}
+In \cite{adaptWin} ist dazu ein iterativer Algorithmus zur Lösung dieses Problems beschrieben. Dabei sind die Parameter der Geradengleichung (\ref{eq:gradengl}) wie folgt parametriert.
+\begin{equation}
+a_n =\frac{k \cdot p^n_{k-i} + (n-k)p^n_{k}}{n}
+\label{eq:a_n}
+\end{equation}
+\begin{equation}
+b_n =\frac{p^n_{k} - p^n_{k-n}}{n T_l}
+\label{eq:b_n}
+\end{equation}
 
+
+
+Da die Steigung $ b_n $ aus den zwei Rändern des Fensters gebildet wird, spricht man von der End-fit-\gls{foaw}.  
+
+
+Der Ablauf der des Interationsalgorithmus sieht dann wie folgt aus.
+
+\begin{itemize}
+	\item \textbf{Schritt 1:} Man verschiebt die Zeitachse so, dass für den Zeitpunkt des neusten Wert $ p^n_k $ gilt $ t_k = k\cdot T_l = 0 $. Die Folge ist eine vom Faktor $ k $ unabhängige Geradengleichung.
+	\begin{equation}
+	\hat{p}^n_{k-i} = a_n + b_n \cdot(-i) \cdot T_l
+	\label{eq:gradengl_t0}
+	\end{equation}
+	Für die gilt,
+	 \begin{equation}
+	a_n = p^n_k
+	\end{equation}
+	und $ b_n  $ weiterhin über (\ref{eq:a_n}) berechnet werden kann. Vorteil, es muss jeweils nur die Steigung neu berechnet werden.
+	\item \textbf{Schritt 2:} Fenstergröße j = 1.
+	\item \textbf{Schritt 2:} Berechnung des Parameters $b_j $ (\ref{eq:b_n}) der Geradengleichung (\ref{eq:gradengl_t0}) in Abhängigkeit der Fenstergröße $ j $.
+	\item \textbf{Schritt 3:} Überprüfen ob die berechnete Gerade alle im Fester befindlichen Punkte $p^n_{k-i} i \in \{1,2,\dots,j\} $ innerhalb  der Toleranz passiert. Bedingung (\ref{eq:toleranz}) 
+	\item \textbf{Schritt 4:} Ist Schritt 3 erfüllt, inkrementiere die Fenstergröße $ j =j+1 $ und gehe zu Schritt 2. Wenn Bedingung nicht erfüllt, ist die Steigung der vorhergegangen Geradengleichung als Schätzwert der Geschwindigkeit auszugeben. 
+	\begin{equation}
+	 \hat{v}_k = b_{j-1}=b_n
+	\end{equation} 
+	Die maximale Fenstergröße $ n $ entspricht für Position $ p^n_{k} $  somit $ n = j-1 $ 
+\end{itemize} 
+
+ Dieser Vorgang wird für jeden Aktualisierung  $ k = k+1 $ des Positionswert $ p^n_{k} $ neu gestartet. Zur Veranschaulichung ist der Algorithmus noch einmal in einen Flussdiagramm (Abbildung \ref{fig:flussfoaw}) dargestellt.  
+
+ \begin{figure}
+ 	\centering
+ 	\includegraphics[width = \textwidth]{images/Platzhalter}
+ 	\caption[Flussdiagramm \gls{foaw}]{Flussdiagramm \gls{foaw}} %
+ 	\label{fig:flussfoaw}
+ \end{figure}
+ Die End-fit-\gls{foaw} verwendet für den Schätzvorgang die zwei Endpunkte des Fensters. In \cite{adaptWin} wird deshalb noch die Best-fit\gls{foaw} vorgestellt. Dabei wird die Steigung, über die Methode der des kleinsten quadratischen Fehler bestimmt. Das bedeutet für die zeitnormierte Geradengleichung ist eine Steigung $ b_n $ gesucht für die die Summe der Fehlerquadrat $ e^2 $ ein Minimum aufweist.  
+ \begin{equation}
+ e_{min}^2 = min \sum\limits_{i=0}^{n}(p^n_{k-i} - \hat{p}^n_{k-i})^2
+ \label{eq:quade}
+ \end{equation}
+ mit
+ \begin{equation}
+\hat{p}^n_{k-i} = p^n_{k} - b_n \cdot i \cdot T_l 
+ \end{equation}
+Um das Minimum der Fehlergleichung (\ref{eq:quade}) in Abhängigkeit der Steigung bestimmen zu können, muss diese nach $ b_n $ abzuleiten. Da es sich um eine quadratische Gleichung handelt, weist der Fehler Tiefpunkt auf wenn diese Ableitung Null ergibt.
+\begin{equation}
+\frac{d e^2}{d b_n}=0
+\end{equation}
+Löst man unter dieser Bedingung die Ableitung nach $ b_n $ auf. Erhält man die Steigung die die Summe der kleinsten quadratischen Fehler aufweist.
+\begin{equation}
+b_n = \frac{(n\sum\limits_{ i=0}^{n}y_{k-1}-2\sum\limits_{i=0}^{n} i\cdot y_{k-1})\cdot 6 }{T_l n(n+1)(n+2)}
+\end{equation}
+Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Umsetzung der best-fit-\gls{foaw} in der Software erfolgt nach dem gleichen Schema wie bei der end-fit-\gls{foaw}. Einziger Unterschied, zur Berechnung der Steigung $ b_n $ wir die Gleichung verwendet. Das Ergbnis ist eine präzisere Schätzung bei gleichbleibender Zuverlässigkeit der Messung. Beide Methoden sind jedoch anfällig gegen sogenannte Outliner. Einzelne Signalwerte die eine höheren Fehler als die maximale durch das Rauschen verursachte Abweichung $ d $ aufweisen. Outliner lassen sich jedoch sehr einfach durch eine robuster Abbruchkriterium in Schritt 3 bekämpfen. So gilt die Bedingung (\ref{eq:toleranz}) erst dann für nicht bestimmt, wenn zwei aufeinanderfolgende Werte das Kriterum nicht erfüllen. Erst dann wird die Vergrößerung des Fensters gestoppt. Diese Variante nennt sich best-fit-\gls{foaw}-R.
+
+Die Methoden des \gls{foaw} bietet eine sehr Möglichkeit die Geschwindigkeit auf Basis eines verrauschten Positionssignal zu ermitteln. Problematisch ist jedoch die geringe Abtastrate von $ 40 Hz $ des Lasers. Schon bei Flügen bei mittlerer Dynamik führt dies dazu, das die Fenstergröße stark reduziert wird. Somit auch der Einfluss des Positionsrauschens stark zunimmt. Somit kann selbst diese Konzept limitiert durch die Tastrate des Lasers der Dynamik des Quadrocopters nicht nachkommen. Es ist somit klar das eine Methode benötigt wird, die Position und Geschwindigkeit in einer höhren Taktrate zur Verfügung stellt. Gleichzeit müssen beide Signale ausreichend Rauschunterdrückt sein. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

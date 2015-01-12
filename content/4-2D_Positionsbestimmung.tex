@@ -137,7 +137,7 @@ Zur Bestimmung des Matchings bzw. der Rotation $ M^o_z $ und der Translation $ T
 
 \begin{itemize}
 	\item{
-\textbf{Vorgang 1,} Punktekorrespondenz.
+\textbf{Schritt 1,} Punktekorrespondenz.
 
  Hierbei bekommt jeder Punkt des $ S_{neu} $ einen korrespondierenden Punkt aus der Datenwolke $ S_{ref} $ zugewiesen. Man spricht hierbei von der Point-to-Point Arithmetik. Als Startwert werden als Korrespondenzpunkte die am nächsten liegenden Nachbar übergeben. Die Suche der entsprechenden Werte erfolgt über die Methode der erschöpfenden Suche (Brute-Force-Methode), d.h. jeden Punkt werden alle Punktastände ermittelt und der Punkt mit der geringsten Entfernung zugewiesen.  Das Ergebnis ist eine Datenmenge $ S'_{ref} $, deren Anzahl an Werten denen von $ S_{neu} $ entspricht.
 
@@ -147,7 +147,7 @@ S'_{ref} =[p'_{ref_i} | i=1..(n'= n_{neu})]\\
 
 Dieser Schritt stellt auf Grund des nicht optimierten Suchalgorithmus den rechenaufwendigsten Teil dar. Laut [LITERATUR AUT4] stellt dies für die Verarbeitung von 2D-Laserscans kein Problem dar.}
 
-\item \textbf{Vorgang 2,} Bestimmung des Rotationswinkel $\Delta\psi^o$ und der Translation $T$
+\item \textbf{Schritt 2,} Bestimmung des Rotationswinkel $\Delta\psi^o$ und der Translation $T$
 
 Wie schon zu beginn angeklungen, soll eine rotatorische und translatorische Transformation zur Überlappung von $S_{neu}$ mit $S_{ref}$ führen. Idealität und eine sehr kleine Änderung vorausgesetzt könnte jeder Punkt von $ S_{neu} $ in den entsprechenden Punkt $ S_{ref}$ umgerechnet werden.
 
@@ -262,11 +262,11 @@ T=c_{ref}-M^o_z(\Delta\psi^o)\cdot c_{neu}
 
 Somit sind Translation und Rotation bestimmt.
  
-\item \textbf{Vorgang 3,} Ermittlung der Summe der quadratischen Fehler $E(M^o_z(\Delta\psi^o),T)$ 
+\item \textbf{Schritt 3,} Ermittlung der Summe der quadratischen Fehler $E(M^o_z(\Delta\psi^o),T)$ 
 
 Die aus der Formel \ref{eq:psio} stammende Rotation und die mit Hilfe der Gleichung \ref{eq:T} berechneten Translation werden in die Formel \label{eq:leastsquare} des quadratischen Fehlers eingesetzt.
 
-\item \textbf{Vorgang 4,} Vergleich von $E(M^o_z(\Delta\psi^o),T)$ mit Schwellwert $ E_{max} $ 
+\item \textbf{Schritt 4,} Vergleich von $E(M^o_z(\Delta\psi^o),T)$ mit Schwellwert $ E_{max} $ 
 
 Der in Vorgang 4 berechnete quadratische Fehler wird mit dem Schwellwert des Maximal zulässigen Fehlers $ E_{max} $ verglichen. Wird unterschritten ist das Abbruchkriterium erfüllt,handelt es bei Rotation $ \Delta\psi^o $ und Translation $ T $ Werte die Transformation bzw. die neue Position $ P_{neu} $ mit einer ausreichenden Genauigkeit beschreiben. Ist das Kriterium beginnt der \gls{icp}-Algorithmus bei Vorgang 1 und bestimmt neue Korrespondenzen. 
 \end{itemize}
