@@ -433,7 +433,7 @@ Anzumerken ist das die Verbesserung der Verstärkungen gedacht ist. Das bedeutet,
 
 \section{Zustandsschätzung}
 \label{sec:Zustandsbestimmung}
-Bei der Folgeregelung handelt es sich um einen Zustandsregler. Das bedeutet die Werte aller Zustände des realen Systems müssen bekannt sein. Betrachtet man das Stellgesetz der Regelung inklusive Vorsteuerung, bedeutet dies, das Position P und die Geschwindigkeit v, mit der sich der Quadrokobert im n-frame bewegt benötigt werden. Die Position p ist bereits über den Laser (Kaptiel) bestimmt. Gesucht ist noch die Geschwindigkeit v. Messtechnisch lässt sich diese nur sehr schwer ermitteln zum Bespiel über ein Dopplerradar. Dies würde eine zusätzliche Sensor bedeutet, die wiederum mit kosten verbunden sind. Es sind also Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit ermitteln.
+Bei der Folgeregelung handelt es sich um einen Zustandsregler. Das bedeutet die Werte aller Zustände des realen Systems müssen bekannt sein. Betrachtet man das Stellgesetz der Regelung inklusive Vorsteuerung, bedeutet dies, das Position $ P^n $ und die Geschwindigkeit $ v^n $, mit der sich der Quadrokobert im n-frame bewegt benötigt werden. Die Position $ P^n $ ist bereits über den Laser (Kapitel \ref{chap:2Dpositionsbestimmung}) bestimmt. Besitzt allerdings nur eine Updaterate von $ 40 Hz $. Hier wäre es nützlich Zwischenwerte zu schätzen, sodass die Positionsdaten dem Folgeregler mit einer höheren Taktrate zur Verfügung stehen. Der Zustand der Geschwindigkeit $ v^n $ lässt sich  messtechnisch nur sehr schwer ermitteln. Eine Möglichkeit zur messtechnischen Erfassung wäre ein Dopplerradar \cite{ras12}. Dieser basiert auf dem Doppler-Effekt. Dabei wird ein periodisches Signal ausgesandt. Anhand der Frequenzänderung des von einem Objekt reflektieren Signals, kann nun auf die Geschwindigkeit geschlossen werden. Dies würde eine zusätzliche Sensor bedeutet, der wiederum mit kosten verbunden ist. Es ist somit eine Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit ermittelt.
 
 \subsection{Geschwindigkeitbestimmung über die Inertialsenorik}
 \label{subsec:Vimu}
@@ -494,6 +494,7 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  
  \subsection{Geschwindigkeitsbestimmung über die Methode First-Order Adaptive Windowing }
  \label{subsec:adaptwind}
+ (Hier fehlt 1kHz und Position zwar höhrer Abtastrate verfügbar, Fehler drifftet durch doppelte Integration zu schnell zu weit weg)
  Wie schon in Kaptiel \ref{subsec:abpos} erkannt, nimmt die Varianz der Geschwindigkeitsschätzung ab je weiter die Positionswerte auseinander liegen. Hierfür sei auf Grafik \ref{fig:VarPosVerschNierdrig} verwiesen. Der gleiche Effekt tritt auf, je mehr Abtastschritte $ n $ der für die Eulerapproximation verwendete Bezugspunkt $ P^n_{k-n} $ in der Vergangenheit liegt. 
  \begin{equation}
  \hat{v}^n_k = \frac{P^n_k-P^n_{k-n}}{nT_l}=
@@ -598,23 +599,11 @@ b_n = \frac{(n\sum\limits_{ i=0}^{n}y_{k-1}-2\sum\limits_{i=0}^{n} i\cdot y_{k-1
 Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Umsetzung der best-fit-\gls{foaw} in der Software erfolgt nach dem gleichen Schema wie bei der end-fit-\gls{foaw}. Einziger Unterschied, zur Berechnung der Steigung $ b_n $ wir die Gleichung verwendet. Das Ergbnis ist eine präzisere Schätzung bei gleichbleibender Zuverlässigkeit der Messung. Beide Methoden sind jedoch anfällig gegen sogenannte Outliner. Einzelne Signalwerte die eine höheren Fehler als die maximale durch das Rauschen verursachte Abweichung $ d $ aufweisen. Outliner lassen sich jedoch sehr einfach durch eine robuster Abbruchkriterium in Schritt 3 bekämpfen. So gilt die Bedingung (\ref{eq:toleranz}) erst dann für nicht bestimmt, wenn zwei aufeinanderfolgende Werte das Kriterum nicht erfüllen. Erst dann wird die Vergrößerung des Fensters gestoppt. Diese Variante nennt sich best-fit-\gls{foaw}-R.
 
 Die Methoden des \gls{foaw} bietet eine sehr Möglichkeit die Geschwindigkeit auf Basis eines verrauschten Positionssignal zu ermitteln. Problematisch ist jedoch die geringe Abtastrate von $ 40 Hz $ des Lasers. Schon bei Flügen bei mittlerer Dynamik führt dies dazu, das die Fenstergröße stark reduziert wird. Somit auch der Einfluss des Positionsrauschens stark zunimmt. Somit kann selbst diese Konzept limitiert durch die Tastrate des Lasers der Dynamik des Quadrocopters nicht nachkommen. Es ist somit klar das eine Methode benötigt wird, die Position und Geschwindigkeit in einer höhren Taktrate zur Verfügung stellt. Gleichzeit müssen beide Signale ausreichend Rauschunterdrückt sein. 
+
+ \subsection{Bestimmung der Zustände mittels eines Fusionsfilter}
+ \label{subsec:Fusionsfilter}
+ Wie aus den oberen Kapitel zuerkenne wird keine der Methoden den zuvor gestellten Ansprüche gerecht. So erfüllt die Integration der Beschleunigung (Kapitel \ref{subsec:Vimu}) zwar das Kriterium zur Erhöhung der Taktrate. Beschleunigungsmesswerte werden in einem Takt von $ 1 kHz $ zur Verfügung gestellt. Doch durch den Bias des Beschleunigungssensors, divergieren innerhalb kürzester Zeit die geschätzten Zustände von den realen Zuständen. Dieses Phänomen tritt bei den Anwendungen Kaptiel und Kapitel nicht auf. Der Grund, sie beziehen sich auf die vom Laser berechneten Positionswerte. Die Abweichungen dieser Zustandswerte befinden sich dabei in einem konstanten Rahmen um die tatsächliche Position. Diese Positionsrauschen sorgt bei der Geschwindigkeitsschätzung über die Ableitung der Positionswerte dafür, dass das errechnete Geschwindigkeitssignal ebenfalls einen Rauschanteil aufweist. Diesen Rauschanteil zu minimieren ist Ziel der \gls{foaw} Methode. Aufgrund der geringen Abtastfrequenz von $ 40Hz  $ kann dieser Ansatz der hohen Dynamik nicht folge leisten. Schon für geringen Dynamiken ist die Fenstergröße stark dezimiert und somit auch die Rauschunterdrückung. Das Ergebnis, Bechleunigungssensor der \gls{imu} und Laser jeweils für sich bieten keine ausreichende Zustandswerte. Abhilfe, Fusion beider Sensordaten mittels eines Fusionsfilters. Dabei sorgen die Beschleunigungswerte mit ihrer hohen update Rate von $ 1 Khz $ für eine schnelle Reaktionsfähigkeit und tragen somit der Dynamik des Quadrocopters sorge. Die Positionsdaten des Laser indes verhindern ein Abdriften der Schätzwerte. Somit stellen sie die Zuverlässigkeit der Fusionsergebnisse sicher. 
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+Neuer text
+Das Fusionsfilterfilter auf dem \gls{hlp}  
  
