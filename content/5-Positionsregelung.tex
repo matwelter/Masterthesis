@@ -373,6 +373,7 @@ u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-
 Wie auch schon zuvor kann die Dynamik Polvorgabe festgelegt werden. Für den Folgeregler mit I-Anteil ist hierzu die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden. 
 
 \subsection{Einstellung der Dynamik mittels Polvorgabe}
+\label{subsec:polvor}
 Anhand der Lage der Polstellen einer Übertragungsfunktion, können Rückschlüsse über das Einschwingverhalten und die Stabilität getroffen werden. Ziel einer Zustandsregelung, wie der Folgereregelung, ist die Pollagen der zu regelnden Strecke so zu verschieben, dass das Einausgangsverhalten die gewünschte Dynamik aufweist.
 
 Zunächst ist zu klären was die Polstellenlage in der komplexen Ebene über das Verhalten aussagt. Dabei entspricht die Anzahl der Pole $ \lambda_i $ der Ordnung $ n $ des Systems.
@@ -437,6 +438,7 @@ Bei der Folgeregelung handelt es sich um einen Zustandsregler. Das bedeutet die 
 
 \subsection{Geschwindigkeitbestimmung über die Inertialsenorik}
 \label{subsec:Vimu}
+(Eventuell noch mit erweitern wie sich die Position über weiter Eulerapproximation entwickelt)
 Die \gls{imu} beinhaltet einen 3D-Bewegungsseonsor. Dieser nimmt die auf Beschleunigung in x, y und z- Achse des Quadrocopters auf und stellt mit einer Frequenz von 1kHz ($ T_{imu}=1ms $) die Messwerte zur Verfügung. Aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Integration der Beschleunigung bestimmen. Für den diskreten Fall lässt sich diese mittels des Eulerverfahren approximieren. Zuvor müssen die Beschleunigungsmesswerte jedoch ins n-frame Transformiert (Gleichung (\ref{eq:inverse_transM})) werden.  
 \begin{equation}
 v^n_{k+1} = v^n_k + T_{imu} \cdot (M_{nb}\cdot a^b_k) = v^n_k + T \cdot a^n_k 
@@ -604,6 +606,86 @@ Die Methoden des \gls{foaw} bietet eine sehr Möglichkeit die Geschwindigkeit auf
  \label{subsec:Fusionsfilter}
  Wie aus den oberen Kapitel zuerkenne wird keine der Methoden den zuvor gestellten Ansprüche gerecht. So erfüllt die Integration der Beschleunigung (Kapitel \ref{subsec:Vimu}) zwar das Kriterium zur Erhöhung der Taktrate. Beschleunigungsmesswerte werden in einem Takt von $ 1 kHz $ zur Verfügung gestellt. Doch durch den Bias des Beschleunigungssensors, divergieren innerhalb kürzester Zeit die geschätzten Zustände von den realen Zuständen. Dieses Phänomen tritt bei den Anwendungen Kaptiel und Kapitel nicht auf. Der Grund, sie beziehen sich auf die vom Laser berechneten Positionswerte. Die Abweichungen dieser Zustandswerte befinden sich dabei in einem konstanten Rahmen um die tatsächliche Position. Diese Positionsrauschen sorgt bei der Geschwindigkeitsschätzung über die Ableitung der Positionswerte dafür, dass das errechnete Geschwindigkeitssignal ebenfalls einen Rauschanteil aufweist. Diesen Rauschanteil zu minimieren ist Ziel der \gls{foaw} Methode. Aufgrund der geringen Abtastfrequenz von $ 40Hz  $ kann dieser Ansatz der hohen Dynamik nicht folge leisten. Schon für geringen Dynamiken ist die Fenstergröße stark dezimiert und somit auch die Rauschunterdrückung. Das Ergebnis, Bechleunigungssensor der \gls{imu} und Laser jeweils für sich bieten keine ausreichende Zustandswerte. Abhilfe, Fusion beider Sensordaten mittels eines Fusionsfilters. Dabei sorgen die Beschleunigungswerte mit ihrer hohen update Rate von $ 1 Khz $ für eine schnelle Reaktionsfähigkeit und tragen somit der Dynamik des Quadrocopters sorge. Die Positionsdaten des Laser indes verhindern ein Abdriften der Schätzwerte. Somit stellen sie die Zuverlässigkeit der Fusionsergebnisse sicher. 
  
-Neuer text
-Das Fusionsfilterfilter auf dem \gls{hlp}  
+Das auf dem \gls{hlp} implementierte Fusionsfilter basiert auf einem Leunberger Beobachter\cite{Achtelik11}. Dieser besteht aus einen linearen Streckenmodell dessen Zustände $ \hat{x} $ mittels eines Korrekturterms ($ L\cdot (y-\hat{y})$) auf die Zustände $ x $ der Regelstrecke einschwingen. Die Zustandsdifferenzialgleichung eines Luenberger Beobachter stellt sich in allgemeiner Form  \cite{regB12} wie folgt dar.
+\begin{equation}
+\begin{split}
+\dot{\hat{x}} &= A \cdot \hat{x}+ L \cdot (y-\hat{y}) + B \cdot u\\
+\hat{y} &= C \cdot \hat{x}
+\end{split}
+\label{eq:algbeo}
+\end{equation} 
+Dabei entspricht $ A $ der Dynamikmatrix, $ B $ dem Eingangsmatrix und $ C $ dem Ausgangsmatrix des linearen Streckenmodells. Aufgrund der Inversion, ist das Bewegungsmodell für jede Achse im n-frame, als Integrationsglied 2.Ordnung gegeben (Abbildung \ref{fig:drIntket}). Dabei entspricht die Eingangsgrößen $ u $ den ins n-frame transformierten Beschleunigungswerten der \gls{imu}. Da die Ketten entkoppelt sind, muss der Beobachter nicht für alle drei Ketten gleichzeitig entworfen werden. Somit ist es ausreichen eine Integrationsglied 2.Ordnung als Streckenmodell heranzuziehen. Weiterhin ist bekannt, das die Beschleunigungswerte der \gls{imu} einen Bias aufweisen. Nach \cite{mzr13} kann das Streckenmodell deshalb wie in Abbildung \ref{emod} erweitert werden. 
+   \begin{figure}
+   	\centering
+   	\includegraphics[width = \textwidth]{images/ewmod}
+   	\caption[Erweitertes Streckenmodell]{Erweitertes Streckenmodell} %
+   	\label{fig:emod}
+   \end{figure}
+Dieses erweiterte Modell ist über Zustandsdifferenzialgleichung (\ref{eq:emod}) beschreiben
+\begin{equation}
+\begin{split}
+\dot{x} &= \underset{A}{\begin{bmatrix} 
+	0&	1&	0\\
+	0&  0&  1\\
+	0&	0&  0
+	\end{bmatrix}} \cdot x+ \underset{B}{\begin{bmatrix}
+	0\\
+	1\\
+	0
+	\end{bmatrix}} \cdot u\\
+y &= \underset{C}{\begin{bmatrix}
+	1& 0& 0
+	\end{bmatrix}} \cdot x
+\end{split}
+\label{eq:emod}
+\end{equation} 
+mit,
+\begin{equation}
+\hat{x} = \begin{bmatrix}
+p^n&	v^n& 	b
+\end{bmatrix}^T
+\end{equation}
+Anhand von (\ref{eq:algbeo}) folgt daraus für den Beobachter.
+\begin{equation}
+\begin{split}
+\dot{\hat{x}} &= \underset{A}{\begin{bmatrix} 
+	0&	1&	0\\
+	0&  0&  1\\
+	0&	0&  0
+	\end{bmatrix}} \cdot \hat{x}+ \underset{L}{\begin{bmatrix}
+	l_1\\
+	l_2\\
+	l_3
+	\end{bmatrix}} \cdot (y-\hat{y}) + \underset{B}{\begin{bmatrix}
+	0\\
+	1\\
+	0
+	\end{bmatrix}} \cdot u\\
+\hat{y} &= \underset{C}{\begin{bmatrix}
+	1& 0& 0
+	\end{bmatrix}} \cdot \hat{x}
+\end{split}
+\end{equation} 
+mit,
+\begin{equation}
+\hat{x} = \begin{bmatrix}
+\hat{p}^n&	\hat{v}^n& 	\hat{b}
+\end{bmatrix}^T
+\end{equation}
+Die Elemente der Beobachtermartix $ L $ sind so zu parametrieren das die Fehlerdynamik das gewünschte Einschwingverhalten aufweist. Da der Zustandsfehler $ \tilde{x} = x-\hat{x} $ gilt, ergibt sich für die Dynamik des Zustandsfehlers
+\begin{equation}
+\dot{\tilde{x}}=\dot{x}-\dot{\hat{x}}=(A-LC)\cdot \tilde{x}
+\end{equation}
+Um diese mittels Polvorgabe einstellen zu können, muss charakteristische Polynom gebildet werden \cite{regB12}.
+\begin{equation} 
+N(s)=\det(A-LC)
+\end{equation}
+ergibt für das erweitere Zustandsmodell,
+\begin{equation} 
+N(s)=s^3+l_1\cdot s^2+l_2 \cdot s + l_3
+\end{equation}
+Anhand dieses Polynom sind Koeffizienten der Beobachtermatrix $ L $ nach Kapitel \ref{subsec:polvor} über Polvorgabe vorgebbar. H
+
+ 
+  
  

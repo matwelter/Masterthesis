@@ -2,6 +2,13 @@
 % Encoding: UTF8
 
 
+@Misc{adaptWin,
+  Title                    = {Discrete-Time Adaptive Windowing for Velocity Estimation},
+
+  Author                   = {Farrokh Janabi-sharifi and Vincent Hayward and Chung-shin J. Chen},
+  Year                     = {2000}
+}
+
 @InProceedings{Achtelik11,
   Title                    = {Onboard IMU and monocular vision based control for MAVs in unknown in- and outdoor environments.},
   Author                   = {Achtelik, Markus and Achtelik, Michael and Weiss, Stephan and Siegwart, Roland},
@@ -39,12 +46,21 @@
 
 @Standard{deutNL,
   Title                    = {Regelung nichtlinearer Systeme},
-  Institution              = {Friedrich-Alexander-Universit\"at Erlangen-N\"unberg},
   Author                   = {Joachim Deutscher},
   Year                     = {2013},
 
   Owner                    = {Matthias},
   Timestamp                = {2015.01.07}
+}
+
+@Standard{mzr13,
+  Title                    = {Mehrgr\"oßen Zustandsregelung MZR},
+  Institution              = {Friedrich-Alexander-Universit\"at Erlangen-N\"unberg},
+  Author                   = {Joachim Deutscher},
+  Year                     = {2013},
+
+  Owner                    = {Matthias},
+  Timestamp                = {2015.01.13}
 }
 
 @Standard{des14,
@@ -128,6 +144,15 @@
   Year                     = {2010}
 }
 
+@Standard{regB12,
+  Title                    = {Regelungstechnik B},
+  Author                   = {Günter Roppenecker},
+  Year                     = {2012},
+
+  Owner                    = {Matthias},
+  Timestamp                = {2015.01.13}
+}
+
 @Book{Thede04,
   Title                    = {{Practical analog and digital filter design}},
   Author                   = {Thede, Les},
@@ -139,7 +164,6 @@
 
 @Standard{Thiel14,
   Title                    = {Eingebettete Navigationssysteme},
-  Institution              = {Friedrich-Alexander-Universit\"at Erlangen-N\"unberg},
   Author                   = {J\"orn Thielecke},
   Year                     = {2014},
 
@@ -147,8 +171,13 @@
   Timestamp                = {2015.01.08}
 }
 
-@MISC{adaptWin,
-	author = {Farrokh Janabi-sharifi and Vincent Hayward and Chung-shin J. Chen},
-	title = {Discrete-Time Adaptive Windowing for Velocity Estimation},
-	year = {2000}
+@Standard{ras12,
+  Title                    = {Radarsysteme RAS},
+  Institution              = {Friedrich-Alexander-Universit\"at Erlangen-N\"unberg},
+  Author                   = {Martin Vossiek},
+  Year                     = {2012},
+
+  Owner                    = {Matthias},
+  Timestamp                = {2015.01.13}
 }
+
