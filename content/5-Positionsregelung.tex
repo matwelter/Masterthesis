@@ -174,10 +174,11 @@ a^n_x &
 a^n_y &
 y^n_z 
 \end{bmatrix}^T$ das Modell aus drei unabhängigen entkoppelten Integriererketten 2.Ordnung bestehen würde. Die per Definition der Linearität \cite{lunze08} ein lineares Zustandsverhalten aufweisen. Gesucht ist also ein Stellgesetz, das für die fiktiven Eingängen $ u_f $ die Stellgrößen der realen Eingänge $ u = \begin{bmatrix} 
+T  &
 \phi &
 \theta &
-\psi &
-T  
+\psi 
+
 \end{bmatrix} $ generiert. Eine sogenannte Inversion. \\
 
 Damit aus dem nichtlinearen Modell Kapitel \ref{sec:Modelbildung} ein Exakt zustandslinearisierendes Stellgesetz (Inversion) generiert werden kann, muss es sich bei dem Ausgang $ y =  \begin{bmatrix} 
@@ -232,8 +233,8 @@ Nun da $ T $ bestimmt ist, kann unter Beachtung das $ \psi = 0 $ durch die vorge
 $ \theta $lässt sich aufgrund der trigonometrischen Beziehung $ tan\alpha = \frac{\sin\alpha}{\cos\alpha} $ aus den Zustandsgleichungen für $ x_1 $ und $ x_3 $ berechnen.
 \begin{equation}
 \begin{split}
-\theta &= \arctan(\frac{\ddot{y}_{f3}-g}{\ddot{y}_{f1}})\\
-&=\arctan(\frac{a_z-g}{a_x})
+\theta &= \arctan(\frac{\ddot{y}_{f1}}{\ddot{y}_{f3}+g})\\
+&=\arctan(\frac{a_x}{a_z+g})
 \end{split}
 \label{eq:invtheta}
 \end{equation}
@@ -253,6 +254,37 @@ Die Stellgesetze der Inversion sind damit Gleichung (\ref{eq:invT}), (\ref{eq:in
 	\label{fig:drIntket}
 \end{figure}
 
+ \begin{figure}
+ 	
+ 	\centering{
+ 		\subfloat[Neue fiktive Eingänge]{
+ 			\includegraphics[width=0.5\textwidth]{images/inv_uf}
+ 			\label{fig:inv_uf}
+ 		}
+ 		\subfloat[Orientierung um z-Achse]{
+ 			\includegraphics[width=0.5\textwidth]{images/inv_psi}
+ 			\label{fig:inv_psi}
+ 		}\\
+ 		\subfloat[Ins o-frame transformierte Beschleunigungsvorgaben]{
+ 			\includegraphics[width=0.5\textwidth]{images/inv_aso}
+ 			\label{fig:inv_aso}
+ 		}
+ 		\subfloat[Schubvorgabe der Inversion]{
+ 			\includegraphics[width=0.5\textwidth]{images/inv_T}
+ 			\label{fig:inv_T}
+ 		}\\
+ 		\subfloat[Sollwinkel für die Lageregelung]{
+ 			\includegraphics[width=0.5\textwidth]{images/inv_phitheta}
+ 			\label{fig:inv_phitheta}
+ 		}
+ 			\subfloat[Beschleunigungswerte im Translationsmodell]{
+ 				\includegraphics[width=0.5\textwidth]{images/inv_amdl}
+ 				\label{fig:inv_amdl}
+ 			}
+ 	}	
+ 	\caption[Simulation Inversion]{Simulation der Inversion}
+ 	\label{fig:sim_inversion}
+ \end{figure}
 
 
 
@@ -617,7 +649,7 @@ Das auf dem \gls{hlp} implementierte Fusionsfilter basiert auf einem Leunberger 
 Dabei entspricht $ A $ der Dynamikmatrix, $ B $ dem Eingangsmatrix und $ C $ dem Ausgangsmatrix des linearen Streckenmodells. Aufgrund der Inversion, ist das Bewegungsmodell für jede Achse im n-frame, als Integrationsglied 2.Ordnung gegeben (Abbildung \ref{fig:drIntket}). Dabei entspricht die Eingangsgrößen $ u $ den ins n-frame transformierten Beschleunigungswerten der \gls{imu}. Da die Ketten entkoppelt sind, muss der Beobachter nicht für alle drei Ketten gleichzeitig entworfen werden. Somit ist es ausreichen eine Integrationsglied 2.Ordnung als Streckenmodell heranzuziehen. Weiterhin ist bekannt, das die Beschleunigungswerte der \gls{imu} einen Bias aufweisen. Nach \cite{mzr13} kann das Streckenmodell deshalb wie in Abbildung \ref{emod} erweitert werden. 
    \begin{figure}
    	\centering
-   	\includegraphics[width = \textwidth]{images/ewmod}
+   	\includegraphics[width = \textwidth]{images/erwModell}
    	\caption[Erweitertes Streckenmodell]{Erweitertes Streckenmodell} %
    	\label{fig:emod}
    \end{figure}
@@ -684,8 +716,40 @@ ergibt für das erweitere Zustandsmodell,
 \begin{equation} 
 N(s)=s^3+l_1\cdot s^2+l_2 \cdot s + l_3
 \end{equation}
-Anhand dieses Polynom sind Koeffizienten der Beobachtermatrix $ L $ nach Kapitel \ref{subsec:polvor} über Polvorgabe vorgebbar. H
-
+Anhand dieses Polynom sind Koeffizienten der Beobachtermatrix $ L $ nach Kapitel \ref{subsec:polvor} über Polvorgabe vorgebbar. 
+  \begin{figure}
+  	\centering
+  	\includegraphics[width = \textwidth]{images/Platzhalter}
+  	\caption[Beobachter]{Strukturbild Beobachter} %
+  	\label{fig:strucB}
+  \end{figure}
  
+ \begin{figure}
+ 	
+ 	\centering{
+ 		\subfloat[Einspeisung]{
+ 			\includegraphics[width=0.5\textwidth]{images/ua}
+ 			\label{fig:bo_ua}
+ 		}
+ 		\subfloat[Einschwingverhalten Bias]{
+ 			\includegraphics[width=0.5\textwidth]{images/bias}
+ 			\label{fig:bo_bias}
+ 		}\\
+ 			\subfloat[Beschleunigung]{
+ 				\includegraphics[width=0.5\textwidth]{images/beschl}
+ 				\label{fig:bo_beschl}
+ 			}
+ 			\subfloat[Geschwindigkeit]{
+ 				\includegraphics[width=0.5\textwidth]{images/geschw}
+ 				\label{fig:bo_geschw}
+ 			}\\
+ 			\subfloat[Position]{
+ 				\includegraphics[width=0.5\textwidth]{images/Position}
+ 				\label{fig:bo_pos}
+ 			}
+ 		}	
+ 	\caption[Simulation Beobachter]{Simulationsergebnisse für das Fusionsfilter}
+ 	\label{fig:bo_sim}
+ \end{figure}
   
  
