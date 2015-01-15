@@ -142,7 +142,6 @@ x &
 y &
 z 
 \end{bmatrix}^T $ des Modells ergibt.
-
 \begin{equation}
 \begin{split}
 \dot{x}_1 &= \frac{1}{m} \cdot ((\cos\phi\sin\theta\cos\psi+\sin\phi\sin\psi)\cdot T)\\
@@ -154,12 +153,11 @@ z
 \end{split}
 \label{eq:zstd}
 \end{equation}
-
 Zur Veranschaulichung ist das Modell zusätzlich in Abbildung \label{fig:modstrukquad} visualisiert. 
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/modell_lage_trans}
-	\caption[]{Modellstruktur des Quadrocopters} %
+	\caption[]{Modellstruktur des Quadrocopters (FEHLER, GEWICHTSKRAFT FEHLT UND SUBTRANS ALS NICHTLINEAR MARKIEREN)} %
 	\label{fig:modstrukquad}
 \end{figure}
 
@@ -321,15 +319,32 @@ Somit lässt ist der Verlauf der Trajektorie für $ u_{f_{ref}} = \ddot{P}^n_{ref}
 u_{f_{ref}} = \omega_0^2 \cdot(P^n_{cmd}-P^n_{ref})-2D\omega_0\cdot \dot{P}^n_{ref}
 \label{eq:ref_mdl}
 \end{equation}
-Vorteil dieser Darstellung ist, das die Dynamik der Vorsteuerung über die in den Grundlagen der Regelungstechnik \cite{lunze08} vermittelten Entwurfskriterien für PT2-Glieder bestimmen lässt. So ist die Schwingungsfähigkeit über die Dämpfung $ D $ beeinflussbar ($ D < 1 $, keine Schwingung). Mit $ \omega_0 $ kann schließlich eingestellt werden wie schnell die Zielkoordinaten erreicht werden sollen. $ \omega $ ist da bei durch die maximal zulässige Stellgröße beschränkt.
-
-Das Strukturbild des resultierten Refernzmodells ist in Abbildung \ref{fig:strucref} visualisiert. Es ist anzumerken, das  aufgrund der entkoppelten Integriererketten eine separate Dynamikvorgabe für jeden Zweig des zustandslinearisierten Modells möglich ist. 
+Vorteil dieser Darstellung ist, das die Dynamik der Vorsteuerung über die in den Grundlagen der Regelungstechnik \cite{lunze08} vermittelten Entwurfskriterien für PT2-Glieder bestimmen lässt. So ist die Schwingungsfähigkeit über die Dämpfung $ D $ beeinflussbar ($ D \le 1 $, keine Schwingung). Mit $ \omega_0 $ kann schließlich eingestellt werden wie schnell die Zielkoordinaten erreicht werden sollen. $ \omega $ ist da bei durch die maximal zulässige Stellgröße beschränkt.
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/Platzhalter}
 	\caption[]{Sturukturbild Vorsteuerung} %
 	\label{fig:strucref}
 \end{figure}
+Das Strukturbild des resultierten Refernzmodells ist in Abbildung \ref{fig:strucref} visualisiert. Es ist anzumerken, das  aufgrund der entkoppelten Integriererketten eine separate Dynamikvorgabe für jeden Zweig des zustandslinearisierten Modells möglich ist. 
+ \begin{figure}
+ 	\centering{
+ 		\subfloat[Positionsvorgabe über $ p_{cmd} $ und generierte Positionsvorgabe $ p_{ref} $]{
+ 			\includegraphics[width=0.5\textwidth]{images/p_cmdref}
+ 			\label{fig:tragen_pcmdref}
+ 		}\\
+ 		\subfloat[Geschwindigkeitsvorgabe $ v_{ref} = \dot{p}_{ref} $ der Trajektorie]{
+ 			\includegraphics[width=0.5\textwidth]{images/v_ref}
+ 			\label{fig:tragen_vref}
+ 		}
+ 		\subfloat[Beschleunigungsvorgabe $ u_{f_{ref}} = a_{ref} = \ddot{p}_{ref}$]{
+ 			\includegraphics[width=0.5\textwidth]{images/a_ref}
+ 			\label{fig:tragen_aref}
+ 		}
+ 	}	
+ 	\caption[Simulationsergebnisse Referenzmodell]{Simulationsergebnis des Referenzmodells für eine Achse mit $ \omega = 1.5~Hz$ $ D = 1 $}
+\label{fig:tragen}
+ \end{figure}
 Weiterhin besteht die Möglich die Vorsteuerung so auszubauen, das Geschwindigkeiten vorgegeben werden können mit den er sich aus Sicht des Quadrocoptes im Raum bewegen soll. Dabei erfolgt die Vorgabe der Soll-Geschwindigkeiten im o-frame. Diese wird Integriert und die anschließend ins n-frame transformiert.
 
 \begin{equation}
@@ -339,8 +354,24 @@ P^n_{cmd} = \int (M_z^T\cdot v^o) dt + P^n_{cmd_0}
 Mit wird dem sich stetig Verändernde $ P^n_{cmd} $ wird das Referenzmodell (\ref{eq:ref_mdl}) gespeißt. Somit lassen sich zum Beispiel über die Fernbedinungen Geschwindigkeiten vorgeben, was die Handhabbarkeit des Quadrocopters deutlich vereinfacht.
  
 Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Simuliert man das Modell (Abbildung \ref{fig:Gesamtinversion}) inklusive des Stellgesetzes der Vorsteuerung Gleichung (\ref{eq:ref_mdl}) für konsistente Anfangsbedingungen $ P_{ref0}^n = P_0^n $ so ergibt sich die gewünschte Flugkurve. In der Realität ist die Konsistens der Angfangsbedingungen jedoch nicht immer gegeben. Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um diesen Effekten entgegen zuwirken benötigt man nun einen Folgeregler. Dessen Aufgabe besteht darin äußere Einflüsse zu eliminieren.
-
-
+ \begin{figure}
+ 	\centering{
+ 		\subfloat[Konsistente Anfangszustände $ p_{ref_0}~=~p_{mdl_0}~=~0 $ und $ v_{ref_0}~=v_{mdl_0}~=~0 $, ideales Modell]{
+ 			\includegraphics[width=0.5\textwidth]{images/vstr_ohnest}
+ 			\label{fig:vor_ohnestr}
+ 		}\\
+ 		\subfloat[Inkonsistene Anfangszustände $ p_{ref_0}~=~0~\ne~p_{mdl_0}~=~0.3 $ und $ v_{ref_0}~=~0~\ne~v_{mdl_0}~=~0.2 $, ideales Modell]{
+ 			\includegraphics[width=0.5\textwidth]{images/p_p0_03_v0_02}
+ 			\label{fig:vor_inkonAzust}
+ 		}
+ 		\subfloat[Unsicherheit der Modellparamter $ m_{inv}~\ne~m_{mdl} $]{
+ 			\includegraphics[width=0.5\textwidth]{images/p_m_mdl_2_5}
+ 			\label{fig:vor_unsichmdlpara}
+ 		}
+ 	}	
+ 	\caption[Referenzmodell als Vorsteuerung]{Steuerung der Regelstrecke über das Referenzmodell}
+ 	\label{fig:RefaliasVor}
+\end{figure}
 
 \section{Folgeregler}
 \label{sec:folgeregeler}
@@ -403,7 +434,21 @@ u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-
 	\label{fig:folgeregler}
 \end{figure}
 Wie auch schon zuvor kann die Dynamik Polvorgabe festgelegt werden. Für den Folgeregler mit I-Anteil ist hierzu die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden. 
-
+ \begin{figure}
+ 	\centering{
+ 		
+ 		\subfloat[Inkonsistene Anfangszustände $ p_{ref_0}~=~0~\ne~p_{mdl_0}~=~0.3 $ und $ v_{ref_0}~=~0~\ne~v_{mdl_0}~=~0.2 $, ideales Modell]{
+ 			\includegraphics[width=0.5\textwidth]{images/p_p0_03_v0_02_Kd_4_Kp_5_Ki_001}
+ 			\label{fig:vor_inkonAzust}
+ 		}
+ 		\subfloat[Unsicherheit der Modellparamter $ m_{inv}=1.863~\ne~m_{mdl}=2.5 $]{
+ 			\includegraphics[width=0.5\textwidth]{images/p_m_mdl_2_5_Kd_4_Kp_5_Ki_001}
+ 			\label{fig:vor_unsichmdlpara}
+ 		}
+ 	}	
+ 	\caption[Grafiken Folgeregler]{Auswirkung von Folgeregler ($\tilde{c}_1=4$, $\tilde{c}_0=4$, $\tilde{c}_{-1}=0.01 $) auf inkonsistente Anfangszustände und Modellunsicherheiten }
+ 	\label{fig:RefaliasVor}
+ \end{figure}
 \subsection{Einstellung der Dynamik mittels Polvorgabe}
 \label{subsec:polvor}
 Anhand der Lage der Polstellen einer Übertragungsfunktion, können Rückschlüsse über das Einschwingverhalten und die Stabilität getroffen werden. Ziel einer Zustandsregelung, wie der Folgereregelung, ist die Pollagen der zu regelnden Strecke so zu verschieben, dass das Einausgangsverhalten die gewünschte Dynamik aufweist.
@@ -631,6 +676,32 @@ Löst man unter dieser Bedingung die Ableitung nach $ b_n $ auf. Erhält man die S
 b_n = \frac{(n\sum\limits_{ i=0}^{n}y_{k-1}-2\sum\limits_{i=0}^{n} i\cdot y_{k-1})\cdot 6 }{T_l n(n+1)(n+2)}
 \end{equation}
 Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Umsetzung der best-fit-\gls{foaw} in der Software erfolgt nach dem gleichen Schema wie bei der end-fit-\gls{foaw}. Einziger Unterschied, zur Berechnung der Steigung $ b_n $ wir die Gleichung verwendet. Das Ergbnis ist eine präzisere Schätzung bei gleichbleibender Zuverlässigkeit der Messung. Beide Methoden sind jedoch anfällig gegen sogenannte Outliner. Einzelne Signalwerte die eine höheren Fehler als die maximale durch das Rauschen verursachte Abweichung $ d $ aufweisen. Outliner lassen sich jedoch sehr einfach durch eine robuster Abbruchkriterium in Schritt 3 bekämpfen. So gilt die Bedingung (\ref{eq:toleranz}) erst dann für nicht bestimmt, wenn zwei aufeinanderfolgende Werte das Kriterum nicht erfüllen. Erst dann wird die Vergrößerung des Fensters gestoppt. Diese Variante nennt sich best-fit-\gls{foaw}-R.
+ \begin{figure}
+ 	
+ 	\centering{
+ 		\subfloat[Positionsignal]{
+ 			\includegraphics[width=0.5\textwidth]{images/adap_position}
+ 			\label{fig:adapt_pos}
+ 		}
+ 		\subfloat[Ableitung (Kapitel \ref{subsec:abpos}) vs. endfit-\gls{foaw}]{
+ 			\includegraphics[width=0.5\textwidth]{images/adap_dtvsendfit}
+ 			\label{fig:adapt_ablvsend}
+ 		}\\
+ 		\subfloat[endfit-\gls{foaw} vs. bestfit-\gls{foaw}]{
+ 			\includegraphics[width=0.5\textwidth]{images/adap_endfitvsbestfit}
+ 			\label{fig:adapt_endvsbest}
+ 		}
+ 		\subfloat[bestfit-\gls{foaw} vs. bestfit-R-\gls{foaw}]{
+ 			\includegraphics[width=0.5\textwidth]{images/adap_bestfitvsbestfitr}
+ 			\label{fig:adapt_bestvsbestr}
+ 		}
+ 		}
+ 		
+ 	\caption[Messergebnis für \gls{foaw}]{Vergleich der Filterergebnisse für \gls{foaw}}
+ 	\label{fig:adap_vergleich}
+ \end{figure}
+
+
 
 Die Methoden des \gls{foaw} bietet eine sehr Möglichkeit die Geschwindigkeit auf Basis eines verrauschten Positionssignal zu ermitteln. Problematisch ist jedoch die geringe Abtastrate von $ 40 Hz $ des Lasers. Schon bei Flügen bei mittlerer Dynamik führt dies dazu, das die Fenstergröße stark reduziert wird. Somit auch der Einfluss des Positionsrauschens stark zunimmt. Somit kann selbst diese Konzept limitiert durch die Tastrate des Lasers der Dynamik des Quadrocopters nicht nachkommen. Es ist somit klar das eine Methode benötigt wird, die Position und Geschwindigkeit in einer höhren Taktrate zur Verfügung stellt. Gleichzeit müssen beide Signale ausreichend Rauschunterdrückt sein. 
 
@@ -752,4 +823,19 @@ Anhand dieses Polynom sind Koeffizienten der Beobachtermatrix $ L $ nach Kapitel
  	\label{fig:bo_sim}
  \end{figure}
   
+  \begin{figure}
+  	
+  	\centering{
+  		\subfloat[Positionsignal]{
+  			\includegraphics[width=0.5\textwidth]{images/adap_position}
+  			\label{fig:bo_adapt_pos}
+  		}
+  		\subfloat[Ableitung (Kapitel \ref{subsec:abpos}) vs. Beobachter]{
+  			\includegraphics[width=0.5\textwidth]{images/obs_vxvsob}
+  			\label{fig:bo_dvdtvsbo}
+  		}
+  	}	
+  	\caption[Verbesserung des Fusionsfilter im Vergleich \gls{foaw}]{Verbesserung des Fusionsfilter im Vergleich \gls{foaw}}
+  	\label{fig:bo_sim}
+  \end{figure} 
  

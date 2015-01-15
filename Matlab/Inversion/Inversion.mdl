@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.32"
+    ComputedModelVersion    "1.33"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -27,9 +27,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Matthias"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Wed Jan 14 20:40:04 2015"
+  LastModifiedDate	  "Thu Jan 15 08:18:56 2015"
   RTWModifiedTimeStamp	  343166735
-  ModelVersionFormat	  "1.%<AutoIncrement:32>"
+  ModelVersionFormat	  "1.%<AutoIncrement:33>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -876,7 +876,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "42"
+    SIDHighWatermark	    "43"
     Block {
       BlockType		      Demux
       Name		      "Demux"
@@ -1767,7 +1767,7 @@ Model {
       Ports		      [1]
       Position		      [360, 560, 420, 590]
       ZOrder		      -7
-      VariableName	      "theta"
+      VariableName	      "psi"
       MaxDataPoints	      "inf"
       SampleTime	      "-1"
       SaveFormat	      "Structure With Time"
