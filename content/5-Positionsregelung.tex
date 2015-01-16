@@ -345,8 +345,8 @@ u_{f_{ref}} = \omega_0^2 \cdot(P^n_{cmd}-P^n_{ref})-2D\omega_0\cdot \dot{P}^n_{r
 Vorteil dieser Darstellung ist, das die Dynamik der Vorsteuerung über die in den Grundlagen der Regelungstechnik \cite{lunze08} vermittelten Entwurfskriterien für PT2-Glieder bestimmen lässt. So ist die Schwingungsfähigkeit über die Dämpfung $ D $ beeinflussbar ($ D \le 1 $, keine Schwingung). Mit $ \omega_0 $ kann schließlich eingestellt werden wie schnell die Zielkoordinaten erreicht werden sollen. $ \omega $ ist da bei durch die maximal zulässige Stellgröße beschränkt.
 \begin{figure}
 	\centering
-	\includegraphics[width = \textwidth]{images/Platzhalter}
-	\caption[]{Sturukturbild Vorsteuerung} %
+	\includegraphics[width = \textwidth]{images/refmdl}
+	\caption[]{Strukturbild Vorsteuerung} %
 	\label{fig:strucref}
 \end{figure}
 Das Strukturbild des resultierten Refernzmodells ist in Abbildung \ref{fig:strucref} visualisiert. Es ist anzumerken, das  aufgrund der entkoppelten Integriererketten eine separate Dynamikvorgabe für jeden Zweig des zustandslinearisierten Modells möglich ist. 
@@ -401,7 +401,7 @@ Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Simuliert man da
 Inkonsistente Anfangsbedingungen, externe Störungen sowie Modellunsicherheiten bewirken einen Ausgangsfolgefehler $e = P^n_{ref} - P^n $. Dieser ergibt sich durch die Fortpflanzung des für das reale System nicht ausreichenden Stellsignals $\ddot{e} = u_{f_{ref}} - u_f$. Das bedeutet, die Fehlerdynamik kann ebenfalls über eine zweifache Integriererkette modelliert werden. Zweifache Integriererkette ergo instabiles System. Damit der Quadrocopter auf die Soll-Trajektorie konvergiert, muss die Fehlerdynamik stabilisiert werden. Dafür ist es von nöten, die Dynamik der Folgefehler vorgeben zu können. Zu diesem Zwecke werden die Zustandsgrößen des Ausgangsfolgefehlermodells zurückgeführt (Abbildung \ref{fig:rückfolgefeh}). Daraus ergibt sich folgende Differentialgleichung.
 \begin{figure}
 	\centering
-	\includegraphics[width = \textwidth]{images/Platzhalter}
+	\includegraphics[width = \textwidth]{images/fehlermdl}
 	\caption[]{Ausgabgsfolgefehlermodell mit Zustandsrückführung} %
 	\label{fig:rückfolgefeh}
 \end{figure}
@@ -452,7 +452,7 @@ u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-
 \end{equation}
 \begin{figure}
 	\centering
-	\includegraphics[width = \textwidth]{images/Platzhalter}
+	\includegraphics[width = 0.75\textwidth]{images/folgreg}
 	\caption[Folgeregler]{Folgeregler} %
 	\label{fig:folgeregler}
 \end{figure}
@@ -479,7 +479,7 @@ Anhand der Lage der Polstellen einer Übertragungsfunktion, können Rückschlüsse ü
 Zunächst ist zu klären was die Polstellenlage in der komplexen Ebene über das Verhalten aussagt. Dabei entspricht die Anzahl der Pole $ \lambda_i $ der Ordnung $ n $ des Systems.
 \begin{figure}
 	\centering
-	\includegraphics[width = \textwidth]{images/Platzhalter}
+	\includegraphics[width = 0.75 \textwidth]{images/stabgeb}
 	\caption[Stabilitätsgebiet]{Stabilitätsgebiet} %
 	\label{fig:stabgeb}
 \end{figure}
@@ -605,7 +605,7 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  Dabei ist die Verwendung der Bezugsposition $ P^n_{k-n} $ gleichzusetzen mit der Mittlung der letzten $ n $ Geschwindigkeitsschätzungen ($ v^n_k,v^n_{k-1},\cdots,v^n_{k-1} $) mittels (\ref{eq:v_eul}). Deshalb spricht man auch von Fensterung beziehungsweise Windowing. Siehe zur Veranschaulichung Abbildung~\ref{fig:Fensterung}. Vergrößert man das Fenster hat das eine äquivalente Wirkung wie die Reduzierung der Abtastrate.
   \begin{figure}
   	\centering
-  	\includegraphics[width = \textwidth]{images/Fensterung}
+  	\includegraphics[width = \textwidth]{images/wind_avg}
   	\caption[Fensterung]{Fensterung} %
   	\label{fig:Fensterung}
   \end{figure}
