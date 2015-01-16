@@ -54,7 +54,7 @@
 }
 
 @Standard{mzr13,
-  Title                    = {Mehrgr\"oßen Zustandsregelung MZR},
+  Title                    = {Mehrgr\"o\ss en Zustandsregelung MZR},
   Institution              = {Friedrich-Alexander-Universit\"at Erlangen-N\"unberg},
   Author                   = {Joachim Deutscher},
   Year                     = {2013},
@@ -71,6 +71,16 @@
 
   Owner                    = {Matthias},
   Timestamp                = {2015.01.11}
+}
+
+@Book{,
+  Title                    = {Physik: Eine Einf\"uhrung f\"ur Ingenieure und Naturwissenschaftler},
+  Author                   = {Ulrich Harten},
+  Publisher                = {Springer-Verlag},
+  Year                     = {2007},
+
+  Owner                    = {Matthias},
+  Timestamp                = {2015.01.16}
 }
 
 @InProceedings{hoffmann10,
@@ -146,7 +156,7 @@
 
 @Standard{regB12,
   Title                    = {Regelungstechnik B},
-  Author                   = {Günter Roppenecker},
+  Author                   = {G\"unter Roppenecker},
   Year                     = {2012},
 
   Owner                    = {Matthias},
