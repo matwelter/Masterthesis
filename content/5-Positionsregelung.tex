@@ -270,7 +270,7 @@ Die Stellgesetze der exakten Zustandslinearisierung sind damit über Gleichung (\
 Die Richtigkeit dieser lässt sich über eine Simulation beweisen. Das Modell besteht dabei aus Inversion (Abbildung \ref{fig:Gesamtinversion}) und Translationsmodell (Abbildung \ref{fig:modstrukquad}). Über den neuen Eingang $ u_f $ werden dabei Beschleunigungswerte im n-frame vorgegeben (Abbildung \ref{fig:inv_uf}). Unter Einfluss ständig wechselnden  
 Orientierung um die Hochachse (Abbildung ), ergeben sich die in Abbildung dargestellten Vorgaben für das Exaktzustandslineariesierden Stellgesetz. Die daraus resultierende Schubvorgabe und Winkel werden dem Bewegungsmodell übergeben. Mit dem Ergenis, das die resultierendne Beschleunigungen des Modells denn Beschleunigunsvorgaben entspricht.
 
-Dadurch kann nun das zu regelnde System als lineares Modell bestehend aus drei entkoppelten Integrierketten (Abbildung\ref{fig:drIntket}) gesehen werden. Dieses System ist jedoch instabil. Das bedeutet, für Vorgabe einer konstanten Beschleunigung, schwingt der Quadrocopter auf keiner konstanten Position ein, sondern Integriert seine Position immer weiter auf. Begründet ist diese Verhalten auch durch das Weg-Zeit-Gesetz (Gleichung \ref{eq:weg-zeit}). Möglich ist es jedoch einen Beschleunigungsverlauf vorzugeben, für den der Quadrocopter in eine neue Position überführt wird. Dafür benötigt wird eine Vorsteuerung.
+Dadurch kann nun das zu regelnde System als lineares Modell bestehend aus drei entkoppelten Integrierketten (Abbildung \ref{fig:drIntket}) gesehen werden. Dieses System ist jedoch instabil. Das bedeutet, für Vorgabe einer konstanten Beschleunigung, schwingt der Quadrocopter auf keiner konstanten Position ein, sondern Integriert seine Position immer weiter auf. Begründet ist diese Verhalten auch durch das Weg-Zeit-Gesetz (Gleichung \ref{eq:weg-zeit}). Möglich ist es jedoch einen Beschleunigungsverlauf vorzugeben, für den der Quadrocopter in eine neue Position überführt wird. Dafür benötigt wird eine Vorsteuerung.
 
 
  \begin{figure}
@@ -309,14 +309,15 @@ Dadurch kann nun das zu regelnde System als lineares Modell bestehend aus drei e
 
 \section{Vorsteuerung/Referenzmodell}
 \label{sec:referenzmodell}
-Eine Vorsteuerung erzeugt anhand einer Sollwertvorgabe einen Stellgrößenverlauf, der benötigt wird um System im störungsfreien Fall in diesen Zustand zu überführen. In \cite{Achtelik11} wird deshalb auch von Referenzmodell gesprochen.  
-Im Fall der Positionsregelung dient die anzufliegende Position $ P^n_{cmd} $ als Eingangswert der Vorsteuerung. Daraus generiert diese eine Trajektorie. Diese beschreibt den zeitliche Verlauf der Zustände mit den der Quadrocopter in diese neue Koordinate überführt werden soll.
+Eine Vorsteuerung erzeugt anhand einer Sollwertvorgabe einen Stellgrößenverlauf, der benötigt wird um System im störungsfreien Fall in diesen Zustand zu überführen. In \cite{Achtelik11} wird deshalb auch von Referenzmodell gesprochen. 
+ 
+Im Sachen Positionsregelung bedeutet dies, es wird eine anzufliegende Position $ P^n_{cmd} $ übergeben. Daraus generiert die Vorsteuerung eine Trajektorie. Der Pfad $ P^n_{ref} $ mit dem der Quadrocopter in den Zustand überführt werden soll muss dabei einmal stetig differenzierbar sein. Der Grund, die Stellgröße der Inversion sind Beschleunigungsvorgaben. Demzufolge muss die zweite Ableitung der Position mindestens stückweise existiert. Damit dies gewährleistet ist, ist nach \cite{deutNL} folgende Differenzialgleichung für das Referenzmodell aufzustellen. 
 %Zur Vorgabe des gewünschte benötigt man als Vorsteuerung ein Referenzmodell. Diesem werden die anzufliegenden Positionen $ P^n_{cmd} $ übergeben. Aufgabe der Vorsteuerung ist es daraus eine Trajektorie zu generieren. Diese beschreibt den Pfad über den der Quadrocopter in diese Koordinate überführt wird. Da die neuen Eingangsgrößen $ u_f $ des zustandslinearisierten Modells Beschleunigungsvorgaben sind, muss der Verlauf der Positionsvorgabe der Vorsteuerung $ P^n_{ref} $ einmal stetig differenzierbar sein, sodass die zweite Ableitung existiert. Damit dies gewährleistet kann nach \cite{deutNL} die E/A Dynamik für dieses System über folgende Formel vorgegeben werden.
 \begin{equation}
 	\ddot{P}^n_{ref} + c_1 \cdot \dot{P}^n_{ref}+c_0\cdot P^n_{ref}=c_0 \cdot P^n_{cmd}
 	\label{eq:dynref}
 \end{equation}
-Stellt man hierfür die Übertragungsfunktion $ G(s) $ auf.
+Hierbei kann die Dynamik mit der das Fluggerät überführt werden soll, über die Koeffizienten eingestellt werden. Stellt man für (\ref{eq:dynref}) die Übertragungsfunktion $ G(s) $ auf.
 \begin{equation}
 \begin{split}
 G(s)=\frac{P^n_{cmd}}{P^n_{ref}} &=\frac{c_0}{s^2+c_1\cdot s+c_0}\\
@@ -324,32 +325,38 @@ G(s)=\frac{P^n_{cmd}}{P^n_{ref}} &=\frac{c_0}{s^2+c_1\cdot s+c_0}\\
 \end{split}	
 \label{eq:gsref}
 \end{equation}
-Kann man erkennen das diese in ihrer Form dem einem Übertragungsglied eines PT2-Glied entspricht.
+Kann man erkennen das diese in ihrer Form einem PT2-Glied entspricht.
 \begin{equation}
 	G_{PT2}(s)=\frac{1}{(\frac{1}{\omega_o})^2s^2+\frac{2D}{\omega_0}\cdot s+1}
 	\label{eq:gspt2}
 \end{equation}
 
-Setzt man nun (\ref{eq:gspt2}) mit (\ref{eq:gsref}) gleich kann man die Koeffizienten $ c_0 $ und $ c_1 $ abhängig der Eigenfrequenz $ \omega_0 $ und der Dämpfung $ D $ bestimmen.
+Setzt man (\ref{eq:gspt2}) mit (\ref{eq:gsref}) gleich kann man die Koeffizienten $ c_0 $ und $ c_1 $ abhängig der gewünschten Eigenfrequenz $ \omega_0 $ und Dämpfung $ D $ wählen.
 \begin{equation}
 c_0= \omega_0^2
+\label{eq:ref_c0}
 \end{equation}
 \begin{equation}
 c_1= 2 D\omega_0
+\label{eq:ref_c1}
 \end{equation}
-Somit lässt ist der Verlauf der Trajektorie für $ u_{f_{ref}} = \ddot{P}^n_{ref}  $ (Gleichung \ref{eq:dynref}) folgendermaßen festgelegt.
+Der Vorteil, die Dynamik der Vorsteuerung ist über die in den Grundlagen der Regelungstechnik vermittelten Entwurfskriterien für PT2-Glieder einstellbar.
+So lässt sich über $ \omega $ einstellen wir schnell die Zielkoordinate erreicht werden soll. Das wie, lässt sich über die Dämpfung $ D $ bestimmen. So wird für alle $ D \le 1 $ eine Pfad ohne Überschwinger generiert. 
+Die Dynamikvorgabe ist jedoch durch die maximal zulässige Stellgröße beschränkt. So kann zumindest $ \omega $ nicht beliebig Groß gewählt werden. 
+
+Der Stellgrößenverlauf $ u_{f_{ref}} = \ddot{P}^n_{ref}  $ ist somit über (\ref{eq:dynref}) mit (\ref{eq:ref_c0}) und (\ref{eq:ref_c1}) folgendermaßen festgelegt.
 \begin{equation}
 u_{f_{ref}} = \omega_0^2 \cdot(P^n_{cmd}-P^n_{ref})-2D\omega_0\cdot \dot{P}^n_{ref}
 \label{eq:ref_mdl}
 \end{equation}
-Vorteil dieser Darstellung ist, das die Dynamik der Vorsteuerung über die in den Grundlagen der Regelungstechnik \cite{lunze08} vermittelten Entwurfskriterien für PT2-Glieder bestimmen lässt. So ist die Schwingungsfähigkeit über die Dämpfung $ D $ beeinflussbar ($ D \le 1 $, keine Schwingung). Mit $ \omega_0 $ kann schließlich eingestellt werden wie schnell die Zielkoordinaten erreicht werden sollen. $ \omega $ ist da bei durch die maximal zulässige Stellgröße beschränkt.
+%Vorteil dieser Darstellung ist, das die Dynamik der Vorsteuerung über die in den Grundlagen der Regelungstechnik \cite{lunze08} vermittelten Entwurfskriterien für PT2-Glieder bestimmen lässt. So ist die Schwingungsfähigkeit über die Dämpfung $ D $ beeinflussbar ($ D \le 1 $, keine Schwingung). Mit $ \omega_0 $ kann schließlich eingestellt werden wie schnell die Zielkoordinaten erreicht werden sollen. $ \omega $ ist da bei durch die maximal zulässige Stellgröße beschränkt.
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/refmdl}
 	\caption[]{Strukturbild Vorsteuerung} %
 	\label{fig:strucref}
 \end{figure}
-Das Strukturbild des resultierten Refernzmodells ist in Abbildung \ref{fig:strucref} visualisiert. Es ist anzumerken, das  aufgrund der entkoppelten Integriererketten eine separate Dynamikvorgabe für jeden Zweig des zustandslinearisierten Modells möglich ist. 
+Das resultierende Strukturbild der Vorsteuerung ist in Abbildung \ref{fig:strucref} visualisiert. Für ein Positionsverschiebung von $ 1~m $ erzeugt das Referenzmodell die in Abbildung \ref{fig:tragen} Trajektorie bzw. den in Grafik \ref{fig:tragen_aref} dargestellten Stellwertverlauf. Hier ist anzumerken, das  aufgrund der entkoppelten Integriererketten (Kapitel \ref{sec:exkt.zstdlin}) eine separate Dynamikvorgabe für jeden Zweig des zustandslinearisierten Modells möglich ist. 
  \begin{figure}
  	\centering{
  		\subfloat[Positionsvorgabe über $ p_{cmd} $ und generierte Positionsvorgabe $ p_{ref} $]{
@@ -368,15 +375,18 @@ Das Strukturbild des resultierten Refernzmodells ist in Abbildung \ref{fig:struc
  	\caption[Simulationsergebnisse Referenzmodell]{Simulationsergebnis des Referenzmodells für eine Achse mit $ \omega = 1.5~Hz$ $ D = 1 $}
 \label{fig:tragen}
  \end{figure}
-Weiterhin besteht die Möglich die Vorsteuerung so auszubauen, das Geschwindigkeiten vorgegeben werden können mit den er sich aus Sicht des Quadrocoptes im Raum bewegen soll. Dabei erfolgt die Vorgabe der Soll-Geschwindigkeiten im o-frame. Diese wird Integriert und die anschließend ins n-frame transformiert.
+Weiterhin besteht die Möglichkeit die Vorsteuerung auszubauen, so dass  Geschwindigkeitsvorgaben gemacht werden können. Dies erleichtert unter anderem das manuelle Navigieren mittels einer Fernsteuerung. Dabei erfolgt die Vorgabe der Soll-Geschwindigkeiten $ v^o_{cmd} $ im o-frame. Diese Vorgabe wird ins n-frame transformiert und dort über die Zeit integriert. Somit ergibt sich eine stetig Positionsvorgabe für $ P^n_{cmd} $. 
 
 \begin{equation}
-P^n_{cmd} = \int (M_z^T\cdot v^o) dt + P^n_{cmd_0}
+P^n_{cmd} = \int (M_z^T\cdot v^o_{cmd}) dt + P^n_{cmd_0}
+\label{eq:v_Pcmd}
 \end{equation}
 
-Mit wird dem sich stetig Verändernde $ P^n_{cmd} $ wird das Referenzmodell (\ref{eq:ref_mdl}) gespeißt. Somit lassen sich zum Beispiel über die Fernbedinungen Geschwindigkeiten vorgeben, was die Handhabbarkeit des Quadrocopters deutlich vereinfacht.
- 
-Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Simuliert man das Modell (Abbildung \ref{fig:Gesamtinversion}) inklusive des Stellgesetzes der Vorsteuerung Gleichung (\ref{eq:ref_mdl}) für konsistente Anfangsbedingungen $ P_{ref0}^n = P_0^n $ so ergibt sich die gewünschte Flugkurve. In der Realität ist die Konsistens der Angfangsbedingungen jedoch nicht immer gegeben. Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um diesen Effekten entgegen zuwirken benötigt man nun einen Folgeregler. Dessen Aufgabe besteht darin äußere Einflüsse zu eliminieren.
+Mit dieser wird das Referenzmodell (\ref{eq:ref_mdl}) gespießt. Es wird ein Stellgröße erzeugt für das die Position des Quadrocopter der stetigen Positionsvorgabe (\ref{eq:v_Pcmd}) folgt. Die maximale Geschwindigkeit ist deshalb durch die Dynamik des Referenzmodells begrenzt. Je höher die Dynamik desto größer die mögliche Geschwindigkeit.
+  
+Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Speist man das exakt Zustandslinearisierte mit dem in Abbildung \ref{fig:tragen} generierten Sollwertverlauf so folgt der Quadrocopter der Trajektorie. Dies gilt allerdings nur für den Fall konsistenter Anfangszustände (Abbildung \ref{fig:vor_ohnestr}). Ist dies nicht gegeben ist wie in Abbildung zu erkennen das Positionverlauf des Translationsmodell für den gleichen Stellgrößenverlauf nicht der Referenz entspricht. Das gleiche gilt für Unsicherheiten der Modellparameter (Abbildung \ref{fig:vor_unsichmdlpara}). Hierbei berechnet die Inversion einen unzureichenden oder überdimensionierten Schubvektor. 
+%Simuliert man das Modell (Abbildung \ref{fig:Gesamtinversion}) inklusive des Stellgesetzes der Vorsteuerung Gleichung (\ref{eq:ref_mdl}) für konsistente Anfangsbedingungen $ P_{ref0}^n = P_0^n $ so ergibt sich die gewünschte Flugkurve. In der Realität ist die Konsistens der Angfangsbedingungen jedoch nicht immer gegeben. 
+Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um diesen Effekten entgegenzuwirken benötigt man einen Folgeregler. Dessen Aufgabe besteht darin diese Einflüsse zu eliminieren, sodass das Modell auch im gestörten Fall der Trajektorie folgt.
  \begin{figure}
  	\centering{
  		\subfloat[Konsistente Anfangszustände $ p_{ref_0}~=~p_{mdl_0}~=~0 $ und $ v_{ref_0}~=v_{mdl_0}~=~0 $, ideales Modell]{
@@ -395,7 +405,7 @@ Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Simuliert man da
  	\caption[Referenzmodell als Vorsteuerung]{Steuerung der Regelstrecke über das Referenzmodell}
  	\label{fig:RefaliasVor}
 \end{figure}
-
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \section{Folgeregler}
 \label{sec:folgeregeler}
 Inkonsistente Anfangsbedingungen, externe Störungen sowie Modellunsicherheiten bewirken einen Ausgangsfolgefehler $e = P^n_{ref} - P^n $. Dieser ergibt sich durch die Fortpflanzung des für das reale System nicht ausreichenden Stellsignals $\ddot{e} = u_{f_{ref}} - u_f$. Das bedeutet, die Fehlerdynamik kann ebenfalls über eine zweifache Integriererkette modelliert werden. Zweifache Integriererkette ergo instabiles System. Damit der Quadrocopter auf die Soll-Trajektorie konvergiert, muss die Fehlerdynamik stabilisiert werden. Dafür ist es von nöten, die Dynamik der Folgefehler vorgeben zu können. Zu diesem Zwecke werden die Zustandsgrößen des Ausgangsfolgefehlermodells zurückgeführt (Abbildung \ref{fig:rückfolgefeh}). Daraus ergibt sich folgende Differentialgleichung.
@@ -426,7 +436,7 @@ Die Annäherungsverhalten ist Abhängig von den Koeffizienten $ \tilde{c}_0 $ und 
 Nicht bekämpft werden durch dieses Stellgesetz konstante Dauerstörungen. Zum Beispiel hervorgerufen durch Winde die über einen längeren Zeitraum als Konstant anzusehen sind. Mit einer konstanten Kraft wirken diese auf das Flugsystem. Beachtet man die diese Kraft hervorgerufenen Beschleunigung $ a_st $ in der Fehlerdifferenzialgleichung. 
 \begin{equation}
 \ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e +a_{st}= 0
-\label{eq:fehlerdyn}
+\label{eq:fehlerdyn_st}
 \end{equation}
 Folgt im stationären Zustand, das heißt alle Zeitableitungen gleich Null, ein dauerhafter Positionsfehler.
 \begin{equation}
@@ -462,15 +472,15 @@ Wie auch schon zuvor kann die Dynamik Polvorgabe festgelegt werden. Für den Folg
  		
  		\subfloat[Inkonsistene Anfangszustände $ p_{ref_0}~=~0~\ne~p_{mdl_0}~=~0.3 $ und $ v_{ref_0}~=~0~\ne~v_{mdl_0}~=~0.2 $, ideales Modell]{
  			\includegraphics[width=0.5\textwidth]{images/p_p0_03_v0_02_Kd_4_Kp_5_Ki_001}
- 			\label{fig:vor_inkonAzust}
+ 			\label{fig:folg_inkonAzust}
  		}
  		\subfloat[Unsicherheit der Modellparamter $ m_{inv}=1.863~\ne~m_{mdl}=2.5 $]{
  			\includegraphics[width=0.5\textwidth]{images/p_m_mdl_2_5_Kd_4_Kp_5_Ki_001}
- 			\label{fig:vor_unsichmdlpara}
+ 			\label{fig:folg_unsichmdlpara}
  		}
  	}	
  	\caption[Grafiken Folgeregler]{Auswirkung von Folgeregler ($\tilde{c}_1=4$, $\tilde{c}_0=4$, $\tilde{c}_{-1}=0.01 $) auf inkonsistente Anfangszustände und Modellunsicherheiten }
- 	\label{fig:RefaliasVor}
+ 	\label{fig:folg_RefaliasVor}
  \end{figure}
 \subsection{Einstellung der Dynamik mittels Polvorgabe}
 \label{subsec:polvor}
