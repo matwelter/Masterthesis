@@ -372,7 +372,7 @@ Das resultierende Strukturbild der Vorsteuerung ist in Abbildung \ref{fig:strucr
  			\label{fig:tragen_aref}
  		}
  	}	
- 	\caption[Simulationsergebnisse Referenzmodell]{Simulationsergebnis des Referenzmodells für eine Achse mit $ \omega = 1.5~Hz$ $ D = 1 $}
+ 	\caption[Simulationsergebnisse Referenzmodell]{Simulationsergebnis des Referenzmodells für eine Achse mit $ \omega_0 = 1.5~Hz$ $ D = 1 $}
 \label{fig:tragen}
  \end{figure}
 Weiterhin besteht die Möglichkeit die Vorsteuerung auszubauen, so dass  Geschwindigkeitsvorgaben gemacht werden können. Dies erleichtert unter anderem das manuelle Navigieren mittels einer Fernsteuerung. Dabei erfolgt die Vorgabe der Soll-Geschwindigkeiten $ v^o_{cmd} $ im o-frame. Diese Vorgabe wird ins n-frame transformiert und dort über die Zeit integriert. Somit ergibt sich eine stetig Positionsvorgabe für $ P^n_{cmd} $. 
@@ -382,11 +382,11 @@ P^n_{cmd} = \int (M_z^T\cdot v^o_{cmd}) dt + P^n_{cmd_0}
 \label{eq:v_Pcmd}
 \end{equation}
 
-Mit dieser wird das Referenzmodell (\ref{eq:ref_mdl}) gespießt. Es wird ein Stellgröße erzeugt für das die Position des Quadrocopter der stetigen Positionsvorgabe (\ref{eq:v_Pcmd}) folgt. Die maximale Geschwindigkeit ist deshalb durch die Dynamik des Referenzmodells begrenzt. Je höher die Dynamik desto größer die mögliche Geschwindigkeit.
+Mit dieser wird das Referenzmodell (\ref{eq:ref_mdl}) gespießt. Es wird ein Stellgröße erzeugt für das die Position des Quadrocopter der stetigen Positionsvorgabe (\ref{eq:v_Pcmd}) folgt. Die maximale Geschwindigkeit ist deshalb durch die Grenzfrequenz $ \omega_0 $ des Referenzmodells begrenzt. Je größer $ \omega_0 $ die desto höher die mögliche Geschwindigkeit.
   
-Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Speist man das exakt Zustandslinearisierte mit dem in Abbildung \ref{fig:tragen} generierten Sollwertverlauf so folgt der Quadrocopter der Trajektorie. Dies gilt allerdings nur für den Fall konsistenter Anfangszustände (Abbildung \ref{fig:vor_ohnestr}). Ist dies nicht gegeben ist wie in Abbildung zu erkennen das Positionverlauf des Translationsmodell für den gleichen Stellgrößenverlauf nicht der Referenz entspricht. Das gleiche gilt für Unsicherheiten der Modellparameter (Abbildung \ref{fig:vor_unsichmdlpara}). Hierbei berechnet die Inversion einen unzureichenden oder überdimensionierten Schubvektor. 
+Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Speist man das exakt Zustandslinearisierte mit dem in Abbildung \ref{fig:tragen} generierten Sollwertverlauf so folgt der Quadrocopter der Trajektorie. Dies gilt allerdings nur für den Fall konsistenter Anfangszustände (Abbildung \ref{fig:vor_ohnestr}). Ist dies nicht gegeben, ist wie in Abbildung zu erkennen das Positionsverlauf des Translationsmodell für den gleichen Stellgrößenverlauf nicht der Referenz entspricht. Das gleiche gilt für Unsicherheiten der Modellparameter (Abbildung \ref{fig:vor_unsichmdlpara}). Hierbei berechnet die Inversion einen unzureichenden oder überdimensionierten Schubvektor. 
 %Simuliert man das Modell (Abbildung \ref{fig:Gesamtinversion}) inklusive des Stellgesetzes der Vorsteuerung Gleichung (\ref{eq:ref_mdl}) für konsistente Anfangsbedingungen $ P_{ref0}^n = P_0^n $ so ergibt sich die gewünschte Flugkurve. In der Realität ist die Konsistens der Angfangsbedingungen jedoch nicht immer gegeben. 
-Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um diesen Effekten entgegenzuwirken benötigt man einen Folgeregler. Dessen Aufgabe besteht darin diese Einflüsse zu eliminieren, sodass das Modell auch im gestörten Fall der Trajektorie folgt.
+Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um all diesen Effekten entgegenzuwirken benötigt man einen Folgeregler. Dessen Aufgabe besteht darin diese Einflüsse zu eliminieren, sodass das Modellverlauf auch im gestörten Fall der Trajektorie entspricht.
  \begin{figure}
  	\centering{
  		\subfloat[Konsistente Anfangszustände $ p_{ref_0}~=~p_{mdl_0}~=~0 $ und $ v_{ref_0}~=v_{mdl_0}~=~0 $, ideales Modell]{
@@ -408,7 +408,11 @@ Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Q
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \section{Folgeregler}
 \label{sec:folgeregeler}
-Inkonsistente Anfangsbedingungen, externe Störungen sowie Modellunsicherheiten bewirken einen Ausgangsfolgefehler $e = P^n_{ref} - P^n $. Dieser ergibt sich durch die Fortpflanzung des für das reale System nicht ausreichenden Stellsignals $\ddot{e} = u_{f_{ref}} - u_f$. Das bedeutet, die Fehlerdynamik kann ebenfalls über eine zweifache Integriererkette modelliert werden. Zweifache Integriererkette ergo instabiles System. Damit der Quadrocopter auf die Soll-Trajektorie konvergiert, muss die Fehlerdynamik stabilisiert werden. Dafür ist es von nöten, die Dynamik der Folgefehler vorgeben zu können. Zu diesem Zwecke werden die Zustandsgrößen des Ausgangsfolgefehlermodells zurückgeführt (Abbildung \ref{fig:rückfolgefeh}). Daraus ergibt sich folgende Differentialgleichung.
+Inkonsistente Anfangsbedingungen, externe Störungen sowie Modellunsicherheiten bewirken einen Ausgangsfolgefehler $e = P^n_{ref} - P^n $. Dieser Pflanzt sich weiter fort, da es sich bei dem Stellsignal $  u_{f_{ref}} $ (\ref{eq:ref_mdl}) nicht um das Stellsignal $ u_f $ handelt welches den Quadrocopter zurück auf die Trajektorie führt. Dies gilt auch im Falle eines unzureichenden Stellsignalverlaufs in Folge von Modellunsicherheiten. Modellieren lässt sich die Fortpflanzung des Folgefehlers aufgrund des linearisierten Modells in Form einer doppelten Integriererkette. 
+%Dieser ergibt sich durch die Fortpflanzung des für das reale System nicht ausreichenden Stellsignals $\ddot{e} = u_{f_{ref}} - u_f$. Das bedeutet, die Fehlerdynamik kann ebenfalls über eine zweifache Integriererkette modelliert werden. 
+Zweifache Integriererkette ergo instabiles System. Damit später die Flugbahn des Quadrocopter mit der Solltrajektorie konvergiert, muss die Fehlerdynamik stabilisiert werden. 
+%Dafür ist es von nöten, die Dynamik der Folgefehler vorgeben zu können. 
+Zu diesem Zwecke werden die Zustandsgrößen des Ausgangsfolgefehlermodells zurückgeführt (Abbildung \ref{fig:rückfolgefeh}). Daraus ergibt sich für die Vorgabe, dass der Folgefehler $ e $ in einer endlichen Zeit gegen $ 0 $ strebt, folgende Differentialgleichung.
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/fehlermdl}
@@ -427,13 +431,13 @@ e &= P^n_{ref} - P^n\\
 \ddot{e} &= u_{f_{ref}} - u_f
 \end{split}
 \end{equation}
-ergibt sich folgendes Stellgesetz für die Eingangsgröße $ u_f $ des zustandslinearsierenten Systems das den Folgefehler ausregelt. 
+Diese kann nach $ u_f $ um gestellt werden. Damit ergibt sich das nachfolgende Stellgesetz für die Eingangsgröße $ u_f $ des zustandslinearsierenten Systems welches den Folgefehler ausregelt. 
 \begin{equation}
 u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n) +\tilde{c}_0\cdot (P^n_{ref} - P^n)}
 \end{equation}
-Die Annäherungsverhalten ist Abhängig von den Koeffizienten $ \tilde{c}_0 $ und $ \tilde{c}_1 $. Anhand von \ref{eq:fehlerdyn} lassen sich für diese mittels der Polvorgabe die Dynamik vorgeben.
+Die Annäherungsverhalten ist Abhängig von den Koeffizienten $ \tilde{c}_0 $ und $ \tilde{c}_1 $. Anhand von \ref{eq:fehlerdyn} lassen sich für diese mittels der Polvorgabe (Kapitel \ref{subsec:polvor}) die Dynamik vorgegeben.
 
-Nicht bekämpft werden durch dieses Stellgesetz konstante Dauerstörungen. Zum Beispiel hervorgerufen durch Winde die über einen längeren Zeitraum als Konstant anzusehen sind. Mit einer konstanten Kraft wirken diese auf das Flugsystem. Beachtet man die diese Kraft hervorgerufenen Beschleunigung $ a_st $ in der Fehlerdifferenzialgleichung. 
+Nicht bekämpft werden durch dieses Stellgesetz konstante Dauerstörungen. Hervorgerufen zum Beispiel durch Winde die über einen längeren Zeitraum als Konstant anzusehen sind. Mit einer konstanten Kraft wirken diese auf das Flugsystem. Beachtet man die von dieser Kraft hervorgerufenen Beschleunigungsbeitrag $ a_st $ in der Fehlerdifferenzialgleichung. 
 \begin{equation}
 \ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e +a_{st}= 0
 \label{eq:fehlerdyn_st}
@@ -442,21 +446,21 @@ Folgt im stationären Zustand, das heißt alle Zeitableitungen gleich Null, ein da
 \begin{equation}
 e = -\frac{a_{st}}{\tilde{c}_0}
 \end{equation} 
-Lösung dieses Problems ist die Erweiterung des Folgeregeler mit einer Integrierenden Komponente \cite{deutNL}.
+Lösung dieses Problems ist nach \cite{deutNL} die Erweiterung des Folgeregler mit einer Integrierenden Komponente.
 \begin{equation}
 \ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e + \underset{I-Anteil}{\tilde{c}_{-1} \int e(\tau)d\tau} +a_{st}= 0
 \label{eq:integodif}
 \end{equation} 
-Der I-Anteil liefert jetzt einen Signalanteil zur Kompensation der Störung im stationären Zustand. Den Beweis dafür erhält man in dem man die Integro-Differentialgleichung (\ref{eq:integodif}) nach der Zeit ableitet ergibt sich Folgenden Differentialgleichung. 
+Der I-Anteil liefert einen Signalanteil zur Kompensation der Störung im stationären Zustand. Den Beweis dafür erhält man, wenn man die Integro-Differentialgleichung (\ref{eq:integodif}) nach der Zeit ableitet. Danach ergibt sich Folgenden Differentialgleichung. 
 \begin{equation}
 	\dddot{e} + \tilde{c}_1 \cdot \ddot{e}+ \tilde{c}_0\cdot \dot{e} + \tilde{c}_{-1} \cdot e = 0
 	\label{eq:ifehlerdyn}
 \end{equation}
-Im eingeschwungenem Zustand, ergibt sich so für den Positionsfehler
+Im eingeschwungenen Zustand, ergibt sich so für den Positionsfehler
 \begin{equation}
  e = 0
 \end{equation}
-Das Stellgesetz für einen Regler mit I-Anteil lässt sich unter Vernachlässigung der Dauerstörung $ a_{st} $ aus Gleichung (\ref{eq:integodif} ) entwickeln (vgl. Abbildung \ref{fig:folgeregler}).
+Das Stellgesetz für einen Regler mit I-Anteil lässt sich unter Vernachlässigung der Dauerstörung $ a_{st} $ aus Gleichung (\ref{eq:integodif}) entwickeln (vgl. Abbildung \ref{fig:folgeregler}).
 \begin{equation}
 u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-Anteil}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n) +\tilde{c}_0\cdot (P^n_{ref} - P^n)+\tilde{c}_{-1} \int e(\tau)d\tau}
 \end{equation}
@@ -466,7 +470,9 @@ u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-
 	\caption[Folgeregler]{Folgeregler} %
 	\label{fig:folgeregler}
 \end{figure}
-Wie auch schon zuvor kann die Dynamik Polvorgabe festgelegt werden. Für den Folgeregler mit I-Anteil ist hierzu die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden. 
+Dieses Stellgesetz führt den Quadrocopter entlang Referenztrajektorie. Zur erkennen ist dies auch in der Simulation (\ref{fig:folg_RefaliasVor}) mit Regler Regler. So wird für Inkonsistene Anfangsbedingungen (Abbildung \ref{fig:folg_inkonAzust}) das Fluggerät auf die Trajektorie geführt. Für Modellunsicherheiten (Abbildung \ref{fig:folg_unsichmdlpara}) passt der Folgeregler das Stellsignal so an, das der Quadrocopter entlang des vorgegebenen Pfad fliegt. Vergleich hierzu reine Vorsteuerung (Abbildung \ref{fig:RefaliasVor}).
+
+Wie auch schon zuvor kann das Einschwingverhalten für den Folgeregler mit I-Anteil über die Polvorgabe festgelegt werden. Für diesen ist die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden. 
  \begin{figure}
  	\centering{
  		
@@ -482,9 +488,12 @@ Wie auch schon zuvor kann die Dynamik Polvorgabe festgelegt werden. Für den Folg
  	\caption[Grafiken Folgeregler]{Auswirkung von Folgeregler ($\tilde{c}_1=4$, $\tilde{c}_0=4$, $\tilde{c}_{-1}=0.01 $) auf inkonsistente Anfangszustände und Modellunsicherheiten }
  	\label{fig:folg_RefaliasVor}
  \end{figure}
+ 
+ 
+ %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \subsection{Einstellung der Dynamik mittels Polvorgabe}
 \label{subsec:polvor}
-Anhand der Lage der Polstellen einer Übertragungsfunktion, können Rückschlüsse über das Einschwingverhalten und die Stabilität getroffen werden. Ziel einer Zustandsregelung, wie der Folgereregelung, ist die Pollagen der zu regelnden Strecke so zu verschieben, dass das Einausgangsverhalten die gewünschte Dynamik aufweist.
+Anhand der Lage der Polstellen einer Übertragungsfunktion, können Rückschlüsse über die Stabilität und das Einschwingverhalten getroffen werden. Ziel einer Zustandsregelung, wie der Folgereregelung, ist die Pollagen der zu regelnden Strecke so zu verschieben, dass das Einausgangsverhalten die gewünschte Dynamik aufweist.
 
 Zunächst ist zu klären was die Polstellenlage in der komplexen Ebene über das Verhalten aussagt. Dabei entspricht die Anzahl der Pole $ \lambda_i $ der Ordnung $ n $ des Systems.
 \begin{figure}
@@ -494,37 +503,36 @@ Zunächst ist zu klären was die Polstellenlage in der komplexen Ebene über das Ve
 	\label{fig:stabgeb}
 \end{figure}
 \begin{itemize}
-	\item Befinden sich alle Pole $ \lambda_i $ links der Imaginärachse so ist das System asymptotisch stabil GLEICHUNG ansonsten instabil(Abbildung \ref{fig:stabgeb}).
+	\item Befinden sich alle Pole $ \lambda_i $ links der Imaginärachse ($ Re(\lambda_i) < 0 $), so ist das System asymptotisch stabil, ansonsten instabil (Abbildung \ref{fig:stabgeb}).
 	\item Komplexe Pole können nur in Formen von Polpaaren auftauchen. Ist ein Komplexes Polpaar vorhanden, führt das System nach Anregung eine Schwingung aus . Befindet sich die Polpaare in der linken Halbebene des Imaginärteil, nimmt die Amplitude der Schwingung exponentiell ab.
-	\item Je weiter links sich die Pole auf der Reelenachse befinden desto schneller ist das System.  
-	\item Bei mehreren Polstellen wird das Verhalten hauptsächlich über die Pole mit dem größten Realteil bestimmt. Man nennt sie deshalb auch dominante Pole.
+	\item Je weiter links sich die Pole auf der reellen Achse befinden, desto schneller ist das System. 
+	\item Bei mehreren Polstellen wird das Verhalten hauptsächlich über den Pole bzw. die Polpaare mit dem größten Realteil bestimmt. Sie werden deshalb als dominante Pole bezeichnet.
 \end{itemize}
-Betrachtet man eine Übertragungsfunktion im Bildbereich.
+Betrachtet man eine beliebige Übertragungsfunktion im Bildbereich.
 \begin{equation}
 G_e(s) = \frac{Z(s)}{N(s)}
 \label{eq:Ge}
 \end{equation}  
-Entsprechen die Polstellen $ \lambda_i $ vom System, denn Nullstellen $ s_i $ des Nennerpolynom.
+Entsprechen die Polstellen $ \lambda_i $ des Systems, denn Nullstellen $ s_i $ des Nennerpolynom.
 \begin{equation}
 N(s)=  s^n+c_{n-1} \cdot s^{n-1}+ \cdots + c_1 \cdot s+ c_0 = \prod\limits_{n}^{i=1} (s-\lambda_i)= 0
 \label{eq:N}
 \end{equation}
-Das dynamische Verhalten kann jetzt anhand der Pollage analysiert werden. Im Umkehrschluss können für frei wählbare Koeffizienten des Nennerpolynoms die Dynamik über Vorgabe von Soll-Polestellen $ \lambda_{si} $ erfolgen. Möglich ist dies mit Hilfe einen Koeffizentenvergleichs.
+Das dynamische Verhalten kann anhand dieser Pollage analysiert werden. Im Umkehrschluss können für frei wählbare Koeffizienten des Nennerpolynoms die Dynamik über Vorgabe von Polstellen $ \lambda_{si} $ erfolgen. Dies erfolgt über einen Koeffizientenvergleich.
 \begin{equation}
 N(s)=  s^n+c_{n-1} \cdot s^{n-1}+ \cdots + c_1 \cdot s+ c_0 =\prod\limits_{n}^{i=1} (s-\lambda_{si}) 
 \end{equation}
-Somit ist es möglich mittels (\ref{eq:fehlerdyn}) oder (\ref{eq:ifehlerdyn}) das Einschwingverhalten der Fehlerdifferenzialgleichung vorzugeben. Wie man jedoch die Polstellen optimal bestimmt, dafür gibt es keine generelle Vorgehensweise. In der Regel werden sie empirisch über Simulationen festegelegt und zum Schluss am realen Modell getestet bzw. gegebenenfalls optimiert. Dies gesieht meist händisch. Allerdings gibt es hier Algorithmen die ausgehend von einem Startwert, die Parameter automatisch an das System anpassen.  
-
+Somit ist es möglich über die Koeffizienten von (\ref{eq:fehlerdyn}) oder (\ref{eq:ifehlerdyn}) das Einschwingverhalten  des Folgereglers mittel der Platzierung von Polen vorzugeben. Wie jedoch die Polstellen optimal bestimmt, dafür gibt es keine generelle Vorgehensweise. In der Regel werden sie empirisch über Simulationen festgelegt. Anschließend am realen Modell getestet und gegebenenfalls optimiert. Diese Optimierung gesieht meist händisch. Allerdings gibt es hier Bemühungen diese letzte Optimierung am realen System automatisiert durchzuführen. 
   
 \subsection{Automatische Optimierung der Reglerparameter}
 \label{sec:selftun}
-In der Simulation ermittelte Parameter müssen meist für das realen System leicht angepasst werden. Von Vorteil ist es deshalb, einen Algorithmus zu implementieren, der online und kontinuierlich die Einstellung optimiert. Diesen Vorgang bezeichnet man als selftuning. 
+In der Simulation ermittelte Parameter müssen meist für das realen System leicht angepasst werden. Von Vorteil ist es deshalb, einen Algorithmus zu implementieren, der online und kontinuierlich die Einstellung optimiert. Die Bezeichnung dieses Vorgangs heißt selftuning. 
 
-Da der implementierte Folgeregler inklusive I-Anteil besteht aus einem Proportionalverstärker $ P $, einem Differentiellen Anteil $ D $ sowie einem Integrationsanteil $ I $.
+Da der implementierte Folgeregler inklusive I-Anteil besteht aus einem Proportionalverstärker $ P $, einem Differentiellen Anteil $ D $ sowie einem Integrationsanteil $ I $ zusammensetzt.
 \begin{equation}
 u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{D-Anteil}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n)} +\underset{P-Anteil}{\tilde{c}_0\cdot (P^n_{ref} - P^n)}+\underset{I-Anteil}{\tilde{c}_{-1} \int e(\tau)d\tau}
 \end{equation}
-Das bedeutet um ihn zu optimieren, können Tuningalgorithmen angewandt werden die für einen PID-Regler entwickelt worden sind. So wurde der unter \cite{selftun} vorgestellte Algorithmus der die Reglerparameter über eine adaptive Interaktion tunt, in ROS integriert. Die Interaktion besteht dabei aus drei Differentialgleichungen.
+Können Tuningalgorithmen angewandt werden, die für einen PID-Regler entwickelt worden sind. So kann der unter \cite{selftun} vorgestellte Algorithmus angewendet werden. Dieser tunt die Regelparameter über eine adaptive Interaktion tunt. Die Interaktion besteht dabei aus drei Differentialgleichungen zur Anpassung der Koeffizienten des Reglers.
 \begin{equation}
 \begin{split}
 \dot{k}_p &= \dot{\tilde{c}}_0 = \gamma \cdot e^2\\
@@ -540,7 +548,7 @@ Dabei entspricht $ \gamma $ dem Anpassungskoeffizient. In \cite{selftun} ist $ \
   	\caption[Selftuning Folgeregler]{Folgeregler inklusive Selftuning} %
   	\label{fig:selftun00}
   \end{figure}
-Anzumerken ist das die Verbesserung der Verstärkungen gedacht ist. Das bedeutet, die Qualität der Optimierung ist Abhängig von den zu Beginn übergebenen Parameter, die zum Beispiel über die Polvorgabe bestimmt worden sind. 
+Anzumerken ist das die Qualität der Optimierung  Abhängig von den zu Beginn übergebenen Parameter ist. Welche zuvor zum Beispiel über die Polvorgabe bestimmt worden sind. 
 
 \section{Zustandsschätzung}
 \label{sec:Zustandsbestimmung}
