@@ -214,8 +214,10 @@ Per Definition (Anhang \ref{anh:def_fl}) muss dafür das Kriterium, Anzahl der fl
 %\end{bmatrix}$ nur um einen solchen Handeln wenn die Anzahl der flachen Ausgänge $ p $ derer der realen Eingänge $ u $ entspricht. Dies ist nicht der Fall.
 Nach \cite{deutNL} heißt das, es muss ein neuer fiktiver Ausgang gesucht werden, sodass  $ p_y  = p_u$ gilt. Dieser neue Ausgang würde nicht mehr der Position entsprechen. Das bedeutet Positionsvorgaben müssten erst in die neuen Ausgänge transformierten werden. Auch der gewünschte fiktive Eingang der $u_f = \begin{bmatrix} a^n_x &	a^n_y & y^n_z \end{bmatrix}^T$ wäre nicht mehr gegeben.
 
-Deshalb bedient sich die in Kooperation mit AscTec entwickelte Inversion \cite{Achtelik11} einem Trick.  
+Deshalb bedient sich die in Kooperation mit AscTec entwickelte Inversion \cite{Achtelik11} einem Trick. 
+ 
 % Damit dennoch eine Inversion durchgeführt werden kann, ist es möglich ein flacher Ausgang mit der selben Anzahl an Ausgängen wie Eingängen zu suchen. Dieser würde nicht mehr mit der Position $ P^n $ übereinstimmen. Deshalb wurde in Paper \cite{Achtelik11} ein anderer Weg eingeschlagen.  
+
 Um die Position als flachen Ausgang zu erhalten, bedient man sich der Tatsache, das eine Veränderung des $ \psi $-Winkels zu keiner Auslenkung des Schubvektors $ T $ führt. So können die Beschleunigungsvorgaben $ u_f $ über eine einfache Transformation (Gleichung \ref{eq:Mz}) um den Winkel $ \psi $ ins o-frame übertragen werden $\tilde{u}_f = \begin{bmatrix} a^o_x &	a^o_y & y^o_z \end{bmatrix}^T$. Gleiches gilt auch für den zugehörigen Ausgang $ y_f $. Somit ergibt sich für diesen $\tilde{y}_f = \begin{bmatrix} y^o_{f1} &	y^o_{f2} & y^o_{f2} \end{bmatrix}$.Durch diesen Trick reduziert sich die Anzahl der Eingänge der für Inversion um einen. So entspricht die Anzahl der verbliebenen Eingängen $ \tilde{u} = \begin{bmatrix} \phi & \theta & T \end{bmatrix} $ denen des gewünschten flachen Ausgangs. Damit ist die Flachheit des Ausgangs $ \tilde{y}_f $ nicht erwiesen. Es fehlt per Definition (vgl. Anhang \ref{anh:def_fl}) noch der Beweis, das sich alle Zustände $ \tilde{x} $ (vgl. Abbildung \ref{fig:modstrukquad}) und die reduzierten Eingänge $ \tilde{u} $ durch die flachen Ausgänge $ \tilde{y}_f $ und dessen Ableitungen darstellen lassen. Für die Zustände ist dieser Beweis, ohne großen Rechenaufwand möglich.
 
 \begin{equation}
@@ -312,7 +314,9 @@ Dadurch kann nun das zu regelnde System als lineares Modell bestehend aus drei e
 Eine Vorsteuerung erzeugt anhand einer Sollwertvorgabe einen Stellgrößenverlauf, der benötigt wird um System im störungsfreien Fall in diesen Zustand zu überführen. In \cite{Achtelik11} wird deshalb auch von Referenzmodell gesprochen. 
  
 Im Sachen Positionsregelung bedeutet dies, es wird eine anzufliegende Position $ P^n_{cmd} $ übergeben. Daraus generiert die Vorsteuerung eine Trajektorie. Der Pfad $ P^n_{ref} $ mit dem der Quadrocopter in den Zustand überführt werden soll muss dabei einmal stetig differenzierbar sein. Der Grund, die Stellgröße der Inversion sind Beschleunigungsvorgaben. Demzufolge muss die zweite Ableitung der Position mindestens stückweise existiert. Damit dies gewährleistet ist, ist nach \cite{deutNL} folgende Differenzialgleichung für das Referenzmodell aufzustellen. 
+
 %Zur Vorgabe des gewünschte benötigt man als Vorsteuerung ein Referenzmodell. Diesem werden die anzufliegenden Positionen $ P^n_{cmd} $ übergeben. Aufgabe der Vorsteuerung ist es daraus eine Trajektorie zu generieren. Diese beschreibt den Pfad über den der Quadrocopter in diese Koordinate überführt wird. Da die neuen Eingangsgrößen $ u_f $ des zustandslinearisierten Modells Beschleunigungsvorgaben sind, muss der Verlauf der Positionsvorgabe der Vorsteuerung $ P^n_{ref} $ einmal stetig differenzierbar sein, sodass die zweite Ableitung existiert. Damit dies gewährleistet kann nach \cite{deutNL} die E/A Dynamik für dieses System über folgende Formel vorgegeben werden.
+
 \begin{equation}
 	\ddot{P}^n_{ref} + c_1 \cdot \dot{P}^n_{ref}+c_0\cdot P^n_{ref}=c_0 \cdot P^n_{cmd}
 	\label{eq:dynref}
@@ -385,7 +389,9 @@ P^n_{cmd} = \int (M_z^T\cdot v^o_{cmd}) dt + P^n_{cmd_0}
 Mit dieser wird das Referenzmodell (\ref{eq:ref_mdl}) gespießt. Es wird ein Stellgröße erzeugt für das die Position des Quadrocopter der stetigen Positionsvorgabe (\ref{eq:v_Pcmd}) folgt. Die maximale Geschwindigkeit ist deshalb durch die Grenzfrequenz $ \omega_0 $ des Referenzmodells begrenzt. Je größer $ \omega_0 $ die desto höher die mögliche Geschwindigkeit.
   
 Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Speist man das exakt Zustandslinearisierte mit dem in Abbildung \ref{fig:tragen} generierten Sollwertverlauf so folgt der Quadrocopter der Trajektorie. Dies gilt allerdings nur für den Fall konsistenter Anfangszustände (Abbildung \ref{fig:vor_ohnestr}). Ist dies nicht gegeben, ist wie in Abbildung zu erkennen das Positionsverlauf des Translationsmodell für den gleichen Stellgrößenverlauf nicht der Referenz entspricht. Das gleiche gilt für Unsicherheiten der Modellparameter (Abbildung \ref{fig:vor_unsichmdlpara}). Hierbei berechnet die Inversion einen unzureichenden oder überdimensionierten Schubvektor. 
+
 %Simuliert man das Modell (Abbildung \ref{fig:Gesamtinversion}) inklusive des Stellgesetzes der Vorsteuerung Gleichung (\ref{eq:ref_mdl}) für konsistente Anfangsbedingungen $ P_{ref0}^n = P_0^n $ so ergibt sich die gewünschte Flugkurve. In der Realität ist die Konsistens der Angfangsbedingungen jedoch nicht immer gegeben. 
+
 Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um all diesen Effekten entgegenzuwirken benötigt man einen Folgeregler. Dessen Aufgabe besteht darin diese Einflüsse zu eliminieren, sodass das Modellverlauf auch im gestörten Fall der Trajektorie entspricht.
  \begin{figure}
  	\centering{
@@ -463,6 +469,7 @@ Im eingeschwungenen Zustand, ergibt sich so für den Positionsfehler
 Das Stellgesetz für einen Regler mit I-Anteil lässt sich unter Vernachlässigung der Dauerstörung $ a_{st} $ aus Gleichung (\ref{eq:integodif}) entwickeln (vgl. Abbildung \ref{fig:folgeregler}).
 \begin{equation}
 u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-Anteil}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n) +\tilde{c}_0\cdot (P^n_{ref} - P^n)+\tilde{c}_{-1} \int e(\tau)d\tau}
+\label{eq:folgreg_stelgeI}
 \end{equation}
 \begin{figure}
 	\centering
@@ -552,12 +559,20 @@ Anzumerken ist das die Qualität der Optimierung  Abhängig von den zu Beginn über
 
 \section{Zustandsschätzung}
 \label{sec:Zustandsbestimmung}
-Bei der Folgeregelung handelt es sich um einen Zustandsregler. Das bedeutet die Werte aller Zustände des realen Systems müssen bekannt sein. Betrachtet man das Stellgesetz der Regelung inklusive Vorsteuerung, bedeutet dies, das Position $ P^n $ und die Geschwindigkeit $ v^n $, mit der sich der Quadrokobert im n-frame bewegt benötigt werden. Die Position $ P^n $ ist bereits über den Laser (Kapitel \ref{chap:2Dpositionsbestimmung}) bestimmt. Besitzt allerdings nur eine Updaterate von $ 40 Hz $. Hier wäre es nützlich Zwischenwerte zu schätzen, sodass die Positionsdaten dem Folgeregler mit einer höheren Taktrate zur Verfügung stehen. Der Zustand der Geschwindigkeit $ v^n $ lässt sich  messtechnisch nur sehr schwer ermitteln. Eine Möglichkeit zur messtechnischen Erfassung wäre ein Dopplerradar \cite{ras12}. Dieser basiert auf dem Doppler-Effekt. Dabei wird ein periodisches Signal ausgesandt. Anhand der Frequenzänderung des von einem Objekt reflektieren Signals, kann nun auf die Geschwindigkeit geschlossen werden. Dies würde eine zusätzliche Sensor bedeutet, der wiederum mit kosten verbunden ist. Es ist somit eine Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit ermittelt.
+
+Bei der Folgeregelung handelt es sich um einen Zustandsregler. 
+%Das bedeutet die Werte aller Zustände des realen Systems müssen bekannt sein. 
+Betrachtet man das Stellgesetz \ref{eq:folgreg_stelgeI} bedeutet dies, das Position $ P^n $ und die Geschwindigkeit $ v^n $ mit der sich der Quadrocopter im n-frame bewegt müssen zur Verfügung stehen. Bereits bekannt ist, das die Position $ P^n $ mittels des Laser (Kapitel \ref{sec:laser_scan_matching}) bestimmt wird. Die Updaterate beträgt dabei nur $ 40 Hz $.
+%Die Position $ P^n $ ist bereits über den Laser (Kapitel \ref{chap:2Dpositionsbestimmung}) bestimmt. 
+%Besitzt allerdings nur eine Updaterate von $ 40 Hz $.
+ Daher ist es nützlich Zwischenwerte zu schätzen, sodass die Positionsdaten dem Folgeregler in einer höheren Taktrate zur Verfügung stehen. 
+ 
+ Der Zustand der Geschwindigkeit $ v^n $ ist messtechnisch sehr schwer zu ermitteln. Eine Möglichkeit zur messtechnischen Erfassung wäre die Integration eines Dopplerradars \cite{ras12} auf dem Quadrocopter. Dieser basiert auf dem Doppler-Effekt. Dabei wird ein periodisches Signal ausgesendet und je nach Geschwindigkeit die Periodendauer  gestaucht, bzw. für negative Geschwindigkeiten gestreckt. Anhand der Frequenzänderung des reflektieren Signals, kann so auf die Geschwindigkeit geschlossen werden. Diese Umsetzung bedeutet  einen zusätzlichen Sensor, der wiederum mit Kosten verbunden ist. Es sind somit  Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit feststellen.
 
 \subsection{Geschwindigkeitbestimmung über die Inertialsenorik}
 \label{subsec:Vimu}
 (Eventuell noch mit erweitern wie sich die Position über weiter Eulerapproximation entwickelt)
-Die \gls{imu} beinhaltet einen 3D-Bewegungsseonsor. Dieser nimmt die auf Beschleunigung in x, y und z- Achse des Quadrocopters auf und stellt mit einer Frequenz von 1kHz ($ T_{imu}=1ms $) die Messwerte zur Verfügung. Aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Integration der Beschleunigung bestimmen. Für den diskreten Fall lässt sich diese mittels des Eulerverfahren approximieren. Zuvor müssen die Beschleunigungsmesswerte jedoch ins n-frame Transformiert (Gleichung (\ref{eq:inverse_transM})) werden.  
+Die \gls{imu} beinhaltet einen 3D-Bewegungsseonsor. Dieser nimmt die auf Beschleunigung in x, y und z- Achse des Quadrocopters auf und stellt die Messwerte mit einer Frequenz von 1kHz ($ T_{imu}=1ms $) zur Verfügung. Aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Integration der Beschleunigung bestimmen. Für den diskreten Fall lässt sich diese mittels des Eulerverfahren approximieren. Zuvor müssen die Beschleunigungsmesswerte jedoch ins n-frame Transformiert (Gleichung (\ref{eq:inverse_transM})) werden.  
 \begin{equation}
 v^n_{k+1} = v^n_k + T_{imu} \cdot (M_{nb}\cdot a^b_k) = v^n_k + T \cdot a^n_k 
 \end{equation}
