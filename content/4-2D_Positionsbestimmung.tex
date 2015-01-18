@@ -1,22 +1,23 @@
 \chapter[2D Positionsbestimmung]{Zweidimensionale Positionsbestimmung des Quadrocoters in xy-Ebene des Navigationsframes }
 \label{chap:2Dpositionsbestimmung}
-Wie schon in der Einleitung (Kapitel \ref{chap:Einleitung}) sowie der Aufgabenstellung Beschrieben, erfolgt die Positionsbestimmung über den auf dem Quadrocopter montierten Lasersanner. Man spricht hierbei von einem Onboard-Lokalisierungssystem. Die aufgenommen Entfernungen sind dabei im l-frame definiert. Die Rohdaten enthalten somit keine Information über die Position des Quadrocopters im Navigationskoordinatensystem, sondern jegentlich die Entfernung von umgebenden Objekten, bzw. Wänden. Anhand derer lässt sich jedoch über die Methode des \glqq scanmatching\grqq  die Position in einer zweidimensionalen Ebene bestimmt werden (Kapitel \ref{sec:laser_scan_matching}). Da diese Ebene der xy-Ebene des n-frames entsprechen soll, müssen die Laserdaten zunächst in das o-frame überführt werden (Kapitel \ref{sec:laser_ortho}). 
-
-
+Sowie in der Aufgabenstellung beschrieben, erfolgt die Positionsbestimmung über den auf dem Quadrocopter montierten Lasersanner. Man spricht hierbei von einem Onboard-Lokalisierungssystem. Dabei erzeugt der Laser einen zweidimensionalen Scan der Umgebung. Die aufgenommen Entfernungen sind im l-frame definiert, d.h. sie beziehen sich auf Ursprung des Lasers. Damit enthalten die Rohdaten keine Information über die Position und Orientierung des Quadrocopters in der xy-Ebene des Navigationskoordinatensystem (n-frame). Jedoch lässt sich aus Umgebungsscans mittels der    
+%Die aufgenommen Entfernungen sind dabei im l-frame definiert. Diese Rohdaten des Lasers enthalten keine Information über die Position des Quadrocopters im Navigationskoordinatensystem (n-frame). Jegendlich die Entfernung von umgebenden Objekten, bzw. Wänden ist in einem Laserscan enthalten. Anhand eines solchen Umgebungsscan lässt sich jedoch über die 
+Methode des \glqq scanmatching\grqq die Position in einer zweidimensionalen Ebenen bestimmen (Kapitel \ref{sec:laser_scan_matching}). Damit diese jedoch für die Bestimmung der Quadrocopterposition in der horizontalen Ebene eingesetzt werden kann, ist es von Nöten die Laserdaten in das o-frame zu projizieren (Kapitel \ref{sec:laser_ortho}). Erst dann lässt sich für das o-frame und somit dem Quadrocopter, Position und Orientierung in der xy-Ebene des n-frames bestimmen. 
+%Da diese Ebene der  des n-frames entsprechen soll, müssen die Laserdaten zunächst in das o-frame überführt werden (Kapitel \ref{sec:laser_ortho}). 
 \begin{figure}
 	\centering
 	\includegraphics[width = .95\textwidth]{images/ros_ortho_scan_node}
 	\caption[Verknüpfung der Scantools]{Verknüpfung des \glqq laser\_ortho\_projector \grqq - und des \glqq laser\_scan\_matcher\grqq -Knoten GRAFIK EVENTUELL ÜBERARBEITEN DA ASCTEC\_HL\_INTERFACE KNOTEN DER FÜR DIE KOMMUNIKATION VERANTWORTLICH IST FEHLT} %
 	\label{fig:verkn_scantools}
 \end{figure}
+Beide Vorgänge sind bereits für \gls{ros} implementiert und sind Bestandteil der 
+%Realisiert sind diese Vorgänge in den von \gls{ros} zu Verfügung gestellte
+ scan\_tools.  Genauer gesagt handelt es sich dabei um dem \glqq laser\_ortho\_projector \grqq - und dem  \glqq laser\_scan\_matcher\grqq -Knoten (Abbildung \ref{fig:verkn_scantools}). 
+ Ziel der dieses Kapitel \ref{chap:2Dpositionsbestimmung} ist es die Mathematik dahinter zu erläutern, sodass man eine Verständnis der Funktionsweise der Knoten erhält.
 
-Realisiert sind diese Vorgänge in den von \gls{ros} zu Verfügung gestellte scan\_tools.  Genauer gesagt handelt es sich dabei um dem \glqq laser\_ortho\_projector \grqq - und dem  \glqq laser\_scan\_matcher\grqq -Knoten (Abbildung \ref{fig:verkn_scantools}).Ziel der folgenden Kapitel ist es die Mathematik sowie die Funktionsweise die hinter diesen Algorithmen steht zu erläutern. 	
-
-ANMERKUNG ES FEHLT NOCH EIN LITERATURVERZEICHNIS!	
 
 
-
-\section{Projektion der Laserdaten in das o-frame auf der xy-Ebene des n-frames (\glqq laser\_ortho\_projector\grqq) }
+\section[Orthogonale Laserprojektion]{Projektion der Laserdaten in das o-frame auf der xy-Ebene des n-frames (\glqq laser\_ortho\_projector\grqq) }
 \label{sec:laser_ortho}
 Bei der Laserprojektion werden die Laserdaten des l-frame orthogonal zur xy-Ebene des n-frames in die des o-frame transformiert. In allgemeiner Form ist dies in Abbildung \ref{fig:laser_proj_allg} dargestellt. Das o-frame definiert später in Kapitel \ref{sec:laser_scan_matching} die Position und Orientierung des Quadrocopters in der zweidimensionalen Ebene des n-frame. 
 \begin{figure}

@@ -1,7 +1,16 @@
 \chapter[Positionsregelung]{Verifizierung der Positionsregelung der ETH-Zürich in Verbindung mit einem Laserscanner}
 \label{chap:Positionsregelung}
+\begin{figure}
+	\centering
+	\includegraphics[width = .95\textwidth]{images/ros_hl_interf_hl_frame}
+	\caption[AscTec\_hl\_framework in der Kommunikationstruktur]{AscTec\_hl\_framework in der Kommunikationstruktur }
+	\label{fig:asctechlfrkom}
+\end{figure}
 
-In einer Zusammenarbeit von \gls{asctec} und der ETH-Zürich wurde eine Regler zur Positionierung des Pelican Quadrocopters in geschlossenen Räumen entworfen und veröffentlicht. Der Entwurf basierte dabei auf einer monokularen Kamera über die mittels eines \gls{vslam}-Algorithmus und der Fusion der \gls{imu} die Position des Flugobjekts in der unbekannten Umgebung ermittelt wird. Regelung- und Fusionsalgortihmus sind im Paper \cite{Achtelik11} beschrieben. Aufgabe dieses Kapitel ist es die dort veröffentlichen Annahmen und Formel zu verifizieren. Dies erfolgt über Literaturrecherchen und Herleitung der publizierten Gleichungen. Unter Berücksichtigung, das die Position nun mehr vom Laser über die Kapitel \ref{chap:2Dpositionsbestimmung} vorgestellten Algortihmen bestimmt wird, ist Abschnitt \ref{sec:strukpositionsregelung} darauf ausgelegt eine Übersicht über die Bestandteile der Regelung zu geben. Herleitung der Komponenten erfolgt in den anschließend Unterkapiteln. 
+In einer Zusammenarbeit von \gls{asctec} und der ETH-Zürich wurde eine Regler zur Positionierung des Pelican Quadrocopters in geschlossenen Räumen entworfen und veröffentlicht. Der Entwurf basierte dabei auf einer monokularen Kamera über die mittels eines \gls{vslam}-Algorithmus und der Fusion der \gls{imu} die Position des Flugobjekts in der unbekannten Umgebung ermittelt wird. Die dazugehörigen Regelung- und Fusionsalgortihmus sind im Paper \cite{Achtelik11} beschrieben. Außerdem stehen diese als asctec\_framework zum Download zur Verfügung und wurden im Rahmen dieser Arbeit auf den \gls{hlp} geladen (Abbildung \ref{fig:asctechlfrkom}).
+
+Aufgabe dieses Kapitel ist es die veröffentlichen Annahmen und Formel der Fusion und Regelung zu verifizieren. Dies erfolgt über Literaturrecherchen und Herleitung der publizierten Gleichungen. Unter Berücksichtigung, das die Position nun mehr vom Laser über die Kapitel \ref{chap:2Dpositionsbestimmung} vorgestellten Algortihmen bestimmt wird, ist Abschnitt \ref{sec:strukpositionsregelung} darauf ausgelegt eine Übersicht über die Bestandteile der Regelung zu geben. Herleitung der Komponenten erfolgt in den anschließend Unterkapiteln. 
+
 
 %*************************************************************************************************************************
 \section{Struktur der Positionsregelung}
@@ -27,7 +36,7 @@ Bevor jede einzelne Komponente in den Folgekapiteln hergeleitet wird, ist in Abb
 \begin{figure}
 	\centering
 	\includegraphics[width = .85\textwidth]{images/Reglerstruktur}
-	\caption[Gesamtstruktur Regelung]{Struktur der Regelung} %
+	\caption[Gesamtstruktur Regelung]{Struktur der Regelung (AscTec\_Framework)} %
 	\label{fig:strucregelung}
 \end{figure}
 
@@ -567,33 +576,35 @@ Betrachtet man das Stellgesetz \ref{eq:folgreg_stelgeI} bedeutet dies, das Posit
 %Besitzt allerdings nur eine Updaterate von $ 40 Hz $.
  Daher ist es nützlich Zwischenwerte zu schätzen, sodass die Positionsdaten dem Folgeregler in einer höheren Taktrate zur Verfügung stehen. 
  
- Der Zustand der Geschwindigkeit $ v^n $ ist messtechnisch sehr schwer zu ermitteln. Eine Möglichkeit zur messtechnischen Erfassung wäre die Integration eines Dopplerradars \cite{ras12} auf dem Quadrocopter. Dieser basiert auf dem Doppler-Effekt. Dabei wird ein periodisches Signal ausgesendet und je nach Geschwindigkeit die Periodendauer  gestaucht, bzw. für negative Geschwindigkeiten gestreckt. Anhand der Frequenzänderung des reflektieren Signals, kann so auf die Geschwindigkeit geschlossen werden. Diese Umsetzung bedeutet  einen zusätzlichen Sensor, der wiederum mit Kosten verbunden ist. Es sind somit  Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit feststellen.
+ Der Zustand der Geschwindigkeit $ v^n $ ist messtechnisch sehr schwer zu ermitteln. Eine Möglichkeit zur messtechnischen Erfassung wäre die Integration eines Dopplerradars \cite{ras12} auf dem Quadrocopter. Dieser basiert auf dem Doppler-Effekt. Dabei wird ein periodisches Signal ausgesendet und je nach Geschwindigkeit verkleinert sich Periodendauer, bzw. vergrößert sich für negative Geschwindigkeiten. So kann anhand der Frequenzänderung des reflektierten Signals auf die Geschwindigkeit geschlossen werden. Diese Umsetzung bedeutet die Integration eines weiteren Sensor. Aus Gewichts- und Kostengründen sind somit  Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit des Quadrocopters feststellen.
 
-\subsection{Geschwindigkeitbestimmung über die Inertialsenorik}
+\subsection{Geschwindigkeitsbestimmung über die Inertialsenorik}
 \label{subsec:Vimu}
-(Eventuell noch mit erweitern wie sich die Position über weiter Eulerapproximation entwickelt)
 Die \gls{imu} beinhaltet einen 3D-Bewegungsseonsor. Dieser nimmt die auf Beschleunigung in x, y und z- Achse des Quadrocopters auf und stellt die Messwerte mit einer Frequenz von 1kHz ($ T_{imu}=1ms $) zur Verfügung. Aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Integration der Beschleunigung bestimmen. Für den diskreten Fall lässt sich diese mittels des Eulerverfahren approximieren. Zuvor müssen die Beschleunigungsmesswerte jedoch ins n-frame Transformiert (Gleichung (\ref{eq:inverse_transM})) werden.  
 \begin{equation}
 v^n_{k+1} = v^n_k + T_{imu} \cdot (M_{nb}\cdot a^b_k) = v^n_k + T \cdot a^n_k 
 \end{equation}
-Somit ist die Geschwindigkeit bestimmt. In der Praxis führt diese Methode allerdings zu keinem gutem Ergebnis. Grund dafür ist das Sensorrauschen $ r_{a_k} $ sowie der Bias b, der trotz Intialisierung nicht vollständig zu eliminiert ist. Somit der Messwert $ a^b_k $ nicht der tatsächlichen Beschleunigung $ a^b_{k_{tat}} $.
+Somit ist die Geschwindigkeit bestimmt. In der Praxis führt diese Methode allerdings zu keinem gutem Ergebnis. Grund dafür ist das Sensorrauschen $ r_{a_k} $ sowie der Bias b, der trotz Initialisierung nicht vollständig zu eliminiert ist. Somit ist der Messwert $ a^b_k $ nicht der tatsächlichen Beschleunigung $ a^b_{k_{tat}} $.
 \begin{equation}
 a^b_k = a^b_{k_{tat}} +  r_{a_k}+b
 \end{equation}  
-Das Problem daran, die Fehler werden mit Integriert. Damit driften geschätzte Geschwindigkeit und reele Geschwindigkeit auseinander. Somit ist eine Geschwindigkeitsbestimmung rein über die Inertialsensorik nicht möglich. 
+Das Problem, der Fehler wird mit Integriert. Damit driften geschätzte und reelen Geschwindigkeit auseinander. Somit ist eine Geschwindigkeitsbestimmung ausschließlich über die Inertialsensorik nicht möglich. 
 
 \subsection{Geschwindigkeit als Ableitung der Position}
 \label{subsec:abpos}
-Ebenfalls lässt sich die Geschwindigkeit aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) über Ableitung der Quadrocopterpositionen bestimmen. Da es bei den Positionsdaten um diskrete Werte handelt, lässt sich die Ableitung und somit die Geschwindigkeit (\ref{eq:v_eul})  anhand des Euler-Verfahren (\ref{eq:eul}) approximieren.
+Ebenfalls auf Basis des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Ableitung der Quadrocopterpositionen bestimmen.
+%lässt sich die Geschwindigkeit aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) über Ableitung der Quadrocopterpositionen bestimmen. 
+Da es bei den Positionsdaten um diskrete Werte handelt, lässt sich die Ableitung  anhand des Euler-Verfahren (\ref{eq:eul}) approximieren.
 \begin{equation}
 P^n_k=P^n_{k-1}+T_l \cdot v^n_k 
 \label{eq:eul}
 \end{equation}
+Für die Geschwindigkeit ergibt sich so
 \begin{equation}
 v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l}
 \label{eq:v_eul}
 \end{equation}
-Die Abtastzeit $ T_l = 25ms $ ($f_l = 40Hz $). Dies entspricht der Updaterate mit der die Algorithmen zur Positionsbestimmung mit neuen Umgebungsscanns des Lasers gespeißt werden. Bei der Approximation der Geschwindigkeit ist zu beachten, dass das Positionssignal aufgrund von Sensorrauschen von Laser und Gyroskope sowie der Varianz des \gls{icp}-Algorithmus eine Abweichung vom tatsächlichen Positionswert $ P^n_{k_{tat}} $ aufweist. Diese Abweichung ist nicht konstant und ist als Positionsrauschen$ r_{P_k} $ darzustellen. 
+Die Abtastzeit $ T_l = 25ms $ ($f_l = 40Hz $). Diese entspricht der Updaterate  der Umgebungsscans des Lasers mit denen die Algorithmen zur Positionsbestimmung gespeist werden. Bei der Approximation der Geschwindigkeit ist zu beachten, dass das Positionssignal aufgrund von Sensorrauschen von Laser und Gyroskope sowie der Varianz des \gls{icp}-Algorithmus eine Abweichung vom tatsächlichen Positionswert $ P^n_{k_{tat}} $ aufweist. Diese Abweichung ist nicht konstant und ist als Positionsrauschen$ r_{P_k} $ darzustellen. 
 \begin{equation}
 P^n_k = P^n_{k_{tat}}+r_{P_k}
 \end{equation}
