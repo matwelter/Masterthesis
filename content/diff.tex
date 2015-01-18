@@ -1,128 +1,196 @@
-\chapter{Systemarchitektur des Quadrocopters}
-\label{chap:Systemarchitektur}
-Zu Beginn wird in diesem Kapitel die \DIFdelbegin \DIFdel{Grundlegende }\DIFdelend \DIFaddbegin \DIFadd{grundlegende }\DIFaddend Funktionsweise des Quadrocopters erläutert. 
-Anschließend \DIFaddbegin \DIFadd{wird }\DIFaddend die bei dieser Arbeit zum Einsatz kommende Hardware \DIFdelbegin \DIFdel{dargelegt und wie die einzelne Komponenten miteinander verknüpft sind}\DIFdelend \DIFaddbegin \DIFadd{und die Verknüpfung der einzelnen Komponenten miteinander dargelegt}\DIFaddend .  Dabei geht \DIFdelbegin \DIFdel{darum aufzuzeigen, }\DIFdelend \DIFaddbegin \DIFadd{es darum, aufzuzeigen }\DIFaddend an welchen Stellen Software bereits fest implementiert ist und wo eigene Algorithmen integriert werden können.
+\chapter{Grundlagen}
+\label{chap:grundlagen}
+Das Kapitel Grundlagen behandelt die Themen, die in mehreren Abschnitten \DIFdelbegin \DIFdel{dieser }\DIFdelend \DIFaddbegin \DIFadd{für diese }\DIFaddend Arbeit relevant sind. Dabei handelt es sich um das Robot Operation System, die verwendeten Koordinatensysteme und die Transformation zwischen ihnen.
 
+\section{Das Robot Operation System \gls{ros}}
+\label{sec:ros}
+Ziel dieses Unterkapitel ist es das Opensource Betriebssystem \gls{ros} \DIFdelbegin \DIFdel{vorzustellen. Wie es aufgebaut ist und welche Vorzüge es besitzt.}\DIFdelend \DIFaddbegin \DIFadd{mit seinem Aufbau und seinen Vorzügen vorzustellen.}\DIFaddend \\
 
-
-\section{Grundlegende Funktionsweise eines Quadrocopters}
-\label{sec:grundFkt}
-Ziel dieses Kapitel ist es\DIFaddbegin \DIFadd{, }\DIFaddend ein Verständnis dafür zu \DIFdelbegin \DIFdel{erlangen}\DIFdelend \DIFaddbegin \DIFadd{erhalten}\DIFaddend , wie über die gezielte Ansteuerungen der vier Rotoren eine Bewegung des Quadrocopters  hervorgerufen werden kann. Dabei wird auf die \DIFdelbegin \DIFdel{wirkende }\DIFdelend \DIFaddbegin \DIFadd{wirkenden }\DIFaddend Kräfte und Momente eingegangen, ohne tief in \DIFaddbegin \DIFadd{die }\DIFaddend Physik einzusteigen.
-\DIFdelbegin %DIFDELCMD < \\
-%DIFDELCMD < %%%
-\DIFdelend 
-
-\DIFaddbegin \DIFadd{Der Schub der Rotoren ist }\DIFaddend Anhand der Drehzahl $n_i$ der Rotorblätter \DIFdelbegin \DIFdel{lässt sich individuell der Schub der Rotoren einstellen}\DIFdelend \DIFaddbegin \DIFadd{individuell einstellbar}\DIFaddend . Somit lässt sich die Kraft $F_i$ jedes \DIFdelbegin \DIFdel{Quadrocopterarme }\DIFdelend \DIFaddbegin \DIFadd{Quadrocopterarmes }\DIFaddend vorgeben. Die Gesamtkraft aller Rotoren ergibt den Schubvektor $S^b$.
-
-
-\label{sec:grundlegenefunktionsweiseQuadrocopter }
+\gls{ros} stellt dem Softwareentwickler Bibliotheken und Werkzeuge zur Verfügung, \DIFdelbegin \DIFdel{die Helfen }\DIFdelend \DIFaddbegin \DIFadd{um }\DIFaddend Roboteranwendungen zu erstellen. Das auf einem \gls{ip}-basierende  modulare Kommunikationsframework ermöglicht die Verknüpfung von Anwendungssoftware, Sensoren und Aktoren\DIFaddbegin \DIFadd{, }\DIFaddend sogar unter mehreren Robotern. Die Grundlage dafür ist die sogenannte Hardwareabstraktion. \DIFdelbegin \DIFdel{Dabei wird durch hardwarespezifische Module erreicht, das }\DIFdelend \DIFaddbegin \DIFadd{Durch hardwarespezifische Module wird erreicht, dass }\DIFaddend Komponenten unterschiedlicher Hersteller miteinander verbunden werden können. In \DIFdelbegin \DIFdel{unserem Fall }\DIFdelend \DIFaddbegin \DIFadd{der Anwendung den }\DIFaddend Hokuyo Lasersanner und \DIFaddbegin \DIFadd{den }\DIFaddend \gls{asctec} \gls{fcu}. \DIFdelbegin \DIFdel{Außerdem }\DIFdelend \DIFaddbegin \DIFadd{Des Weiteren }\DIFaddend ermöglicht es eine hardwareunabhängige Programmierung, die  in den Programmiersprachen C/C++ oder in Python erfolgen kann. Jede Hardwareabstraktion oder Anwendung wird als Node, bzw. Konten bezeichnet und läuft als eigener Prozess.
 \begin{figure}
 	\centering
-	\includegraphics[width = 0.9\textwidth]{images/funktionsweise_quadrocopter}
-	\caption[Hardwareaufbau]{Momente und Kräfte an einem Quadrocopter}
-	\label{fig:funktionsprinzip}
+	\includegraphics[width = 0.75\textwidth]{images/TopicUndService}
+	\caption[Topic und Service]{Kommunikation von Nodes über Topics und Services}
+	\label{fig:node_kommunikation}
 \end{figure}
 
-\begin{equation}
-S^b = \begin{bmatrix}
-S^{b}_x\\
-S^{b}_y\\
-S^{b}_z\\
-\end{bmatrix}
-=
-\begin{bmatrix}
-0\\
-0\\
-F_1+F_2+F_3+F_4\\
-\end{bmatrix}
-\label{eq:Schubvektor}
-\end{equation}
 
-Damit der Qudrocopter eine Bewegung im Raum vollziehen kann\DIFaddbegin \DIFadd{, }\DIFaddend muss dieser Vektor aus der Vertikalen ausgelenkt werden. Dies wird durch eine Änderung der Lage realisiert. Reduziert man zum Beispiel die Drehzahl $n_1$ und erhöht gleichzeitig die Drehzahl $n_3$ \DIFdelbegin \DIFdel{, }\DIFdelend hat das resultierende Kräfteungleichgewicht ein positives Moment um die $y^b$-Achse zur Folge. Der Quadrocopter dreht sich um die $y^b$-Achse\DIFdelbegin \DIFdel{. Der }\DIFdelend \DIFaddbegin \DIFadd{, der }\DIFaddend Pitch-Winkel ändert sich. Der Quadrocopter erfährt in der horizontalen Ebene des Raums eine Beschleunigung. Das \DIFdelbegin \DIFdel{gleiches }\DIFdelend \DIFaddbegin \DIFadd{gleiche }\DIFaddend Prinzip gilt auch für den Roll-Winkel, sprich Rotation um die $x^b$-Achse. Hier ist allerdings der Drehzahlenunterschied zwischen $n_2$ und $n_4$ verantwortlich für die Rotation.
+Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung \ref{fig:node_kommunikation}]. Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und \DIFdelbegin \DIFdel{somit }\DIFdelend veröffentlicht (publication). Benötigt ein weiter Knoten den Inhalt dieses \DIFdelbegin \DIFdel{Topic }\DIFdelend \DIFaddbegin \DIFadd{Topics, }\DIFaddend kann er es abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert \DIFdelbegin \DIFdel{wurde}\DIFdelend \DIFaddbegin \DIFadd{ist}\DIFaddend , wird sie \DIFaddbegin \DIFadd{in }\DIFaddend den abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt\DIFdelbegin \DIFdel{, es }\DIFdelend \DIFaddbegin \DIFadd{. Es }\DIFaddend können beliebig viele Topics beschrieben oder empfangen werden. Alternative zu dieser Art der asynchronen Datenübertragung \DIFdelbegin \DIFdel{, biete }\DIFdelend \DIFaddbegin \DIFadd{bietet }\DIFaddend \gls{ros} die Möglichkeit einer \DIFdelbegin \DIFdel{Synchrone }\DIFdelend \DIFaddbegin \DIFadd{synchronen }\DIFaddend Kommunikation zwischen zwei Nodes über Services. \DIFdelbegin \DIFdel{Dabei }\DIFdelend \DIFaddbegin \DIFadd{Auf diese Weise }\DIFaddend wird auf einem Knoten ein Service gestartet. Dieser dient als Server und agiert nach dem Anfrage-Antwort-Prinzip. Schickt ein anderer Knoten eine Anfrage, wird ihm die geforderte Nachricht zu gesendet. 
 
-Eine Änderung der Orientierung um die Hochachse z , sprich Änderung des Yaw-Winkels\DIFdelbegin \DIFdel{ist }\DIFdelend \DIFaddbegin \DIFadd{, }\DIFaddend lässt sich ebenfalls über Variation der Rotordrehzahlen hervorrufen. Dabei kommt der Effekt zum tragen, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend die umgebende Luft entgegen der Drehrichtung der Motoren eine Kraft auf die Rotorblätter erzeugt und somit \DIFdelbegin \DIFdel{eine }\DIFdelend \DIFaddbegin \DIFadd{ein }\DIFaddend Moment auf den Quadrocopter.
-Diese Momente\DIFdelbegin \DIFdel{die an }\DIFdelend \DIFaddbegin \DIFadd{, die an den }\DIFaddend Armen des Quadrocopters angreifen\DIFaddbegin \DIFadd{, }\DIFaddend lassen sich zur Vereinfachung in den Schwerpunkt verschieben. Damit bei gleicher Drehzahl aller Rotorblätter \DIFdelbegin \DIFdel{, einen Momentengleichgewicht herrscht}\DIFdelend \DIFaddbegin \DIFadd{ein Momentengleichgewicht herrscht, }\DIFaddend drehen sich die Motoren eins und drei gegen, die Motoren zwei und vier mit dem Uhrzeigersinn. Um \DIFdelbegin \DIFdel{nun }\DIFdelend die gewünschte Rotation zu erzielen\DIFdelbegin \DIFdel{erhöht man }\DIFdelend \DIFaddbegin \DIFadd{, wird }\DIFaddend die Drehzahl $n_1$ und $n_3$ \DIFdelbegin \DIFdel{, reduziert dabei }\DIFdelend \DIFaddbegin \DIFadd{erhöht und }\DIFaddend gleichzeitig  $n_2$ und $n_4$  \DIFaddbegin \DIFadd{reduziert}\DIFaddend . Das Ergebnis \DIFdelbegin \DIFdel{wäre in diesem Fall }\DIFdelend \DIFaddbegin \DIFadd{ist }\DIFaddend eine Rotation in \DIFdelbegin \DIFdel{positiver }\DIFdelend \DIFaddbegin \DIFadd{positive }\DIFaddend Richtung.
+Anzumerken ist, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend durch das verwendete \gls{ip}-Protokoll keine deterministische Versendung der Nachrichten nicht gewährleistet ist\DIFdelbegin \DIFdel{, da es sein kann, das Nachrichten gleichen Types }\DIFdelend \DIFaddbegin \DIFadd{. Es ist möglich, dass Nachrichten gleichen Typs }\DIFaddend in Paketen zusammengefasst werden. Bei der Programmierung empfiehlt \DIFdelbegin \DIFdel{es sichdaher }\DIFdelend \DIFaddbegin \DIFadd{sich, }\DIFaddend auf Topics mit einem Zeitstempel (engl. timestamp) zurückzugreifen. Die Echtzeitfähigkeit des \gls{ros} ist \DIFdelbegin \DIFdel{durch allerdings }\DIFdelend \DIFaddbegin \DIFadd{dadurch }\DIFaddend nicht gefährdet. 
 
-Zusammenfassen lassen sich die für die Rotation um die Quadrocopter-Achsen verantwortlichen Momente $M^{b}_{x,y,z}$ \DIFdelbegin \DIFdel{ein }\DIFdelend \DIFaddbegin \DIFadd{in }\DIFaddend einem Vektor $M^b$.  
-
-\begin{equation}
-M^b = \begin{bmatrix}
-M^{b}_x\\
-M^{b}_y\\
-M^{b}_z\\
-\end{bmatrix}
-=
-\begin{bmatrix}
-l(F_3-F_1)\\
-l(F_2-F_4)\\
-M_1-M_2+M_3-M_4\\
-\end{bmatrix}
-\end{equation}
-
-Aufzuklären ist\DIFdelbegin \DIFdel{warum mir }\DIFdelend \DIFaddbegin \DIFadd{, warum mit }\DIFaddend einer Erhöhung der Drehzahl \DIFdelbegin \DIFdel{immer auch }\DIFdelend \DIFaddbegin \DIFadd{auch immer }\DIFaddend eine Reduzierung des Gegenparts verknüpft ist. Die Begründung \DIFdelbegin \DIFdel{ist, das }\DIFdelend \DIFaddbegin \DIFadd{lautet, dass }\DIFaddend der Schubvektor $S^b$ durch eine Rotation möglichst wenig beeinflusst werden soll\DIFdelbegin \DIFdel{. Damit er durch die Gesamtschubvorgabe ganze einfach bestimmt }\DIFdelend \DIFaddbegin \DIFadd{, um mit der Gesamtschubvorgabe ganz einfach bestimmt zu }\DIFaddend werden. 
-
-
-\section{Hardwareaufbau}
-\label{sec:Hardwareaufbau}
-Zum Einsatz kommt der AscTec Pelican der Firma \gls{asctec}. Dieser Quadrocopter ist \DIFdelbegin \DIFdel{speziell }\DIFdelend \DIFaddbegin \DIFadd{eine spezielle Entwicklung }\DIFaddend für die Forschung\DIFdelbegin \DIFdel{entworfen worden}\DIFdelend . Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. Durch \DIFdelbegin \DIFdel{diese }\DIFdelend \DIFaddbegin \DIFadd{die }\DIFaddend Flexibilität im Aufbau ist \DIFdelbegin \DIFdel{es Ziel dieses Teilkapitels }\DIFdelend \DIFaddbegin \DIFadd{das Ziel dieses Teilkapitel, }\DIFaddend einen Überblick \DIFdelbegin \DIFdel{zu geben, wo die einzelnen Komponenten positioniert sind}\DIFdelend \DIFaddbegin \DIFadd{zur Position der einzelnen Komponenten zu geben}\DIFaddend . Begleitend zum Text ist der Aufbau in Abbildung \ref{fig:hardwareaufbau} sowie etwas ausführlicher, mit den Daten der Komponenten, im Anhang dargestellt.\\
-
-	\begin{figure}
-		\centering
-		\includegraphics[width = 0.75\textwidth]{images/Hardwareaufbau}
-		\caption[Hardwareaufbau]{Hardwareaufbau des Quadrocopters...DIESE GRAFIK IST EIN PLATZHALTER GRAFIK NUR MIT NAMEN DER KOMPONENTEN}
-		\label{fig:hardwareaufbau}
-	\end{figure}
-
-Für \DIFdelbegin \DIFdel{jeder }\DIFdelend \DIFaddbegin \DIFadd{jeden }\DIFaddend der vier mit einem \DIFdelbegin \DIFdel{Propellor verbundenen Elektromotoren , ist ein }\DIFdelend \DIFaddbegin \DIFadd{Propeller verbundenen Elektromotoren sind }\DIFaddend separate Motorcontroller zuständig. Diese sorgen dafür, dass sich die von der \gls{fcu} angeforderten Drehzahlen einstellen.
-
-Die \gls{fcu} ist die zentrale Steuer- und Regeleinheit des Quadrocopters. Sie besitzt zwei ARM7 Prozessoren, einen \gls{llp} und einen \gls{hlp}\DIFdelbegin \DIFdel{. Außerdem }\DIFdelend \DIFaddbegin \DIFadd{, zudem }\DIFaddend verschiedene Kommunikationsschnittstellen (vgl. Kapitel \ref{fig:Kommunikationsstruktur}). Zusätzlich \DIFdelbegin \DIFdel{dient sie als }\DIFdelend \DIFaddbegin \DIFadd{besitzt }\gls{fcu} \DIFadd{eine }\DIFaddend inertiale Messeinheit (engl. \gls{imu}). Diese Einheit wird zur Bewegungsdetektion sowie zur Bestimmung der Lage und Ausrichtung benötigt. Sie ist nicht zur Positionsbestimmung in einem ortsfesten Koordinatensystem (Koordinatensysteme siehe Kapitel HIER MUSS EINE REF hin) geeignet. Bestandteile der IMU sind ein 3D-Beschleunigungssensor, drei Drehratensensoren(Gyros), einem Kompass sowie einem Drucksensor zur Ermittlung der Flughöhe anhand des Luftdrucks. Verbaut sind die Sensoren mit Ausnahme des Kompass direkt auf der Platine (siehe Abbildung \ref{fig:fcuplatien}).
-
-Da der Einsatzbereich im Indoorbereich liegt, ist \DIFdelbegin \DIFdel{Drucksensor ist }\DIFdelend \DIFaddbegin \DIFadd{der Drucksensor }\DIFaddend zur Höhenbestimmung in geschlossenen Räumen nicht \DIFdelbegin \DIFdel{eignet, da er }\DIFdelend \DIFaddbegin \DIFadd{geeignet. Er liefert }\DIFaddend erst ab einer Höhe von 5m zuverlässige Werte\DIFdelbegin \DIFdel{liefert}\DIFdelend . Daher wurde in einer vorangegangen Arbeit von Jan Kallwies (lITERAURVERWIES JAN) die Hardware um ein Modul zur Messung der Höhe im Indoorbereich erweitert. Auf diesem Modul befinden sich \DIFdelbegin \DIFdel{ein }\DIFdelend zwei Infrarotsensoren für den Nahbereich. Beide zusammen decken einen \DIFdelbegin \DIFdel{Messbereich von }\DIFdelend Bereich von 4 cm bis 142 \DIFaddbegin \DIFadd{cm }\DIFaddend ab. Erweitert wird der Messbereich durch einen Ultraschallsensor für Entfernungen von bis zu 5 m. Aus diesen drei Sensordaten wird über einen Extended-Kalman-Filter die Flughöhe bestimmt. Eine genaue Beschreibung dieses Fusionsfilters kann in der Arbeit von Jan Kallwies [LITERATURVERZEICHNIS] nachgelesen werden. Da in dieser Arbeit die Navigation in der horizontale Ebene den Schwerpunkt darstellt, wird dieses Modul \DIFaddbegin \DIFadd{in dieser Arbeit }\DIFaddend nicht weiter behandelt.
-
-	\begin{figure}
-		\centering
-		\includegraphics[width = 0.75\textwidth]{images/FCU_Platine}
-		\caption[fcuplatine]{Platine der \gls{fcu}}
-		\label{fig:fcuplatien}
-	\end{figure}
-
-Um \DIFdelbegin \DIFdel{allerdings }\DIFdelend in der Horizontalen \DIFdelbegin \DIFdel{navigieren zu können}\DIFdelend \DIFaddbegin \DIFadd{die Navigation zu gewährleisten}\DIFaddend , muss die Position des Flugkörpers in der x-y Ebene (VGL kOORDINATENSYSTEME) bekannt sein. Da dies, wie schon beschrieben, nicht mit der Inertialsenorik möglich ist, wurde in die Turmstruktur der Laserscanner UTM-30LX der Firma Hokuyo integriert. Dieser Scanner hat eine maximale Reichweite von 30 m und \DIFaddbegin \DIFadd{ein }\DIFaddend Abtastbereich von 270°. Die Umlaufdauer beträgt dabei 40 Hz, d.h. alle 25 ms steht ein neuer Umgebungssan zur Verfügung.    
-
-Damit zur Berechnung der Position sowie \DIFaddbegin \DIFadd{der }\DIFaddend Implementierung weiterer Algorithmen und Funktionen ausreichend Rechenleistung \DIFdelbegin \DIFdel{vorhanden ist}\DIFdelend \DIFaddbegin \DIFadd{zur Verfügung steht}\DIFaddend , befindet sich auf dem Quadrocopter ein zusätzlicher Odroid-X Mikrocomputer mit einem Quad Core Prozessor mit 1.4 Ghz und einen 1024MB LP-DDR2 Arbeitsspeicher. Außerdem besitzt diese Entwicklungsplattform sechs USB-Schnittstellen sowie ein 10/100Mbps Ethernet-Anschluss.\\
-
-
-\DIFdelbegin \DIFdel{Nun sollte man einen Überblick über die im Quadrocopter verbauten Komponenten besitzen. Wie die Einheiten untereinander vernetzt sind, darauf wird im folgenden Kapitel \ref{sec:Kommunikationsarchitekur} eingegangen.
-}\DIFdelend %DIF > Nach dem Überblick über die im Quadrocopter verbaute Hardware und deren Komponenten, geht das folgende Kapitel \ref{sec:Kommunikationsarchitekur} auf die Implementierung der Intelligenz über Software ein.
-
-%DIF > Nun sollte man einen Überblick über die im Quadrocopter verbauten Komponenten besitzen. Wie die Einheiten untereinander vernetzt sind, darauf wird im folgenden Kapitel \ref{sec:Kommunikationsarchitekur} eingegangen.
-\DIFaddbegin 
-
-     
-\DIFaddend \section{Softwarestruktur}
-\label{sec:Kommunikationsarchitekur}
-
-Nachdem im \DIFdelbegin \DIFdel{vorhergegangen }\DIFdelend \DIFaddbegin \DIFadd{vorhergegangenen }\DIFaddend Kapitel \ref{sec:Hardwareaufbau} die verbaute Hardware vorgestellt wurde, geht es in diesem Abschnitt um die Softwarestruktur(Abbildung \ref{fig:Kommunikationsstruktur}). Es wird aufgezeigt\DIFaddbegin \DIFadd{, }\DIFaddend welche Software bereits fest implementiert ist und wo adaptive Applikationen integriert werden können. Des \DIFdelbegin \DIFdel{weiteren }\DIFdelend \DIFaddbegin \DIFadd{Weiteren }\DIFaddend wird die Kommunikationsstruktur dargelegt, wie und über welche Protokolle die einzelnen Komponenten \DIFdelbegin \DIFdel{mit einander }\DIFdelend \DIFaddbegin \DIFadd{miteinander }\DIFaddend kommunizieren. \\
-\DIFdelbegin %DIFDELCMD < 
-
-%DIFDELCMD < %%%
-\DIFdelend \begin{figure}
+\begin{figure}
 	\centering
-	\includegraphics[width = \textwidth]{images/Kommunikationsarchitektur}
-	\caption[Kommunikationsstruktur]{Kommunikationsstruktur des Quadrocopters   Kompass auf deutsch ROS auch Programmierbar Namen der UART Ports einfügen}
-	\label{fig:Kommunikationsstruktur}
+	\includegraphics[width = \textwidth]{images/MasterAndNode}
+	\caption[Registrierung der Knoten]{Registrierung der Knoten}
+	\label{fig:node_master}
 \end{figure}
-Beginnend mit der \gls{fcu}, deren beiden Prozessoren \gls{llp} und \gls{hlp} \DIFdelbegin \DIFdel{die }\DIFdelend mit einer Frequenz \DIFaddbegin \DIFadd{von }\DIFaddend 1kHz \DIFdelbegin \DIFdel{getakten }\DIFdelend \DIFaddbegin \DIFadd{getaktet werden }\DIFaddend und über einem \gls{spi} Bussystem verknüpft sind, wird zunächst der \gls{llp} betrachtet. Auf dem Low Level Prozessor \DIFdelbegin \DIFdel{befinden }\DIFdelend \DIFaddbegin \DIFadd{befindet }\DIFaddend sich die Sensordatenfusion der \gls{imu}-Sensorik zur Lagebestimmung des Quadrocopters. \DIFdelbegin \DIFdel{Aufbauend darauf stabilisiert die implementierte Lageregelungdas Flugverhalten}\DIFdelend \DIFaddbegin \DIFadd{Darauf basiert die Lageregelung, die das Flugverhalten stabilisiert}\DIFaddend . Dabei werden die geforderten Sollwinkel bzw. \DIFaddbegin \DIFadd{die }\DIFaddend Solllage, die dem \gls{llp} über die Fernbedienung oder den \gls{hlp} übergeben \DIFdelbegin \DIFdel{wird}\DIFdelend \DIFaddbegin \DIFadd{werden}\DIFaddend , eingestellt. Kombiniert mit der Schubvorgabe werden den Motorreglern die jeweiligen Solldrehzahlen der Rotoren über einen \gls{i2c}-Bus, \DIFaddbegin \DIFadd{ein }\DIFaddend serieller synchroner Zweidraht-Bus, übergeben. Diese Algorithmen sind fest eingepflegt \DIFaddbegin \DIFadd{und gewährleisten bei Experimentalflügen eine sichere Rückfallebene}\DIFaddend . \gls{asctec} stellt \DIFdelbegin \DIFdel{hier }\DIFdelend dem Benutzer eine Art White-Box zur Verfügung, d.h\DIFdelbegin \DIFdel{es ist bekanntwas integriert ist, allerdings nicht wie es umgesetzt ist}\DIFdelend \DIFaddbegin \DIFadd{. die Integration ist bekannt, jedoch nicht deren Umsetzung}\DIFaddend . Überwachen lässt sich der LLP über einen externen \gls{pc}, in Abbildung \ref{sec:Kommunikationsarchitekur} als Bodenstation bezeichnet. Zur Kommunikation \DIFdelbegin \DIFdel{benötige }\DIFdelend werden zwei XBee Funkmodule \DIFaddbegin \DIFadd{benötigt}\DIFaddend . Eines ist am \gls{uart} LL-Serial0 Port der \gls{fcu} angeschlossen, das andere am USB Port der Bodenstation. Mit der AutoPilot Software lassen sich \DIFdelbegin \DIFdel{so }\DIFdelend unter anderem der Akkustand, die \gls{imu}-Daten sowie die Stellgrößen der Fernsteuerung betrachten. Außerdem ist es möglich\DIFaddbegin \DIFadd{, }\DIFaddend Parameter der Sensorfusion und \DIFaddbegin \DIFadd{der }\DIFaddend Lageregelung auszulesen und zu verändern.
 
 
-Mit dem \gls{hlp} stellt \gls{asctec} eine Entwicklungsumgebung zur Implementierung eigener Algorithmen auf der \gls{fcu} zur Verfügung. Hier können erweiternde Programmteile integriert werden\DIFaddbegin \DIFadd{, }\DIFaddend die den Lageregler des \gls{llp} ansprechen oder die direkt den Motorcontroller \DIFaddbegin \DIFadd{über den }\gls{llp} \DIFaddend mit Solldrehzahlen speisen.
-\DIFdelbegin \DIFdel{Die zweite Möglichkeit ist der Grund warum keine Änderungen, abgesehen von den Parametern, am }%DIFDELCMD < \gls{llp}  %%%
-\DIFdel{vorgenommen werden können. So gibt es bei Experimentalflügen immer eine sichere Rückfallebene. Möglich ist dies, da der }\DIFdelend \DIFaddbegin 
+Der \DIFdelbegin \DIFdel{wohl }\DIFdelend größte \DIFdelbegin \DIFdel{Vorteil }\DIFdelend \DIFaddbegin \DIFadd{Vorzug }\DIFaddend von \gls{ros} ist die ständig wachsende Community. \DIFdelbegin \DIFdel{So }\DIFdelend \DIFaddbegin \DIFadd{Hier }\DIFaddend stellen Forscher aus der ganze Welt ihre Algorithmen und Hardwareabstraktionen zur Verfügung. \DIFdelbegin \DIFdel{Dadurch ist es möglich }\DIFdelend \DIFaddbegin \DIFadd{Folglich ist es realisierbar, }\DIFaddend bei der Erstellung einer Roboteranwendung auf Bausteine zurück zugreifen, die ohne diese Plattform selbst zu implementieren wären. Abgesehen davon\DIFaddbegin \DIFadd{, }\DIFaddend stellt ROS eine Vielzahl von Hilfsmitteln\DIFaddbegin \DIFadd{, }\DIFaddend wie zum Beispiel die Transferfunktion (/tf)\DIFdelbegin \DIFdel{bereit. Hier }\DIFdelend \DIFaddbegin \DIFadd{, bereit. An dieser Stelle }\DIFaddend lassen sich Koordinatensysteme definieren. Die Transformation der Daten wird \DIFdelbegin \DIFdel{dann }\DIFdelend automatisch von \gls{ros} durchgeführt.
 
-\DIFadd{Die experimentelle Software auf den }\DIFaddend \gls{hlp} \DIFaddbegin \DIFadd{kann }\DIFaddend über die \DIFdelbegin \DIFdel{Fernsteuerung }\DIFdelend \DIFaddbegin \DIFadd{Fernbedienung }\DIFaddend aktiviert und deaktiviert werden\DIFdelbegin \DIFdel{kann.
-}\DIFdelend \DIFaddbegin \DIFadd{. Eine fehlerhafte Programmierung des }\gls{hlp} \DIFadd{kann kritische Flugmanöver hervorrufen. Damit diese nicht zum Absturz führen, kann über die Fernbedienung die Experimentalsoftware deaktiviert und das Flugsystem über die ausgereifte Lageregelung auf dem }\gls{llp} \DIFadd{stabilisiert werden (Rückfallebene).
+\section{Einführung in die Koordinatensysteme und Koordinatentransformationen}
+\label{sec:koordinatensysteme&transformationen}
+Anhand von Koordinatensystemen und Transformationen \DIFdelbegin \DIFdel{lässt }\DIFdelend \DIFaddbegin \DIFadd{lassen }\DIFaddend sich die Lage von Punkten und  Objekten in \DIFdelbegin \DIFdel{einen }\DIFdelend \DIFaddbegin \DIFadd{einem }\DIFaddend Raum mathematisch beschreiben\DIFdelbegin \DIFdel{. Die }\DIFdelend \DIFaddbegin \DIFadd{, die }\DIFaddend Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (siehe Kapitel HIER MUSS NOCH EINE REFERENZ HIN). \DIFdelbegin \DIFdel{Außerdem }\DIFdelend \DIFaddbegin \DIFadd{Ferner }\DIFaddend ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters\DIFdelbegin \DIFdel{und stellt somit }\DIFdelend \DIFaddbegin \DIFadd{, und stellt }\DIFaddend die Grundlage zur Modellbildung \DIFdelbegin \DIFdel{und Reglerentwurf }\DIFdelend \DIFaddbegin \DIFadd{sowie des Reglerentwurfs dar }\DIFaddend (siehe Kapitel so und so).  
+
+\subsection{Koordinatensysteme}
+\label{subsec:koordinatensysteme}
+Über ein Koordinatensystem lässt sich ein Vektor oder die Position eines Punktes bezogen auf den Koordinatenursprung in einer zweidimensionalen Ebene, bzw\DIFaddbegin \DIFadd{. }\DIFaddend in einem dreidimensionalen Raum beschreiben. Ziel diese Teilabschnittes ist die \DIFdelbegin \DIFdel{Erläuterung }\DIFdelend \DIFaddbegin \DIFadd{Beschreibung }\DIFaddend der in dieser Arbeit eingeführten Koordinatensysteme.\\
+
+\begin{figure}
+
+	\centering{
+		\subfloat[ENU-Koordinatensystem]{
+			\includegraphics[width=0.3\textwidth]{images/ENU-koordinatensystem}
+			\label{fig:enu}
+		}
+		\subfloat[NED-Koordimatemsystem]{
+			\includegraphics[width=0.3\textwidth]{images/ned-koordinatensystem}
+			\label{fig:ned}
+		}
+	}
+	\caption[Kovention ]{test}
+	\label{fig:konventionen}
+
+\end{figure}
+
+Zu Beginn werden \DIFdelbegin \DIFdel{nun zwei Konventionen bezüglich }\DIFdelend \DIFaddbegin \DIFadd{zwei Konventionen hinsichtlich }\DIFaddend der Bezugssysteme vorgestellt. Nummer eins, die in Abbildung \ref{fig:enu} dargestellte \gls{enu} Konvention. Diese wird \DIFdelbegin \DIFdel{in vor allem bei }\DIFdelend \DIFaddbegin \DIFadd{vor allem in }\DIFaddend der Landnavigation eingesetzt. \DIFdelbegin \DIFdel{Hier }\DIFdelend \DIFaddbegin \DIFadd{In diesem Fall }\DIFaddend zeigt die z-Achse nach oben. Bei der zweiten Konvention, hauptsächlich \DIFaddbegin \DIFadd{eingesetzt }\DIFaddend in der Wasser-, Luft- und Raumfahrt\DIFdelbegin \DIFdel{eingesetzt}\DIFdelend , handelt es sich um das \gls{ned} Bezugssystem (Abbildung \ref{fig:ned}). Die z-Achse zeigt nach unten. Anzumerken ist, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend in dieser Arbeit die Ausrichtung der x- und y -Achse nicht wie in Abbildung \ref{fig:konventionen} \DIFdelbegin \DIFdel{und auch der Namensgebung entsprechend den Himmelsrichtungen entspricht}\DIFdelend \DIFaddbegin \DIFadd{sondern der Namensgebung analog den Himmelsrichtungen entsprechen}\DIFaddend . Die Begriffe \gls{enu} und \gls{ned} dienen \DIFdelbegin \DIFdel{hier }\DIFdelend \DIFaddbegin \DIFadd{dabei }\DIFaddend zur Beschreibung der Ausrichtung der Koordinatenachsen in Abhängigkeit der positiven z-Achse.
+
+Bei der \DIFdelbegin \DIFdel{nun }\DIFdelend folgenden Einführung der Koordinatensysteme (Abbildung \ref{fig:koordinatensysteme}) handelt es \DIFaddbegin \DIFadd{sich }\DIFaddend ausschließlich um kartesische, \DIFdelbegin \DIFdel{das heißt }\DIFdelend \DIFaddbegin \DIFadd{d.h. }\DIFaddend orthogonale Koordinatensysteme, die nach der \gls{enu} Konvention ausgerichtet sind. \DIFdelbegin \DIFdel{Dies steht erstmal }\DIFdelend \DIFaddbegin \DIFadd{Das steht erstmals }\DIFaddend im Widerspruch mit dem Abschnitt zuvor, dort ist das \gls{ned} als Koordinatensystem für Flugkörper eingeführt worden. \DIFdelbegin \DIFdel{Es ist allerdings so, dass }\DIFdelend \DIFaddbegin \DIFadd{Grundsätzlich basieren }\DIFaddend die \gls{ros} Koordinatensysteme auf \gls{enu} \DIFdelbegin \DIFdel{basieren. Deshalb }\DIFdelend \DIFaddbegin \DIFadd{Konvention. Daraus erfolgt }\DIFaddend die Wahl von Bezugssystemen mit positiver z-Achse nach oben.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/Koordinatensysteme}
+	\caption[Koordinatensysteme]{In der Arbeit angewandte Koordinatensysteme }
+	\label{fig:koordinatensysteme}
+\end{figure}
+
+Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen\DIFaddbegin \DIFadd{, }\DIFaddend sind vier xyz-Koordinatensysteme definiert. 
+
+\begin{itemize}
+	\item \textbf{n-frame(Lokaler Navigationsframe):} \DIFdelbegin \DIFdel{Ortsfestes }\DIFdelend \DIFaddbegin \DIFadd{Ist ein ortsfestes }\DIFaddend Koordinatensystem zur Beschreibung der Position im Raum. Da es in dieser Arbeit um die horizontale Positionsregelung geht, ist \DIFdelbegin \DIFdel{hier }\DIFdelend ausschließlich die xy-Ebene von Interesse. Der Ursprung des Koordinatensystem wird bei jedem Systemstart neu initialisiert. Zu beachten ist\DIFaddbegin \DIFadd{, dass }\DIFaddend dies beim vollautonomen Flug in Räumen \DIFdelbegin \DIFdel{, dabei }\DIFdelend \DIFaddbegin \DIFadd{erfolgt. Dabei }\DIFaddend beziehen sich die Sollpositionen nicht auf ein Raumkoordinatensystem mit festem Ursprung, sondern auf den beim Systemstart initialsierten Bezugspunkt. Keinen Einfluss hat diese Tatsache auf die Geschwindigkeitsregelung per Fernsteuerung, da \DIFdelbegin \DIFdel{hier }\DIFdelend \DIFaddbegin \DIFadd{an dieser Stelle }\DIFaddend die relative Bewegung von Interesse ist.
+
+	\DIFdelbegin \DIFdel{Es sei darauf hingewiesen}\DIFdelend \DIFaddbegin \DIFadd{Anbei der Hinweis}\DIFaddend , dass die Verwendung eines xyz Navigationsframes die Krümmung der Erdoberfläche vernachlässigt. \DIFdelbegin \DIFdel{Diese ist }\DIFdelend \DIFaddbegin \DIFadd{Das erscheint }\DIFaddend legitim, da die Drohne in Gebäuden zum Einsatz kommt. \DIFdelbegin \DIFdel{Möchte man jedoch Weltweit navigieren, benötigt man ein
+	rotationsellipsische Koordinatensysteme}\DIFdelend \DIFaddbegin \DIFadd{Erfolgt eine weltweit Navigation wird ein
+	rotationsellipsische Koordinatensystem }\DIFaddend [THIELECKE LITVERWEIS] \DIFaddbegin \DIFadd{benötigt.
 }\DIFaddend 
 
-Wie schon in Kapitel \ref{sec:Hardwareaufbau} beschrieben, befindet sich auf dem Quadorcopter zur Erhöhung der Rechenleistung der Odroid-X. Anders wie bei den auf der \gls{fcu} befindlichen Prozessoren, besitzt das Odroid Bord ein Betriebssystem. \DIFdelbegin \DIFdel{Dabei diesem handelt es sich }\DIFdelend \DIFaddbegin \DIFadd{Es handelt sich dabei }\DIFaddend um das Opensource Betriebssystem Ubuntu 13.04. Dieses wurde ausgewählt, da es die Installation eines weiteren Opensource Betriebssystems ermöglicht, dem \gls{ros}\DIFdelbegin \DIFdel{. Einem }\DIFdelend \DIFaddbegin \DIFadd{, einem }\DIFaddend Software Framework für Roboteranwendungen (siehe Kapitel \ref{sec:ros}). Zum Einsatz kommt der Odroid-X bei der Implementierung der Positionsbestimmung (Kapitel VERWEIS). Verbunden ist es \DIFdelbegin \DIFdel{zum einen }\DIFdelend \DIFaddbegin \DIFadd{einerseits }\DIFaddend über einen USB-Port mit dem Lasersanner \DIFdelbegin \DIFdel{, zum anderen ist mit einen }\DIFdelend \DIFaddbegin \DIFadd{und verknüpft andererseits mittels einem }\DIFaddend weiteren USB-Anschluss  \DIFdelbegin \DIFdel{über }\DIFdelend den HL-Serial0 Port mit dem \gls{hlp}\DIFdelbegin \DIFdel{verknüpft}\DIFdelend . Von der Bodenstation kann über WLAN eine SSH Verbindung aufgebaut werden, \DIFdelbegin \DIFdel{und somit die Entwicklungsplatform bedient werden}\DIFdelend \DIFaddbegin \DIFadd{die in Folge die Entwicklungsplatform bedient}\DIFaddend .\\
+	\item \textbf{b-frame(Bodyframe):} \DIFdelbegin \DIFdel{Dieses }\DIFdelend \DIFaddbegin \DIFadd{Das }\DIFaddend Koordinatensystem ist fest mit dem Rahmen des Quadrocopters verbunden. \DIFdelbegin \DIFdel{Man spricht dabei von einen }\DIFdelend \DIFaddbegin \DIFadd{Es entspricht einem }\DIFaddend körperfesten Koordinatensystem. \DIFdelbegin \DIFdel{Dabei }\DIFdelend \DIFaddbegin \DIFadd{In diesem Fall }\DIFaddend befindet sich der Ursprung des Systems im Schwerpunkt, die x-Achse zeigt in die als Vorne definierte Richtung. Die y- und z-Achse sind abhängig \DIFdelbegin \DIFdel{davon nach }\DIFdelend \DIFaddbegin \DIFadd{von }\DIFaddend der \gls{enu} Konvention angeordnet. Informationen\DIFaddbegin \DIFadd{, }\DIFaddend die sich auf dieses Referenzsystem beziehen\DIFaddbegin \DIFadd{, }\DIFaddend sind unter anderen die \gls{imu}-Daten. Außerdem lässt sich mit diesem System die Lage des Quadrocoters im n-frame über die Position des Nullpunkts und Drehwinkel beschreiben. 
 
-\DIFdelbegin \DIFdel{Nun ist bekannt}\DIFdelend \DIFaddbegin \DIFadd{Derzeit ist bekannt, }\DIFaddend wie die einzelnen Komponenten untereinander vernetzt sind. \DIFdelbegin \DIFdel{Somit lässt sich im }\DIFdelend \DIFaddbegin \DIFadd{Im }\DIFaddend weiteren Verlauf der Arbeit \DIFaddbegin \DIFadd{lässt sich }\DIFaddend nachvollziehen, an welchen Stellen die Anwendungen implementiert werden und über welche Verbindungen sie \DIFdelbegin \DIFdel{untereinander }\DIFdelend \DIFaddbegin \DIFadd{miteinander }\DIFaddend kommunizieren. 
+	\item \textbf{l-frame(laserframe):} \DIFdelbegin \DIFdel{Ebenfalls }\DIFdelend \DIFaddbegin \DIFadd{Ist ebenfalls }\DIFaddend ein körperfestes Koordinatensystem\DIFdelbegin \DIFdel{. In die dem }\DIFdelend \DIFaddbegin \DIFadd{, in dem die }\DIFaddend Entfernungsmessungen des Lasers aufgetragen werden. Der Bezugspunkt liegt \DIFdelbegin \DIFdel{dabei }\DIFdelend \DIFaddbegin \DIFadd{folglich }\DIFaddend in der Sendequelle des Lasers. Die Ausrichtung der Achsen entspricht der des b-frames, mit Ausnahme eines Offsets in z-Richtung.
 
+	\item \textbf{o-frame(Orthogonalframe):} \DIFdelbegin \DIFdel{Hierbei handelt es }\DIFdelend \DIFaddbegin \DIFadd{Es handelt }\DIFaddend sich um ein objektbezogenes Bezugssystem, \DIFdelbegin \DIFdel{dessen Orientierung um seine }\DIFdelend \DIFaddbegin \DIFadd{welches mit dem b-fame verknüpft ist. Das o-frame beschreibt die Orientierung um die }\DIFaddend z-Achse \DIFdelbegin \DIFdel{und }\DIFdelend \DIFaddbegin \DIFadd{sowie }\DIFaddend die Position des \DIFdelbegin \DIFdel{Ursprungs im n-frame abhängig von dem Orthogonal über der Ebene befindlichen b-frame ist. Dadurch }\DIFdelend \DIFaddbegin \DIFadd{Quadrocopters in der horizontalen Ebene des n-frames. Hiermit }\DIFaddend wird der Quadrocopter in der zu \DIFdelbegin \DIFdel{Navigierenden }\DIFdelend \DIFaddbegin \DIFadd{navigierenden }\DIFaddend xy-Ebene abgebildet.    
+
+	 \end{itemize}
+
+\DIFdelbegin \DIFdel{Da sich Messwerte }\DIFdelend \DIFaddbegin \DIFadd{Nachdem sich die Messwerte, }\DIFaddend wie zum Beispiel die \gls{imu}-Daten oder die Laserdaten\DIFdelbegin \DIFdel{auf unterschiedlichen }\DIFdelend \DIFaddbegin \DIFadd{, auf unterschiedliche }\DIFaddend Koordinatensysteme beziehen, \DIFdelbegin \DIFdel{benötigt man }\DIFdelend \DIFaddbegin \DIFadd{wird eine }\DIFaddend Koordinatentransformation(Kapitel \ref{subsec:koordinatentransformation}) \DIFdelbegin \DIFdel{. Mit Hilfe derer }\DIFdelend \DIFaddbegin \DIFadd{erforderlich. Mit dieser Unterstützung }\DIFaddend lassen sich die Vektoren und Koordinaten in die verschiedenen Bezugssysteme übertragen.
+
+ 
+\subsection{Koordinatentransformationen}
+\label{subsec:koordinatentransformation}
+Damit Daten eines Referenzsystem in einen anderes \DIFdelbegin \DIFdel{Transformiert }\DIFdelend \DIFaddbegin \DIFadd{transformiert }\DIFaddend werden können, muss deren Orientierung zueinander beschreibbar sein. Nach  [Buchholz Flugregelung] ist dies über die Rotationswinkel $\phi$ (Rollwinkel/engl. roll), Rotation um die x-Achse sowie der Winkel $\theta$ (Nickwinkel/engl. pitch) und $\psi$ (Gierwinkel/engl. yaw) für die y- und z-Achse \DIFdelbegin \DIFdel{möglich}\DIFdelend \DIFaddbegin \DIFadd{erreichbar}\DIFaddend . Die Reihenfolge\DIFaddbegin \DIFadd{, }\DIFaddend um die die Achsen gedreht werden, ist dabei nicht beliebig. Sie ist in verschiedenen Konventionen festgelegt. In dieser Arbeit wird die in der Luftfahrt- und Fahrzeugtechnik gebräuchliche z,y',x''- Konvention (Abbildung \ref{fig:zyx_konvention}) angewendet.   
+
+\begin{figure}
+	\centering
+	\includegraphics[width = .75\textwidth]{images/zyx_konvention}
+	\caption[z,y',x''-Konvention]{z,y',x''-Konvention}
+	\label{fig:zyx_konvention}
+\end{figure}
+
+Das Koordinatensystem wird zu beginn um den Winkel $\psi$, d.h. um die z-Achse gedreht. Daraus ergibt sich das in Abbildung \ref{fig:zyx_konvention} grün eingezeichnet Koordinatensystem. Dieses rotiert \DIFdelbegin \DIFdel{man anschließend }\DIFdelend um die Achse y', sprich den Winkel $\theta$. Zuletzt erfolgt eine Drehung mit dem Winkel $\phi$ um die x''-Achse. Das Ergebnis \DIFdelbegin \DIFdel{ist }\DIFdelend \DIFaddbegin \DIFadd{stellt }\DIFaddend das rote x'',y'',z''-Koordinatensystem \DIFdelbegin \DIFdel{. Es sein nochmal darauf hinzuweisen, das }\DIFdelend \DIFaddbegin \DIFadd{dar. Hierbei ist zu beachten, dass }\DIFaddend die Reihenfolge der Winkel einzuhalten ist, da sonst die beschriebene von der tatsächlichen Lage abweicht. Ein veranschaulichendes Beispiel\DIFdelbegin \DIFdel{worin }\DIFdelend \DIFaddbegin \DIFadd{, wohin }\DIFaddend unterschiedliche Abfolgen bei der Rotation führen\DIFaddbegin \DIFadd{, }\DIFaddend ist in der Literatur [Literaturverzeichnis] von Herr Thielecke zu finden.  
+
+Nach Luftfahrtkonvention lässt sich eine Transformationsmatrix $M$ aufstellen, mit der \DIFaddbegin \DIFadd{sich }\DIFaddend Vektoren und Koordinaten vom xyz-Koordinatensystem (Bsp.: n-frame) in das x''y''z''-Koordinatensystem (Bsp.: b-frame) überführen lassen. \DIFdelbegin \DIFdel{Dafür benötigt man }\DIFdelend \DIFaddbegin \DIFadd{Hierfür sind }\DIFaddend zunächst die drei Transformationsmatrizen \DIFaddbegin \DIFadd{notwendig}\DIFaddend , die jeweils eine Rotation um eine Koordinatenachse beschreiben[Literaturverzeichnis]. Diese sind wie folgt definiert:
+
+\begin{itemize}
+	\item Drehung um die z-Achse mit dem Winkel $\psi$
+	\begin{equation}
+		M_z = \begin{bmatrix}
+		\cos\psi 	& \sin\psi	& 0\\
+		-\sin\psi	& \cos\psi	& 0\\
+		0			& 0 		& 1\\
+		\end{bmatrix}
+		\label{eq:Mz}
+	\end{equation}
+	\item Drehung um die y-Achse mit dem Winkel $\theta$
+	\begin{equation}
+	M_y = \begin{bmatrix}
+	\cos\theta  & 0	& -\sin\theta\\
+	0			& 1	& 0\\
+	\sin\theta	& 0 & \cos\theta\\
+	\end{bmatrix}
+	\end{equation}
+	\item Drehung um die x-Achse mit dem Winkel $\phi$
+	\begin{equation}
+	M_x = \begin{bmatrix}
+	1	& 0			& 0\\
+	0	& \cos\phi	& \sin\phi\\
+	0	& -\sin\phi 	& \cos\phi\\
+	\end{bmatrix}
+	\end{equation}
+\end{itemize}
+
+Aus diesen Rotationsmatrizen \DIFdelbegin \DIFdel{lässt }\DIFdelend \DIFaddbegin \DIFadd{erstellt }\DIFaddend sich über Matrizenmultiplikation eine Gesamttransformationsmatrix\DIFdelbegin \DIFdel{aufstellen}\DIFdelend . Die Reihenfolge der Multiplikation entspricht der in der Konvention festgelegten Drehfolge, \DIFaddbegin \DIFadd{die }\DIFaddend von rechts nach links gelesen \DIFdelbegin \DIFdel{. Somit }\DIFdelend \DIFaddbegin \DIFadd{wird. Demzufolge }\DIFaddend er gibt sich:
+
+	\begin{equation}
+	\begin{split}
+	M_{bn} &	= M_x \cdot M_y \cdot M_z \\
+	&= \begin{bmatrix}
+	\cos\theta\cos\psi	& \cos\theta\sin\psi	& -sin\theta\\
+	\sin\phi\sin\theta\cos\psi-\cos\phi\sin\psi	& \sin\phi\sin\theta\sin\psi+\cos\phi\cos\psi	& \sin\phi\cos\theta\\
+	\cos\phi\sin\theta\cos\psi+\sin\phi\sin\psi	& \cos\phi\sin\theta\sin\psi-\sin\phi\cos\psi 	& \cos\phi\cos\theta\\
+	\end{bmatrix}
+	\end{split}
+	\end{equation}
+
+Mit Hilfe dieser Transformationmatrix \DIFdelbegin \DIFdel{lässt }\DIFdelend \DIFaddbegin \DIFadd{überträgt }\DIFaddend sich jetzt ein Vektor zum Beispiel aus dem n-frame ins b-frame\DIFdelbegin \DIFdel{übertragen}\DIFdelend .
+
+\begin{equation}
+\begin{bmatrix}
+x^b\\
+y^b\\
+z^b\\	
+\end{bmatrix} = M_{bn} \cdot 
+\begin{bmatrix}
+x^n\\
+y^n\\
+z^n\\	
+\end{bmatrix}
+\label{eq:transM} 
+\end{equation}
+
+Handelt es sich \DIFdelbegin \DIFdel{bei }\DIFdelend um eine Koordinate, ist zusätzlich \DIFdelbegin \DIFdel{noch }\DIFdelend der Abstand der Koordinatenursprünge zu addieren. Für die Rücktransformation \DIFdelbegin \DIFdel{muss }\DIFdelend \DIFaddbegin \DIFadd{wird }\DIFaddend die Gesamttransformationsmatrix transponiert\DIFdelbegin \DIFdel{werden}\DIFdelend . Daraus folgt\DIFdelbegin \DIFdel{,
+}\DIFdelend \DIFaddbegin \DIFadd{:
+}\DIFaddend 
+
+   \begin{equation}
+   \begin{bmatrix}
+   x^n\\
+   y^n\\
+   z^n\\	
+   \end{bmatrix} = M_{bn}^T \cdot 
+   \begin{bmatrix}
+   x^b\\
+   y^b\\
+   z^b\\	
+   \end{bmatrix} = M_{nb} \cdot 
+   \begin{bmatrix}
+   x^b\\
+   y^b\\
+   z^b\\	
+   \end{bmatrix}
+   \label{eq:inverse_transM}
+   \end{equation}
+
+\DIFdelbegin \DIFdel{Nun }\DIFdelend \DIFaddbegin \DIFadd{Dabei }\DIFaddend lassen sich Vektoren in beide Richtungen in die verschiedenen Bezugssysteme überführen. Nachteil der Methode mit Eulerwinkel ist, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend diese auf Grund der trigonometrischen Funktionen nur für Winkel $\phi, \theta, \psi = \{x \in  \mathbb{R}| -\pi \le x \le \pi\}$ eindeutig durchführbar \DIFdelbegin \DIFdel{ist}\DIFdelend \DIFaddbegin \DIFadd{sind}\DIFaddend . Wird dieser Bereich überschritten, lässt sich die Lage über Quaternionen beschreiben. Durch die Beschreibung der dreidimensionalen Orientierung in einem vierdimensionalen Raum \DIFdelbegin \DIFdel{lassen, }\DIFdelend ist die Lage auch für Rotationen um eine vielfaches von $2\pi$ eindeutig charakterisiert. Die genaue Definition findet sich in der  Literatur \cite{Thiel14} und \cite{Buch14}. Da \DIFdelbegin \DIFdel{die }\DIFdelend \DIFaddbegin \DIFadd{der }\DIFaddend Definitionsbereich der Eulerwinkel für \DIFdelbegin \DIFdel{den in der Arbeit }\DIFdelend \DIFaddbegin \DIFadd{diese Arbeit im }\DIFaddend betrachteten Bereich ausreicht\DIFaddbegin \DIFadd{, }\DIFaddend ist ausschließlich die Umrechnung der in Quaternion ($w_q$, $x_q$, $y_q$, $z_q$) angegebenen Orientierungsdaten der \gls{imu} in Eulerwinkel($\phi$, $\theta$, $\psi$)\DIFaddbegin \DIFadd{erforderlich}\DIFaddend . Zu beachten ist, \DIFdelbegin \DIFdel{das die nun }\DIFdelend \DIFaddbegin \DIFadd{dass die }\DIFaddend folgende Umwandlung nur für die $z,y',x''$-Konvention Gültigkeit besitzt. 
+
+   \begin{equation}
+	   \phi = \arctan(\frac{2(y_qz_q+w_qx_q)}{w_q^2-x_q^2-y_q^2+z_q^2})\\
+	\end{equation}
+   \begin{equation}
+	  \theta =\arcsin(2(w_q y_q -x_q z_q))\\
+   \end{equation}
+   \begin{equation}
+     \psi = \arctan(\frac{2(x_q y_q + w_q z_q)}{w_q^2+x_q^2-y_q^2-z_q^2})
+   \end{equation}
+
+ Mit dieser letzten Umrechnung sind alle Grundlagen für die Arbeit gelegt. \DIFdelbegin \DIFdel{So }\DIFdelend \DIFaddbegin \DIFadd{Auf diese Weise }\DIFaddend bilden die Koordinatensystem und Transformationen die Basis für die nachkommende Positionsbestimmung. 
