@@ -24,6 +24,9 @@ xi      = 1;
 Kd = 4;
 Kp = 5;
 Ki = 0.01;
+% Kd = 6;
+% Kp = 1.2;
+% Ki = 0.06
 sim('gesamtmodell')
 
 figure('Name','ref_vor_id');

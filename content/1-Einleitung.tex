@@ -1,6 +1,21 @@
 \chapter{Einleitung}
 \label{chap:Einleitung}
+Da die Rotoren von Quadrocoptern sowohl zum erzeugen des Auftrieb als auch für den Vortrieb genutzt werden, gehören sie zur Kategorie der Hubschrauber. Im Gegensatz zu einrotorigen Maschinen benötigen sie keine mechanischen Komponenten wie eine Taumelscheibe um die Schubkraft, beziehungsweise die Neigung des Fluggerätes zu variieren. Beim Quadrocopter wird dies durch Drehzahländerungen der sich an den Außenseiten befindlichen Rotoren realisiert. Der mechanische Aufbau ist somit deutlich primitiver. Allerdings steigt auf der elektrischen Seite der regelungstechnische Aufwand um das Flugsystem stabil fliegen zu können. Durch den technischen Fortschritt stehen jedoch kostengünstige Sensoren und Prozessoren mit aussreichender Rechenleistung zur Verfügung um die Lage des Quadrocopters zu stabilisieren.   
 
+Der Grund warum sich der Quadrocopter in der Kategorie unbemannterflug Geräte wachsender Beliebtheit erfreut. So werden sie heutzutage unter anderem beim Film eingesetzt, wo sie spektakuläre Luftaufnahmen liefern. Außerdem finden sie in der Katastrophenhilfe Anwendung. So kann zum Beispiel ohne Gefährdung der Retter ein einsturzgefährdetes Gebäude durchsucht werden.
+
+Ein Ziel der Forschung ist es, das der Quadrocopter solche Flüge zunehmend autonom durchführen kann. Und hier setzt die Arbeit an. Mittels eines  Laserscanner soll die Position des Fluggeräts innerhalb eines geschlossenen Raumes erfasst werden. Darauf aufbauend sollen Koordinaten vorgegeben werden die Quadrocopter selbständig anfliegt. Auch kann eine solche Positionsreglung zur Geschwindigkeitsregelung missbraucht werden, was die Steuerung über die Fernbedienung vereinfacht.
+
+Eingesetz soll der Quadrocopter später am Fraunhofer-Insitut für Integrierte Schaltungen als bewegliches Referenzsystem für die dort entwickelte Lokalisierungslösungen mittels \gls{rfid} oder \gls{wlan}. Durch die Automatisierung lassen sich dynamische Bewegungsabläufe zuverlässig reproduzieren. So können jederzeit vergleichbare Messungen durchgeführt werden.
+
+     
+\section{Ausgangssituation}
+\label{sec:Ausgangssituation}
+Bei den Literaturrecherchen zu beginn der Arbeit stellte sich heraus, das für den verwendeten Quadrocopter Pelican der Firma \gls{asctec} ein frei verfügbares Framework existiert, welches die wesentlichen Punkte der Aufgabenstellung (siehe \glqq Thema und Aufgabenstellung\grqq) mit sich bringt. So beinhaltet es eine Positionsregelung, welche auch als Geschwindigkeitsregelung genutzt werden kann. Zusätzlich verfügt es über einen Fusionsfilter zur Interpolation eingespeister niederfrequenter Positionsdaten, in dem diese mit den Beschleunigungswerten vereinigt werden.   
+
+
+\section{Aufbau und Schwerpunkte der Arbeit}
+\label{sec:Aufb&Schwpkt}
 
 Anmerkungen die in der Einleitung auftauchen sollen.
 
