@@ -1,22 +1,67 @@
 \chapter{Einleitung}
 \label{chap:Einleitung}
-Da die Rotoren von Quadrocoptern sowohl zum erzeugen des Auftrieb als auch für den Vortrieb genutzt werden, gehören sie zur Kategorie der Hubschrauber. Im Gegensatz zu einrotorigen Maschinen benötigen sie keine mechanischen Komponenten wie eine Taumelscheibe um die Schubkraft, beziehungsweise die Neigung des Fluggerätes zu variieren. Beim Quadrocopter wird dies durch Drehzahländerungen der sich an den Außenseiten befindlichen Rotoren realisiert. Der mechanische Aufbau ist somit deutlich primitiver. Allerdings steigt auf der elektrischen Seite der regelungstechnische Aufwand um das Flugsystem stabil fliegen zu können. Durch den technischen Fortschritt stehen jedoch kostengünstige Sensoren und Prozessoren mit aussreichender Rechenleistung zur Verfügung um die Lage des Quadrocopters zu stabilisieren.   
+Da die Rotoren von Quadrocoptern sowohl zum erzeugen des Auftrieb als auch für den Vortrieb genutzt werden, gehören sie zur Kategorie der Hubschrauber. Im Gegensatz zu einrotorigen Maschinen benötigen sie keine mechanischen Komponenten wie eine Taumelscheibe um die Schubkraft, beziehungsweise die Neigung des Fluggerätes zu variieren. Beim Quadrocopter wird dies durch Drehzahländerungen der sich an den Außenseiten befindlichen Rotoren realisiert. Der mechanische Aufbau ist somit deutlich primitiver. Allerdings steigt auf der elektrischen Seite der regelungstechnische Aufwand um das Flugsystem stabil fliegen zu können. Durch den technischen Fortschritt stehen jedoch kostengünstige Sensoren und Prozessoren mit aussreichender Rechenleistung zur Verfügung um die Lage des Quadrocopters zu stabilisieren. Der Grund warum sich der Quadrocopter in der Kategorie unbemannterflug Geräte wachsender Beliebtheit erfreut. So werden sie heutzutage unter anderem beim Film eingesetzt, wo sie spektakuläre Luftaufnahmen liefern. Außerdem finden sie in der Katastrophenhilfe Anwendung. So kann zum Beispiel ohne Gefährdung der Retter ein einsturzgefährdetes Gebäude durchsucht werden.
 
-Der Grund warum sich der Quadrocopter in der Kategorie unbemannterflug Geräte wachsender Beliebtheit erfreut. So werden sie heutzutage unter anderem beim Film eingesetzt, wo sie spektakuläre Luftaufnahmen liefern. Außerdem finden sie in der Katastrophenhilfe Anwendung. So kann zum Beispiel ohne Gefährdung der Retter ein einsturzgefährdetes Gebäude durchsucht werden.
+Ein Ziel der Forschung ist es, das der Quadrocopter solche Flüge zunehmend autonom durchführen kann. Und hier setzt die Arbeit an. Mittels eines Laserscanner soll die Position des Fluggeräts innerhalb eines geschlossenen Raumes erfasst werden. Darauf aufbauend sollen Koordinaten vorgegeben werden die Quadrocopter selbständig anfliegt. Auch kann eine solche Positionsreglung zur Geschwindigkeitsregelung missbraucht werden, was die Steuerung über die Fernbedienung vereinfacht.
 
-Ein Ziel der Forschung ist es, das der Quadrocopter solche Flüge zunehmend autonom durchführen kann. Und hier setzt die Arbeit an. Mittels eines  Laserscanner soll die Position des Fluggeräts innerhalb eines geschlossenen Raumes erfasst werden. Darauf aufbauend sollen Koordinaten vorgegeben werden die Quadrocopter selbständig anfliegt. Auch kann eine solche Positionsreglung zur Geschwindigkeitsregelung missbraucht werden, was die Steuerung über die Fernbedienung vereinfacht.
-
-Eingesetz soll der Quadrocopter später am Fraunhofer-Insitut für Integrierte Schaltungen als bewegliches Referenzsystem für die dort entwickelte Lokalisierungslösungen mittels \gls{rfid} oder \gls{wlan}. Durch die Automatisierung lassen sich dynamische Bewegungsabläufe zuverlässig reproduzieren. So können jederzeit vergleichbare Messungen durchgeführt werden.
+Eingesetzt soll der Quadrocopter später am Fraunhofer-Insitut für Integrierte Schaltungen als bewegliches Referenzsystem für die dort entwickelte Lokalisierungslösungen mittels \gls{rfid} oder \gls{wlan}. Durch die Automatisierung lassen sich dynamische Bewegungsabläufe zuverlässig reproduzieren. So können jederzeit vergleichbare Messungen durchgeführt werden.
 
      
 \section{Ausgangssituation}
 \label{sec:Ausgangssituation}
-Bei den Literaturrecherchen zu beginn der Arbeit stellte sich heraus, das für den verwendeten Quadrocopter Pelican der Firma \gls{asctec} ein frei verfügbares Framework existiert, welches die wesentlichen Punkte der Aufgabenstellung (siehe \glqq Thema und Aufgabenstellung\grqq) mit sich bringt. So beinhaltet es eine Positionsregelung, welche auch als Geschwindigkeitsregelung genutzt werden kann. Zusätzlich verfügt es über einen Fusionsfilter zur Interpolation eingespeister niederfrequenter Positionsdaten, in dem diese mit den Beschleunigungswerten vereinigt werden.   
+Zur Lokalisierung ist auf dem Quadrocopter eine Laserscanner angebracht. Die von ihm aufgenommen Entfernungsmessungen beziehen sich auf die Sendequelle des Lasers. So enthalten die Rohdaten keine Informationen über die absolute Position. Es existieren jedoch Methoden die es ermöglichen den Quadrocopter mittels solcher Umgebungsscans in einer unbekannten Umgebung zu Lokalisieren. Zu beachten sind dabei die verschieden Neigungswinkel des Quadrocopters zur Fortbewegung. Das bedeutet, die Ausrichtung des Lasers entspricht nicht zwangsläufig der horizontalen Ebene des Raums. Diesen Einfluss gilt es bei Integration einer Positionsbestimmung in unbekannte Räume zu berücksichtigen.
+
+Bei den Literaturrecherchen zur Geschwindigkeits- und Positionsregelung stellte sich heraus, dass für den verwendeten Quadrocopter Pelican der Firma \gls{asctec} ein frei verfügbares Framework existiert, welches die wesentlichen Punkte der Aufgabenstellung (siehe \glqq Thema und Aufgabenstellung\grqq) mit sich bringt. So beinhaltet es eine Positionsregelung, welche ebenfalls als Geschwindigkeitsregelung genutzt werden kann. Des Weiteren verfügt es über einen Fusionsfilter zur Interpolation niederfrequenter Positionsdaten, in dem diese mit den Beschleunigungswerten vereinigt werden. Der Aufbau dieses Frameworks ist dabei im Paper \cite{Achtelik11} beschrieben. Hier ist auch die Funktionsfähig der Algorithmen in Verbindung mit einem visuellen Positionierungssystem dargelegt.
+
+In Absprache mit den Betreuern dieser Arbeit ist deshalb der Schwerpunkt weg von der Entwicklung einer Geschwindigkeitsregelung, hin zur Verifizierung der existierenden Positionsregelung verschoben worden. Das bedeutet, das Ziel liegt darin, die im Paper \cite{Achtelik11} beschriebenen Annahmen und Formel durch ihre Herleitungen zu bestätigen. Außerdem gilt es die Frage zu klären, ob die Regelung auch mit den über den Laserscanner ermittelten Positionsdaten zurecht kommt.    
 
 
-\section{Aufbau und Schwerpunkte der Arbeit}
+\section{Aufbau der Arbeit}
 \label{sec:Aufb&Schwpkt}
+Mit dem Schwerpunkten der Arbeit, die Theorie hinter der Positionsbestimmung mittels eines Laserscanners aufzuzeigen, als auch das Konzept der bereits entwickelten Positionsregelung offenzulegen, ist die Arbeit wie folgt aufgebaut.  
 
-Anmerkungen die in der Einleitung auftauchen sollen.
+Zu Beginn wird im Rahmen von Kapitel \ref{chap:Systemarchitektur} die grundlegende Funktionsweise eines Quadrocopter dargelegt. Mit dem Zweck ein Verständnis zu generieren, wie durch gezieltes ansteuern der vier Rotoren eine Bewegung des Quadrocopters hervorgerufen werden kann. Anschließend wird die im Rahmen dieser Arbeit zum Einsatz kommende Hardware genauer spezifiziert. Dabei wird erläutert welche Sensoren und Recheneinheiten zur Anwendung kommen und wo diese verbaut sind. Abgeschlossen wird das Kapitel \ref{chap:Systemarchitektur} mit der Darlegung der Kommunikationsarchitektur, das bedeutet wie die Komponenten untereinander Vernetzt sind und über welche Schnittstelle auf sie zugegriffen werden kann. 
 
-Positionsregelung wird zur Geschwindigkeitsreglung missbraucht. Soll Position wird einfach aufintegriert.
+Kapitel \ref{chap:grundlagen} ist das Grundlagenkapitel. Hier werden Themen behandelt die in mehreren Abschnitten der Arbeit relevant sind. Begonnen wird mit dem \gls{ros}. Dabei werden der Aufbau und Vorteile einer Verwendung dieses Betriebssystems aufgezeigt. Gefolgt wird dieser Abschnitt von einem für das Verständnis der Arbeit essenziellen Teilbereich, den Koordinatensystemen. Hier werden alle benötigten Koordinatensysteme beschrieben. Wo sie sich befinden, welchen zwecks sie erfüllen und wie sie miteinander verknüpft sind. So wird zum Ende des Kapitels \ref{chap:grundlagen} noch erläutert, wie Werte aus einem Koordinatensystem in das andere transformiert werden können.
+
+Aufbauend auf diesen Kapiteln folgt in Kapitel \ref{chap:2Dpositionsbestimmung} die Behandlung des ersten Kernpunkt dieser Arbeit. Die Positionsbestimmung mittels eines Laserscanners. Dabei wird aufgezeigt welche Bausteine zur Ermittlung der Position, die unter \gls{ros} frei zur Verfügung stehen, Anwendung finden. Um ein Verständnis zu erlangen wie diese Funktionieren, wird die Mathematik der Algorithmen die bei Positionsbestimmung zum Einsatz kommen hergeleitet. 
+
+Nach dem veranschaulicht ist, wie die Position mittels einen Lasersanners abläuft wird in Kapitel \ref{chap:Positionsregelung} die Validierung des Frameworks zur Positionsregelung in Angriff genommen. Hierfür wird zunächst das der Regelung zu Grunde liegende kinematische Modell aufgestellt. Da es sich dabei um ein nichtlineares Modell handelt, wird darauf hin die Richtigkeit der angewandten Inversion zur Linearisierung des Systems nachgewiesen. Da es sich bei der zu Validierenden Positionsregelung um eine Zwei-Freiheitsgrade-Regelung handelt, folgt anschließen die Untersuchung der Vorsteuerung. Bevor die Korrektheit der Folgeregelung beweisen wird und dargelegt über welche Methode sich diese einstellen lässt. Da es sich bei dem Folgeregler um einen Zustandsregler handelt wird zu der Position noch die Geschwindigkeit als Regelgröße benötigt. Im letzten Abschnitt wird so das Fusionsfilter untersucht, als auch evaluiert, ob es anderer Möglichkeiten zu Bestimmung der Geschwindigkeit gibt.
+
+Zum Schluss erfolgt in Kapitel 6 die Auswertung eines praktischen Flugversuches der die Funktionsfähigkeit des Reglers auch für eine Positionsbestimmung mittels Laser unter Beweis stellt.  
+
+Kapitel 7 dient Schlussendlich dazu, die Ergebnisse der Arbeit zusammenzufassen und ein Ausblick zu geben wie die Arbeit weitergeführt werden kann. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

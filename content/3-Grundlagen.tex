@@ -2,7 +2,7 @@
 \label{chap:grundlagen}
 Das Kapitel Grundlagen behandelt die Themen, die in mehreren Abschnitten der Arbeit relevant sind. Dabei handelt es sich um das Robot Operation System, die verwendeten Koordinatensysteme und die Transformation zwischen ihnen.
 
-\section{Das Robot Operation System \gls{ros}}
+\section{Das Robot Operation System ROS}
 \label{sec:ros}
 Ziel dieses Unterkapitel ist es das Opensource Betriebssystem \gls{ros} mit seinem Aufbau und seinen Vorzügen vorzustellen.\\
 
@@ -15,7 +15,7 @@ Ziel dieses Unterkapitel ist es das Opensource Betriebssystem \gls{ros} mit sein
 \end{figure}
 
 
-Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung \ref{fig:node_kommunikation}]. Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und veröffentlicht (publication). Benötigt ein weiter Knoten den Inhalt eines Topics, kann er es abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert ist, wird sie in den abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt. Es können beliebig viele Topics beschrieben oder empfangen werden. Alternative zu dieser Art der asynchronen Datenübertragung bietet \gls{ros} die Möglichkeit einer synchronen Kommunikation zwischen zwei Nodes über Services. Auf diese Weise wird auf einem Knoten ein Service gestartet. Dieser dient als Server und agiert nach dem Anfrage-Antwort-Prinzip. Schickt ein anderer Knoten eine Anfrage, wird ihm die geforderte Nachricht zu gesendet. 
+Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung~\ref{fig:node_kommunikation}). Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und veröffentlicht (publication). Benötigt ein weiter Knoten den Inhalt eines Topics, kann er es abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert ist, wird sie in den abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt. Es können beliebig viele Topics beschrieben oder empfangen werden. Alternative zu dieser Art der asynchronen Datenübertragung bietet \gls{ros} die Möglichkeit einer synchronen Kommunikation zwischen zwei Nodes über Services. Auf diese Weise wird auf einem Knoten ein Service gestartet. Dieser dient als Server und agiert nach dem Anfrage-Antwort-Prinzip. Schickt ein anderer Knoten eine Anfrage, wird ihm die geforderte Nachricht zu gesendet. 
 
 Anzumerken ist, dass durch das verwendete \gls{ip}-Protokoll keine deterministische Versendung der Nachrichten gewährleistet ist. Es ist möglich, dass Nachrichten gleichen Typs in Paketen zusammengefasst werden. Bei der Programmierung empfiehlt sich, auf Topics mit einem Zeitstempel (engl. timestamp) zurückzugreifen. Die Echtzeitfähigkeit des \gls{ros} ist dadurch nicht gefährdet. 
 

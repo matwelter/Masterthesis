@@ -61,7 +61,7 @@ Aufzuklären ist, warum mit einer Erhöhung der Drehzahl auch immer eine Reduzieru
 
 \section{Hardwareaufbau}
 \label{sec:Hardwareaufbau}
-Zum Einsatz kommt der AscTec Pelican der Firma \gls{asctec}. Dieser Quadrocopter ist eine spezielle Entwicklung für die Forschung. Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. Durch die Flexibilität im Aufbau ist das Ziel dieses Teilkapitel, einen Überblick zur Position der einzelnen Komponenten zu geben. Begleitend zum Text ist der Aufbau in Abbildung \ref{fig:hardwareaufbau} sowie etwas ausführlicher, mit den Daten der Komponenten, im Anhang dargestellt.\\
+Zum Einsatz kommt der AscTec Pelican der Firma \gls{asctec}. Dieser Quadrocopter ist eine spezielle Entwicklung für die Forschung. Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. Durch die Flexibilität im Aufbau ist das Ziel dieses Teilkapitel, einen Überblick zur Position der einzelnen Komponenten zu geben. Begleitend zum Text ist der Aufbau in Abbildung \ref{fig:hardwareaufbau} dargestellt.\\
 
 	\begin{figure}
 		\centering
@@ -83,7 +83,7 @@ Da der Einsatzbereich im Indoorbereich liegt, ist der Drucksensor zur Höhenbesti
 		\label{fig:fcuplatien}
 	\end{figure}
 	
-Um in der Horizontalen die Navigation zu gewährleisten, muss die Position des Flugkörpers in der x-y Ebene (VGL kOORDINATENSYSTEME) bekannt sein. Da dies, wie schon beschrieben, nicht mit der Inertialsenorik möglich ist, wurde in die Turmstruktur der Laserscanner UTM-30LX der Firma Hokuyo integriert. Dieser Scanner hat eine maximale Reichweite von 30 m und ein Abtastbereich von 270°. Die Umlaufdauer beträgt dabei 40 Hz, d.h. alle 25 ms steht ein neuer Umgebungssan zur Verfügung.    
+Um in der Horizontalen die Navigation zu gewährleisten, muss die Position des Flugkörpers in der xy-Ebene (VGL kOORDINATENSYSTEME) bekannt sein. Da dies, wie schon beschrieben, nicht mit der Inertialsenorik möglich ist, wurde in die Turmstruktur der Laserscanner UTM-30LX der Firma Hokuyo integriert. Dieser Scanner hat eine maximale Reichweite von 30 m und ein Abtastbereich von 270°. Die Umlaufdauer beträgt dabei 40 Hz, d.h. alle 25 ms steht ein neuer Umgebungssan zur Verfügung.    
 
 Damit zur Berechnung der Position sowie der Implementierung weiterer Algorithmen und Funktionen ausreichend Rechenleistung zur Verfügung steht, befindet sich auf dem Quadrocopter ein zusätzlicher Odroid-X Mikrocomputer mit einem Quad Core Prozessor mit 1.4 Ghz und einen 1024MB LP-DDR2 Arbeitsspeicher. Außerdem besitzt diese Entwicklungsplattform sechs USB-Schnittstellen sowie ein 10/100Mbps Ethernet-Anschluss.\\
 
@@ -113,5 +113,5 @@ Die experimentelle Software auf den \gls{hlp} kann über die Fernbedienung aktivi
 Wie schon in Kapitel \ref{sec:Hardwareaufbau} beschrieben, befindet sich auf dem Quadorcopter zur Erhöhung der Rechenleistung der Odroid-X. Anders wie bei den auf der \gls{fcu} befindlichen Prozessoren, besitzt das Odroid Bord ein Betriebssystem. Es handelt sich dabei um das Opensource Betriebssystem Ubuntu 13.04. Dieses wurde ausgewählt, da es die Installation eines weiteren Opensource Betriebssystems ermöglicht, dem \gls{ros}, einem Software Framework für Roboteranwendungen (siehe Kapitel \ref{sec:ros}). Zum Einsatz kommt der Odroid-X bei der Implementierung der Positionsbestimmung (Kapitel VERWEIS). Verbunden ist es zum einen über einen USB-Port mit dem Lasersanner. Zum anderen mittels  eines weiteren USB-Port über einen \gls{ftdi}-Konverter am HL-Serial0 Port des \gls{hlp} angeschlossen.
 Von der Bodenstation kann über WLAN eine SSH Verbindung aufgebaut werden, die in Folge die Entwicklungsplatform bedient.\\
 
-Derzeit ist bekannt, wie die einzelnen Komponenten untereinander vernetzt sind. Im weiteren Verlauf der Arbeit lässt sich nachvollziehen, an welchen Stellen die Anwendungen implementiert werden und über welche Verbindungen sie miteinander kommunizieren. 
+Jetzt ist bekannt, wie die einzelnen Komponenten untereinander vernetzt sind. Im weiteren Verlauf der Arbeit lässt sich nachvollziehen, an welchen Stellen die Anwendungen implementiert werden und über welche Verbindungen sie miteinander kommunizieren. 
 
