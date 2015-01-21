@@ -7,15 +7,15 @@
 	\label{fig:asctechlfrkom}
 \end{figure}
 
-In einer Zusammenarbeit von \gls{asctec} und der ETH-Zürich wurde eine Regler zur Positionierung des Pelican Quadrocopters in geschlossenen Räumen entworfen und veröffentlicht. Der Entwurf basierte dabei auf einer monokularen Kamera über die mittels eines \gls{vslam}-Algorithmus und der Fusion der \gls{imu} die Position des Flugobjekts in der unbekannten Umgebung ermittelt wird. Die dazugehörigen Regelung- und Fusionsalgortihmus sind im Paper \cite{Achtelik11} beschrieben. Außerdem stehen diese als asctec\_framework zum Download zur Verfügung und wurden im Rahmen dieser Arbeit auf den \gls{hlp} geladen (Abbildung \ref{fig:asctechlfrkom}).
+In einer Zusammenarbeit von \gls{asctec} und der ETH-Zürich ist ein Regler zur Positionierung des Pelican Quadrocopters in geschlossenen Räumen entwickelt und veröffentlicht worden. Der Entwurf basierte auf einer monokularen Kamera, die mittels eines \gls{vslam}-Algorithmus und der Fusion der \gls{imu} die Position des Flugobjekts in einer unbekannten Umgebung ermitteln kann. Die dazugehörigen Regelung- und Fusionsalgortihmus sind im Paper \cite{Achtelik11} beschrieben. Außerdem stehen diese als asctec\_hl\_framework zum Download zur Verfügung und wurden im Rahmen dieser Arbeit auf den \gls{hlp} geladen (Abbildung \ref{fig:asctechlfrkom}).
 
-Aufgabe dieses Kapitel ist es die veröffentlichen Annahmen und Formel der Fusion und Regelung zu verifizieren. Dies erfolgt über Literaturrecherchen und Herleitung der publizierten Gleichungen. Unter Berücksichtigung, das die Position nun mehr vom Laser über die Kapitel \ref{chap:2Dpositionsbestimmung} vorgestellten Algortihmen bestimmt wird, ist Abschnitt \ref{sec:strukpositionsregelung} darauf ausgelegt eine Übersicht über die Bestandteile der Regelung zu geben. Herleitung der Komponenten erfolgt in den anschließend Unterkapiteln. 
+Aufgabe dieses Kapitel ist es, die veröffentlichen \cite{Achtelik11} Annahmen und Formel der Fusion und Regelung zu verifizieren. Dies erfolgt über Literaturrecherchen und Herleitung der publizierten Gleichungen. Unter Berücksichtigung, dass die Position nun mehr vom Laser über die Kapitel \ref{chap:2Dpositionsbestimmung} vorgestellten Algortihmen bestimmt wird, ist Abschnitt \ref{sec:strukpositionsregelung} darauf ausgelegt eine Übersicht über die Bestandteile der Regelung zu geben. Herleitung der Komponenten erfolgt in den anschließenden Unterkapiteln. 
 
 
 %*************************************************************************************************************************
 \section{Struktur der Positionsregelung}
 \label{sec:strukpositionsregelung}
-Das Hauptaugenmerk diese Unterkapitel liegt darauf, wie sich die Positionsregelung in die in Kapitel \ref{sec:Kommunikationsarchitekur} vorgestellte Systemstruktur einfügt. Welche Softwarekomponenten dafür auf dem \gls{hlp} integriert wurden. Wie die Kommunikation zwischen ihnen und der Umgebung aussieht. Mit dem Ziel ein grundlegendes Verständnis für die Funktionsweise der Regelung zu generieren.\\
+Das Hauptaugenmerk dieses Unterkapitel liegt darauf, wie sich die Positionsregelung in die in Kapitel \ref{sec:Kommunikationsarchitekur} vorgestellte Systemstruktur einfügt. Welche Softwarekomponenten dafür auf dem \gls{hlp} integriert sind. Wie die Kommunikation zwischen ihnen und der Umgebung aussieht. Mit dem Ziel ein grundlegendes Verständnis für die Funktionsweise der Regelung zu generieren.\\
 \begin{figure}
 	\centering
 	\includegraphics[width = .95\textwidth]{images/Kaskadenstruktur}
@@ -24,15 +24,16 @@ Das Hauptaugenmerk diese Unterkapitel liegt darauf, wie sich die Positionsregelu
 \end{figure}
 
 
-Die Positionsregelung wird auf die Lageregelung (engl. Attitudecontrol) aufgesetzt. Daraus resultiert eine Kaskadenstruktur (Abbildung \ref{fig:kaskstruc}). Diese Vorgehensweise ist nachvollziehbar, da die Lageregelung bereits Fest auf dem \gls{llp} implementiert ist. Diese besteht aus einem Regelalgorithmus der anhand der Regeldifferenz der Orientierung $e_{ori}$, resultierend aus der Abweichung Soll-Orientierung $O_{des}$ und Ist-Orientierung $ O  $, in Verbindung mit der Sollschubvorgabe $ T_s $ die Drehzahlen $ n_{1..4} $ der Rotoren berechnet und einstellt. Die Ist-Orientierung $ O =\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T $ wird mittels eines Fusionsfilter bestimmt. Dieser fusioniert die Messwerte der auf der \gls{imu} befindlichen Gyroscope mit den Daten des 3D-Kompass. Wie dieser unterlagerte Regler und der dazugehörige Zustandsschätzer genau ausgeführt sind ist nicht bekannt. Eine mögliche Ausführung ist in Paper \cite{hoffmann10} beschrieben. Die Ungewissheit über den Regleraufbau der Lageregelung stellt für den Entwurf der überlagerten Positionsregelung kein Problem dar. Von Interesse ist lediglich, das die Annahme einer sehr hohen Dynamik dieses Reglers zur einer Vereinfachung des für die Positionsregelung benötigen Modells (Kapitel \ref{sec:Modelbildung}) führt. Hohe Dynamik bedeutet, das der Sollwinkel in einer sehr kurzen Zeit $ t \rightarrow 0~s $ erreicht wird. Basierend auf einer Exakten Ein-/Ausgangslinearisierung der inneren Schleife (Kapitel \ref{sec:exkt.ealin}), ist die äußere Reglerschleife zur Positionsregelung auf dem \gls{hlp} realisiert. Dank der Inversion, realisiert Ein-/Ausgangslinearisierung, kann für die Positionierung des Quadrocopters eine linerare zwei Freiheitsgrade Regelung angewandt werden.
+Die Positionsregelung wird auf die Lageregelung (engl. Attitudecontrol) aufgesetzt. Daraus resultiert eine Kaskadenstruktur (Abbildung \ref{fig:kaskstruc}). Diese Vorgehensweise ist nachvollziehbar, da die Lageregelung bereits fest auf dem \gls{llp} implementiert ist. Diese besteht aus einem Regelalgorithmus, der anhand der Regeldifferenz der Orientierung $e_{ori}$, welche durch die Abweichung der Soll-Orientierung $O_{des}$ zu Ist-Orientierung $ O  $ resultiert, in Verbindung mit der Sollschubvorgabe $ T_s $ die Drehzahlen $ n_{1..4} $ der Rotoren berechnet und einstellt. Die Ist-Orientierung $ O =\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T $ wird mittels eines Fusionsfilter bestimmt. Dieser fusioniert die Messwerte der auf der \gls{imu} befindlichen Gyroscope mit den Daten des 3D-Kompass. Wie dieser unterlagerte Regler und der dazugehörige Zustandsschätzer genau umgesetzt sind, ist nicht bekannt. Eine mögliche Ausführung ist in Paper \cite{hoffmann10} beschrieben. Die Ungewissheit über den Regleraufbau der Lageregelung stellt für den Entwurf der überlagerten Positionsregelung keine Problematik dar. Von Interesse ist lediglich, dass die Annahme einer sehr hohen Dynamik dieses Reglers zur einer Vereinfachung des für die Positionsregelung benötigen Modells (Kapitel \ref{sec:Modelbildung}) führt. Hohe Dynamik bedeutet, dass der Sollwinkel in einer sehr kurzen Zeit $ t \rightarrow 0~s $ erreicht wird. Basierend auf einer exakten Zustandslinerarisierung (Kapitel \ref{sec:exkt.ealin}) der inneren Schleife in Verbindung mit dem Translationsmodell, ist die äußere Reglerschleife zur Positionsregelung auf dem \gls{hlp} realisiert. Dank der Inversion, entspricht dem Stellgesetz der exakten Zustandslinearisierung, kann für die Positionierung des Quadrocopters eine lineare zwei Freiheitsgrade Regelung \ref{fig:zweifgr} angewandt werden.
 \begin{figure}
 	\centering
 	\includegraphics[width = .95\textwidth]{images/2-FHG-R}
 	\caption[Gesamtstruktur Regelung]{Struktur zwei Freiheitsgraderegelung} %
 	\label{fig:zweifgr}
-\end{figure} Diese besteht aus einer Vorsteuerung und einem Folgeregler. Die Vorsteuerung auf dem \gls{hlp} ist in Form eines Referenzmodell (Kapitel \ref{sec:referenzmodell}), das dem Ein-/Ausgangslinearisierung nachempfunden ist, ausgeführt. Anhand der vorgegebenen Soll-Position $P^n_{des} = \begin{bmatrix} x&y&z\end{bmatrix}^T_{des} $ wird eine Referenz-Trajektorie \footnote{Trajektorien beschreiben einen zeitabhängigen Verlauf eines Wertes in einem Bezugssystem} zur Überführung des Quadrocopters aus der aktuellen Ist-Position in die Soll-Position berechnet. Ergebnis ist ein Stellwert für die Inversion, der unter theoretischer Betrachtung die gewünschte Bahnbewegung des Quadrocopters zur Ursache hat. In einem realen System ist dies durch ein Flüsse der Umgebung, bsp. Wind nicht gewährleiste. Deshalb ist zusätzlich der Folgeregler (Kapitel \ref{sec:folgeregeler}) implementiert, dessen Aufgabe besteht darin Abweichung der realen Zustände des Quadrocopters von den Referenzwerten auszuregelen. Die dafür benötigten Zustandsgrößen des Flugsystems (Kapitel \ref{sec:Zustandsbestimmung}) werden durch die Fusion der in über den Laser bestimmten Position(Kapitel \ref{chap:2Dpositionsbestimmung}) mit den mit den Beschleunigungswerten der \gls{imu} ermittelt.
+\end{figure} 
+Diese besteht aus einer Vorsteuerung und einem Folgeregler. Die Vorsteuerung auf dem \gls{hlp} ist in Form eines Referenzmodell (Kapitel \ref{sec:referenzmodell}), das dem linearisierten Modell nachempfunden ist, ausgeführt. Anhand der vorgegebenen Soll-Position $P^n_{des} = \begin{bmatrix} x&y&z\end{bmatrix}^T_{des} $ wird eine Referenz-Trajektorie \footnote{Trajektorien beschreiben einen zeitabhängigen Verlauf eines Wertes in einem Bezugssystem} zur Überführung des Quadrocopters aus der aktuellen Ist-Position in die Soll-Position berechnet. Ergebnis ist ein Stellwert für die Inversion, der unter theoretischer Betrachtung die gewünschte Bahnbewegung des Quadrocopters zur Folge hat. In einem realen System ist dies durch Einflüsse aus der Umgebung, bspw. Wind nicht gewährleistet. Deshalb ist zusätzlich der Folgeregler (Kapitel \ref{sec:folgeregeler}) implementiert, dessen Aufgabe darin besteht Abweichungen der realen Zustände des Quadrocopters von den Referenzwerten auszuregeln. Die dafür benötigten Zustandsgrößen des Flugsystems (Kapitel \ref{sec:Zustandsbestimmung}) werden durch die Fusion, der über Laser bestimmten Position(Kapitel \ref{chap:2Dpositionsbestimmung}) sowie den Beschleunigungswerten der \gls{imu} bestimmt.
 
-Bevor jede einzelne Komponente in den Folgekapiteln hergeleitet wird, ist in Abbildung~\ref{fig:strucregelung} die Verknüpfung aller Komponenten noch einmal grafisch dargestellt.
+Bevor jede einzelne Komponente in den folgenden Kapiteln hergeleitet wird, ist in Abbildung~\ref{fig:strucregelung} die Verknüpfung aller Komponenten noch einmal grafisch dargestellt.
 \begin{figure}
 	\centering
 	\includegraphics[width = .85\textwidth]{images/Reglerstruktur}
@@ -41,7 +42,7 @@ Bevor jede einzelne Komponente in den Folgekapiteln hergeleitet wird, ist in Abb
 \end{figure}
 
 
-Anzumerken ist, das die in Verbindung mit \gls{asctec} entworfene Positionsregelung, zur Ausrichtung des Quadrocopters in einem dreidimensionalen Raum entworfen ist. Für die vertikale Positionierung ist jedoch in der vorrangegangen Arbeit\cite{JanKal13} von Jan Kallwies bereits eine Regelung entworfen worden. Da diese Regelung Effekte wie den Groundeffekt \footnote{In Bodennähe verhindert der Untergrund das schnelle Abströmen des durch die Rotoren erzeugten Luftstroms. Die daraus resultierende Krafterhöhung bei gleichbleibender Drehzahl der Rotoren, wird als Groundeffekt bezeichnet. } berücksichtigt, ist es Aufgabe einer dieser Arbeit folgenden Studentischen Projekt diese in das System der ETH-Zürich einzupflegen. Somit reduziert sich die Validierung der Reglerstrukutur auf den horizontale Ebene. 
+Anzumerken ist, dass die in Verbindung mit \gls{asctec} entworfene Positionsregelung zur Ausrichtung des Quadrocopters in einem dreidimensionalen Raum entwickelt ist. Für die vertikale Positionierung ist bereits in der vorausgegangenen Arbeit\cite{JanKal13} von Jan Kallwies eine Regelung beschrieben. Da diese Regelung Effekte, wie den Groundeffekt \footnote{In Bodennähe verhindert der Untergrund das schnelle Abströmen des durch die Rotoren erzeugten Luftstroms. Die daraus resultierende Krafterhöhung bei gleichbleibender Drehzahl der Rotoren, wird als Groundeffekt bezeichnet. } berücksichtigt, ist es die Aufgabe eines auf diese Arbeit folgenden studentischen Projektes, selbige in das System der ETH-Zürich einzupflegen. Dadurch reduziert sich die Validierung der Reglerstruktur auf die horizontale Ebene. 
 
  
 
@@ -49,23 +50,23 @@ Anzumerken ist, das die in Verbindung mit \gls{asctec} entworfene Positionsregel
 
 \section{Modellbildung}
 \label{sec:Modelbildung}
-Die Modellbildung ist die Grundlage für den systematischen Entwurf einer Zustandsregelung. Dabei wird das Systemverhalten in Form von Differentialgleichungen abgebildet. Diese beschreiben die zeitliche Veränderung einer Ausgangsgröße in Abhängigkeit ihrer zeitlichen Ableitungen sowie veränderlicher Eingangsgrößen. So lassen sich unter Beachtung der physikalischen Gesetze Bewegungsgleichungen aufstellen, welche das räumliche und zeitliche Verhalten einen mechatronischen Systems abbilden. 
+Die Modellbildung ist die Grundlage für den systematischen Entwurf einer Zustandsregelung. Dabei wird das Systemverhalten in Form von Differentialgleichungen abgebildet. Diese beschreiben die zeitliche Veränderung einer Ausgangsgröße in Abhängigkeit ihrer zeitlichen Ableitungen sowie veränderlichen Eingangsgrößen. So lassen sich unter Beachtung der physikalischen Gesetze Bewegungsgleichungen aufstellen, welche das räumliche und zeitliche Verhalten eines mechatronischen Systems abbilden. 
 
-Bevor jedoch die Bewegungsgleichungen des Quadrocopter aufgestellt werden können, ist es notwendig die Freiheitsgrade des dynamischen Systems gegenüber des Bezugssystem zu bestimmen. Da zwischen dem n-frame(Bezugssystem) und dem b-frame(Quadrocopter) keine mechanische Verbindung oder konstante Koordinatentransformation existiert besitzt das Flugsystem sechs Freiheitsgrade. Bestehend aus drei rotativen $\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T$ und drei translatorischen $\begin{bmatrix} x&y&z\end{bmatrix}^T$. Sechs Freiheitsgrade sind gleichzusetzen mit sechs Differentialgleichungen zur Beschreibung der Bewegung im Raum. Damit ist jedoch nicht alle Dynamiken des Systems abgebildet. So sind zur Beschreiben des Gesamtsystems weitere Differentialgleichungen aufzustellen. Zum einen ist hier die Dynamik der Elektromotoren zu einzukalkulieren welche die Rotoren antreiben. Als auch die durch die Rotation der Rotorblätter ausgelöste Schubentwicklung nach den Gesetzen der Strömungslehre. Unter Beachtung aller Aspekte entsteht so eine mathematisch meist nichtlineare sowie sehr aufwendige und komplexe Systembeschreibung. Da mit der steigender Größe auch die Fehleranfälligkeit steigt, wird in der Modellbildung folgender Leitsatz immer wieder aufgeführt. \glqq Ein Modell sollte das zu regelende Verhalten so einfach wie möglich, aber so detailliert wie nötig darstellen.\grqq  Betrachtet nun die Struktur des implementierten Flugregelung (Abbildung \ref{fig:strucregelung}) so lässt sich das Modell aus Sicht der Positionsregelung stark reduzieren.  
+Bevor die Bewegungsgleichungen des Quadrocopter aufgestellt werden können, ist es notwendig, die Freiheitsgrade des dynamischen Systems gegenüber des Bezugssystem zu bestimmen. Da zwischen dem n-frame(Bezugssystem) und dem b-frame(Quadrocopter) keine mechanische Verbindung oder konstante Koordinatentransformation existiert, besitzt das Flugsystem sechs Freiheitsgrade, bestehend aus drei rotativen $\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T$ und drei translatorischen $\begin{bmatrix} x&y&z\end{bmatrix}^T$. Sechs Freiheitsgrade sind gleichzusetzen mit sechs Differentialgleichungen zur Beschreibung der Bewegung im Raum. Damit sind nicht alle Dynamiken des Systems abgebildet. So sind zur Darstellung des Gesamtsystems weitere Differentialgleichungen aufzustellen. Zum einen ist hier die Dynamik der Elektromotoren einzukalkulieren, welche die Rotoren antreiben. Des Weiteren auch die durch die Rotation der Rotorblätter ausgelöste Schubentwicklung nach den Gesetzen der Strömungslehre. Unter Beachtung aller Aspekte entsteht so eine mathematisch meist nichtlineare sowie sehr aufwendige und komplexe Systembeschreibung. Da mit der steigender Größe des Modells auch die Fehleranfälligkeit steigt, wird in der Modellbildung folgender Leitsatz wiederholt aufgeführt. \glqq Ein Modell sollte das zu regelende Verhalten so einfach wie möglich und so detailliert wie nötig darstellen.\grqq Wird die Struktur der implementierten Flugregelung (Abbildung \ref{fig:strucregelung}) betrachtet, reduziert sich das Modell aus Sicht der Positionsregelung erheblich.  
 
-Grund hierfür ist die in Bild \ref{fig:kaskstruc} dargestellte Kaskadenstruktur der Regelung. In Verbindung mit Abbildung \ref{fig:strucregelung} ist zu erkennen, das der Lageregelung als Eingangsgrößen eine Soll-Orientierung $ O_{des} =\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T $ und ein Schubvorgabe $T_{des}$ übergeben wird. Aus Sicht der Positionsregelung sind dies auch die Eingänge des zu regelnden Modells. Fest steht somit, das die rotative Dynamik als auch die Schubentwicklung über den auf dem \gls{llp} befindliche Regler eingestellt wird. Dieser ist ab Werk so gut parametriert, das die Zeitkonstante zwischen Vorgabe und Einstellen des Sollwerts sehr gering ist. Dies wurde auch durch einen Versuch bestätigt. Da der Aufbau der Lageregelung nicht bekannt ist wurde dazu das experimentelle Systemidentifikationstool von Manfred Ottens herangezogen. Um die Zeitkonstante schätzen zu können wurde das Übertagungsverhalten von Ist- zu Soll-Winkel als PT1-Glied abstrahiert. Aus den Messdaten des Sollwert und Istwert wurde daraus die Zeitkonstante T ermittelt. Dabei ergab das mittel über mehrere Messungen einen Zeitkonstante von T$\approx0.1~s$. Mit der Gewissheit, das die Dynamik der Positionsregelung um ein vielfaches geringer ausfällt lässt sich beim Entwurf dieser die Zeitkonstante T vernachlässigen. Es gilt somit Soll- entspricht Ist-Winkel.
+Grund hierfür ist die in Bild \ref{fig:kaskstruc} dargestellte Kaskadenstruktur der Regelung. In Verbindung mit Abbildung \ref{fig:strucregelung} ist zu erkennen, dass der Lageregelung als Eingangsgrößen eine Soll-Orientierung $ O_{des} =\begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T $ und eine Schubvorgabe $T_{des}$ übergeben wird. Aus Sicht der Positionsregelung sind das auch die Eingänge des zu regelnden Modells. Fest steht, dass sowohl die rotative Dynamik als auch die Schubentwicklung über den auf dem \gls{llp} befindliche Regler eingestellt wird. Dieser ist ab Werk so gut parametriert, dass die Zeitkonstante zwischen Vorgabe und Einstellen des Sollwerts sehr gering ist. Dies wurde durch einen Versuch bestätigt. Da der Aufbau der Lageregelung nicht bekannt ist, wurde dazu das experimentelle Systemidentifikationstool von Manfred Ottens herangezogen. Um die Zeitkonstante schätzen zu können, wird das Übertagungsverhalten von Ist- zu Soll-Winkel als PT1-Glied abstrahiert. Die Zeitkonstante T wird aus den Messdaten des Sollwertes und des Istwertes ermittelt. Dabei ergibt das Mittel über mehrere Messungen eine Zeitkonstante von T$\approx0.1~s$. Mit der Gewissheit, dass die Dynamik der Positionsregelung um ein vielfaches geringer ausfällt, ist beim Entwurf die Zeitkonstante T dieser Regelung zu vernachlässigen. Es gilt somit Soll- entspricht Ist-Winkel.
  \begin{equation}
   O_{des} = O = \begin{bmatrix} \phi&\theta&\psi\end{bmatrix}^T
  \end{equation}
      
-Somit reduziert sich die für Positionsregelung zu modellierende Dynamik auf die translatorische Differenzialgleichungen. Um zur Bestimmung dieser die Newtonsche Gesetze anwenden zu können, werden diese im n-frame definiert. Dabei kann der Quadrocopter als widerstandsfreie Kugel im dreidimensionalen Raum des Navigationskoordinatensystems abgebildet werden. Auf diese wirkt parallel zur z-Achse des n-frames die Gravitationskraft $ F^n_g $ und die in Richtung der $ z^b $-Achse angreifender Gesamtschub $ T $ (Gleichung \ref{eq:Schubvektor}) der Rotoren. Letzt genannte Kraft muss zur Anwendung der Newtonischen Gesetze in Kraftkomponenten des n-frames zerlegt werden (Abbildung \ref{fig:F_nframe}).
+Somit reduziert sich die für Positionsregelung zu modellierende Dynamik auf die translatorische Differenzialgleichungen. Um zur Bestimmung dieser die Newtonsche Gesetze anwenden zu können, werden diese im n-frame definiert. Dabei kann der Quadrocopter als widerstandsfreie Kugel im dreidimensionalen Raum des Navigationskoordinatensystems abgebildet werden. Auf diese wirkt parallel zur z-Achse des n-frames die Gravitationskraft $ F^n_g $ und die in Richtung der $ z^b $-Achse angreifender Gesamtschub $ T $ (Gleichung \ref{eq:Schubvektor}) der Rotoren. Letztgenannte Kraft wird zur Anwendung der Newtonischen Gesetze in Kraftkomponenten des n-frames zerlegt (Abbildung \ref{fig:F_nframe}).
 \begin{figure}
 	\centering
 	\includegraphics[width = .85\textwidth]{images/Force_nframe}
 	\caption[]{Auf den Quadrocopter wirkende Kraft. Definiert im n-frame} %
 	\label{fig:F_nframe}
 \end{figure}     
-Da die Dynamik der Lageregelung vernachlässigt wird, ist dies über eine einfache Koordinatentransformation vom b-frame ins n-frame realisierbar. Die entsprechende Transformation wurde in Kapitel \ref{subsec:koordinatentransformation} in Formel \ref{eq:inverse_transM} eingeführt. Daraus ergibt sich,
+Da die Dynamik der Lageregelung vernachlässigt wird, ist dies über eine einfache Koordinatentransformation vom b-frame ins n-frame realisierbar. Die entsprechende Transformation ist in Kapitel \ref{subsec:koordinatentransformation} in Formel \ref{eq:inverse_transM} eingeführt. Daraus ergibt sich:
 
 \begin{equation}
  F^n =	\begin{bmatrix}
@@ -91,7 +92,7 @@ Da die Dynamik der Lageregelung vernachlässigt wird, ist dies über eine einfache
 	\label{eq:superposF}
 \end{equation} 
  
-Nach dem zweiten Newtonschen Gesetz lässt sich nun die Beschleunigung $ a $ des Körpers bestimmen. Dieses besagt, eine Änderung der Bewegung resultiert proportional und gradlinig in Richtung der wirkenden Kraft. Dabei gilt die Beziehung. 
+Nach dem zweiten Newtonschen Gesetz lässt sich die Beschleunigung $ a $ des Körpers bestimmen. Dieses besagt, eine Änderung der Bewegung resultiert proportional und gradlinig in Richtung der wirkenden Kraft. Dabei gilt die Beziehung. 
   
 \begin{equation}
 F^n =	\begin{bmatrix}
@@ -108,7 +109,7 @@ a^n_z \\
 \label{eq:fma}
 \end{equation} 
 
-Für die konstante Masse $ m (= 1.863~kg) $ des Quadrocoters, lassen sich die Beschleunigungen des Körpers im dreidimensionalen Raum durch einsetzen von (\ref{eq:superposF}) in (\ref{eq:fma}) berechnen.
+Für die konstante Masse $ m (= 1.863~kg) $ des Quadrocoters, lassen sich die Beschleunigungen des Körpers im dreidimensionalen Raum durch Einsetzen von (\ref{eq:superposF}) in (\ref{eq:fma}) berechnen.
 \begin{equation}
 \begin{bmatrix}
 a^n_x \\
@@ -133,7 +134,7 @@ F_g \\
 \label{eq:beschl}
 \end{equation}
 
-Basierend auf dem Weg-Zeit-Gesetz \cite{physik} lässt sich für eine Anfangsgeschwindigkeit $ v^n_0  $ und eine Startposition $ P^n_0 $ die Position des Quadrocopters über die doppelte Integration der Beschleunigung aus Gleichung (\ref{eq:beschl}) bestimmen.
+Basierend auf dem Weg-Zeit-Gesetz \cite{physik} bestimmt sich für eine Anfangsgeschwindigkeit $ v^n_0  $ und eine Startposition $ P^n_0 $ die Position des Quadrocopters über die doppelte Integration der Beschleunigung aus Gleichung (\ref{eq:beschl}).
 \begin{equation}
 \begin{split}
 a^n &= \dot{v}^n = \ddot{P}^n\\
@@ -143,7 +144,7 @@ P^n &= \int v^n dt + P^n_0
 \label{eq:weg-zeit}
 \end{equation}
 
-Mit diesen Gleichung \ref{eq:weg-zeit} und \ref{eq:beschl} ist das translatorische Systemverhalten des Quadrocopters im n-frame mathematisch beschreibbar. Abhängig der Einganggrößen $ O_des $ und $ T_des $. Die resultierende Beschreibung der Zustände $ x =\begin{bmatrix}
+Mit diesen Gleichungen (\ref{eq:weg-zeit}) und (\ref{eq:beschl}) ist das translatorische Systemverhalten des Quadrocopters im n-frame mathematisch beschreibbar. Abhängig der Einganggrößen $ O_{des} $ und $ T_{des} $. Die resultierende Beschreibung der Zustände $ x =\begin{bmatrix}
 v_x &
 v_y &
 v_z &
@@ -171,13 +172,13 @@ Zur Veranschaulichung ist das Modell zusätzlich in Abbildung \label{fig:modstruk
 \end{figure}
 
  
-Durch die Koordinatentransformation bzw. die trigonometrichen Funktionen ist die Systembeschreibung nichtlinear. Das bedeutet, das von der Änderung der Eingangsgrößen keine direkt porportionale Änderung der Ausgangsgröße ableitbar ist. Somit ist eine direkte Ansteuerung der Lageregelung über einen linearen Positionsregler nicht möglich ist. Da allerdings einen ein solche linearer Regler vorgesehen ist, benötigt man einen Baustein. Der für fiktive Eingänge das Systemverhalten linearisiert.    
+Durch die Koordinatentransformation bzw. die trigonometrischen Funktionen ist die Systembeschreibung nichtlinear. Das bedeutet, dass von der Änderung der Eingangsgrößen keine direkte proportionale Änderung der Ausgangsgröße ableitbar ist. Somit ist eine direkte Ansteuerung der Lageregelung über einen linearen Positionsregler nicht möglich. Da allerdings ein solcher linearer Regler vorgesehen ist, wird ein Baustein benötigt, der für fiktive Eingänge das Systemverhalten linearisiert.    
 
 %%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 \section{Exakte Zustandslinearisierung}
 \label{sec:exkt.zstdlin}
-Zur Linearisierung eines nichtlinearen Modells wird in den Grundlagen der Regelungstechnik \cite{lunze08} die Arbeitspunktlinearisierung gelehrt. Nachteil eine solche Linearisierung besitzt oft nur für eine kleinen Umgebung um den Arbeitspunkt Gültigkeit. Um mit dem Quadrocopter schnelle Positionswechsel vollziehen zu können, werden jedoch hohe Stellwinkel benötigt. Somit ist eine annähernde Linearisierung für einen Arbeitspunkt nicht ausreichend. Es wird daher eine Methode benötigt, die das Modell über den gesamten Arbeitsbereich linearisiert. 
+Zur Linearisierung eines nichtlinearen Modells wird in den Grundlagen der Regelungstechnik \cite{lunze08} die Arbeitspunktlinearisierung gelehrt. Nachteil einer solchen Linearisierung ist, dass sie oft nur Gültigkeit für eine kleine Umgebung um den Arbeitspunkt besitzt. Um mit dem Quadrocopter schnelle Positionswechsel vollziehen zu können, werden jedoch hohe Stellwinkel benötigt. Somit ist eine annähernde Linearisierung für einen Arbeitspunkt nicht ausreichend. Es wird daher eine Methode benötigt, die das Modell über den gesamten Arbeitsbereich linearisiert. 
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/inversion}
@@ -185,7 +186,7 @@ Zur Linearisierung eines nichtlinearen Modells wird in den Grundlagen der Regelu
 	\label{fig:Gesamtinversion}
 \end{figure} 
 
-In \cite{deutNL} wird dafür die exakte Zustandslinearisierung eingeführt. Dabei wird dem nichtlinearen System eine Inversion vorgeschaltet. Diese beinhaltet eine linearisierendes Stellgesetz so, dass sich das zu regelnde System für jeden Ausgang als entkoppelt und lineare Integrierekette darstellt. 
+In \cite{deutNL} wird dafür die exakte Zustandslinearisierung eingeführt. Dabei wird dem nichtlinearen System eine Inversion vorgeschaltet. Diese beinhaltet eine linearisierendes Stellgesetz, sodass sich das zu regelnde System für jeden Ausgang als entkoppelt und lineare Integrierekette darstellt. 
 
 %Betrachtet man die Modellstruktur für die translatorische Bewegung (Abbildung \ref{fig:modstrukquad}) so kann man erkennen, das für fiktive Eingänge $ u_f = \begin{bmatrix}
 %a^n_x &
@@ -200,9 +201,9 @@ In \cite{deutNL} wird dafür die exakte Zustandslinearisierung eingeführt. Dabei 
 %\end{bmatrix} $ generiert. Eine sogenannte Inversion. \\
 
 Das bedeutet für das Quadrocoptermodell (Kapitel \ref{sec:Modelbildung}). Es ist ein Stellgesetz für $ u = \begin{bmatrix} T  &\phi &\theta &\psi \end{bmatrix} $ gesucht, welches das System für die Ausgänge $ y =  \begin{bmatrix} 
-x & y & z \end{bmatrix} $ entkoppelt. Für die Positionsregelung steht so die fiktiven Eingänge $u_f = \begin{bmatrix} a^n_x &	a^n_y & y^n_z \end{bmatrix}^T$ zur Verfügung. Das bedeutet es können ohne Berücksichtigung der Orientierung des Quadrocopters Beschleunigungswerte im n-frame vorgegeben werden.
+x & y & z \end{bmatrix} $ entkoppelt. Für die Positionsregelung stehen so die fiktiven Eingänge $u_f = \begin{bmatrix} a^n_x &	a^n_y & y^n_z \end{bmatrix}^T$ zur Verfügung. Das bedeutet, es können ohne Berücksichtigung der Orientierung des Quadrocopters Beschleunigungswerte im n-frame vorgegeben werden.
 
-Damit eine solche Inversion für die Position als Ausgang $ y =  \begin{bmatrix}x & y & z & \end{bmatrix} $ möglich ist, muss es sich bei diesem Ausgang um einen so genannten flachen Ausgang $ y_f = \begin{bmatrix} y_{f1} & y_{f2} & y_{f3} \end{bmatrix}$ handeln. 
+Damit eine solche Inversion für die Position als Ausgang $ y =  \begin{bmatrix}x & y & z \end{bmatrix} $ möglich ist, muss es sich bei diesem Ausgang um einen so genannten flachen Ausgang $ y_f = \begin{bmatrix} y_{f1} & y_{f2} & y_{f3} \end{bmatrix}$ handeln. 
 
 %Vollständige Definition siehe Anhang \ref{anh:def_fl}.  
 %Damit aus dem nichtlinearen Modell Kapitel \ref{sec:Modelbildung} ein Exakt zustandslinearisierendes Stellgesetz (Inversion) generiert werden kann, muss es sich bei dem Ausgang $ y =  \begin{bmatrix} 
@@ -215,19 +216,17 @@ Damit eine solche Inversion für die Position als Ausgang $ y =  \begin{bmatrix}x
 %y_{f3} 
 %\end{bmatrix}$ handeln. 
 
-Per Definition (Anhang \ref{anh:def_fl}) muss dafür das Kriterium, Anzahl der flachen Ausgänge $ p_y $ entspricht der Anzahl der Eingänge $ p_u $des nichtlinearen Systems, erfühlt sein. Dieses ist für $ y_f = \begin{bmatrix} x & y & z \end{bmatrix}$ und die Eingangsgrößen $ u = \begin{bmatrix} T  & \phi & \theta & \psi \end{bmatrix} $ verletzt.
+Per Definition (Anhang \ref{anh:def_fl}) muss dafür das Kriterium, Anzahl der flachen Ausgänge $ p_y $ entsprechen der Anzahl der Eingänge $ p_u $ des nichtlinearen Systems, erfüllt sein. Dieses Kriterium ist für $ y_f = \begin{bmatrix} x & y & z \end{bmatrix}$ und die Eingangsgrößen $ u = \begin{bmatrix} T  & \phi & \theta & \psi \end{bmatrix} $ verletzt.
 %kann es sich bei dem gewünschten flachen Ausgang $ y_f = \begin{bmatrix} 
 %x &
 %y &
 %z 
 %\end{bmatrix}$ nur um einen solchen Handeln wenn die Anzahl der flachen Ausgänge $ p $ derer der realen Eingänge $ u $ entspricht. Dies ist nicht der Fall.
-Nach \cite{deutNL} heißt das, es muss ein neuer fiktiver Ausgang gesucht werden, sodass  $ p_y  = p_u$ gilt. Dieser neue Ausgang würde nicht mehr der Position entsprechen. Das bedeutet Positionsvorgaben müssten erst in die neuen Ausgänge transformierten werden. Auch der gewünschte fiktive Eingang der $u_f = \begin{bmatrix} a^n_x &	a^n_y & y^n_z \end{bmatrix}^T$ wäre nicht mehr gegeben.
+Nach \cite{deutNL} heißt das, es muss ein neuer fiktiver Ausgang gesucht werden, sodass  $ p_y  = p_u$ gilt. Dieser neue Ausgang entspricht nicht mehr der Position. Das bedeutet, Positionsvorgaben müssen erst in die neuen Ausgänge transformierten werden. Auch der gewünschte fiktive Eingang der $u_f = \begin{bmatrix} a^n_x &	a^n_y & y^n_z \end{bmatrix}^T$ ist nicht mehr gegeben.
 
-Deshalb bedient sich die in Kooperation mit AscTec entwickelte Inversion \cite{Achtelik11} einem Trick. 
- 
+Aus diesem Grund bedient sich die in Kooperation mit AscTec entwickelte Inversion \cite{Achtelik11} einem Trick.  
 % Damit dennoch eine Inversion durchgeführt werden kann, ist es möglich ein flacher Ausgang mit der selben Anzahl an Ausgängen wie Eingängen zu suchen. Dieser würde nicht mehr mit der Position $ P^n $ übereinstimmen. Deshalb wurde in Paper \cite{Achtelik11} ein anderer Weg eingeschlagen.  
-
-Um die Position als flachen Ausgang zu erhalten, bedient man sich der Tatsache, das eine Veränderung des $ \psi $-Winkels zu keiner Auslenkung des Schubvektors $ T $ führt. So können die Beschleunigungsvorgaben $ u_f $ über eine einfache Transformation (Gleichung \ref{eq:Mz}) um den Winkel $ \psi $ ins o-frame übertragen werden $\tilde{u}_f = \begin{bmatrix} a^o_x &	a^o_y & y^o_z \end{bmatrix}^T$. Gleiches gilt auch für den zugehörigen Ausgang $ y_f $. Somit ergibt sich für diesen $\tilde{y}_f = \begin{bmatrix} y^o_{f1} &	y^o_{f2} & y^o_{f2} \end{bmatrix}$.Durch diesen Trick reduziert sich die Anzahl der Eingänge der für Inversion um einen. So entspricht die Anzahl der verbliebenen Eingängen $ \tilde{u} = \begin{bmatrix} \phi & \theta & T \end{bmatrix} $ denen des gewünschten flachen Ausgangs. Damit ist die Flachheit des Ausgangs $ \tilde{y}_f $ nicht erwiesen. Es fehlt per Definition (vgl. Anhang \ref{anh:def_fl}) noch der Beweis, das sich alle Zustände $ \tilde{x} $ (vgl. Abbildung \ref{fig:modstrukquad}) und die reduzierten Eingänge $ \tilde{u} $ durch die flachen Ausgänge $ \tilde{y}_f $ und dessen Ableitungen darstellen lassen. Für die Zustände ist dieser Beweis, ohne großen Rechenaufwand möglich.
+Um die Position als flachen Ausgang zu erhalten, bedient man sich der Tatsache, dass eine Veränderung des $ \psi $-Winkels zu keiner Auslenkung des Schubvektors $ T $ führt. So können die Beschleunigungsvorgaben $ u_f $ über eine einfache Transformation (Gleichung \ref{eq:Mz}) um den Winkel $ \psi $ ins o-frame übertragen werden $\tilde{u}_f = \begin{bmatrix} a^o_x &	a^o_y & y^o_z \end{bmatrix}^T$. Gleiches gilt auch für den zugehörigen Ausgang $ y_f $. Demzufolge ergibt sich für diesen $\tilde{y}_f = \begin{bmatrix} y^o_{f1} &	y^o_{f2} & y^o_{f2} \end{bmatrix}$.Durch den Trick reduziert sich für die Inversion die Anzahl der Eingänge um einen. So entspricht die Anzahl der verbliebenen Eingängen $ \tilde{u} = \begin{bmatrix} \phi & \theta & T \end{bmatrix} $ denen des gewünschten flachen Ausgangs. Damit ist die Flachheit des Ausgangs $ \tilde{y}_f $ nicht erwiesen. Es fehlt per Definition (vgl. Anhang \ref{anh:def_fl}) noch der Beweis, dass sich alle Zustände $ \tilde{x} $ (vgl. Abbildung \ref{fig:modstrukquad}) und die reduzierten Eingänge $ \tilde{u} $ durch die flachen Ausgänge $ \tilde{y}_f $ und dessen Ableitungen darstellen lassen. Für die Zustände ist dieser Beweis, ohne großen Rechenaufwand möglich.
 
 \begin{equation}
 \begin{split}
@@ -240,7 +239,7 @@ Um die Position als flachen Ausgang zu erhalten, bedient man sich der Tatsache, 
 \end{split}
 \end{equation}
 
-Für die Eingangsgrößen $ \tilde{u} $ müssen die Zustandsgleichungen für $ \dot{\tilde{x}}_1$, $ \dot{\tilde{x}}_2 $ und $ \dot{\tilde{x}}_3 $ (vgl. Gleichung \ref{eq:zstd}) nach $ \phi $, $ \theta $ und $ T $ aufgelöst werden. Dabei entspricht $ \dot{\tilde{x}}_1 = a^o_x = \ddot{\tilde{y}}_{f1} = \tilde{u}_{f1}$, $ \dot{\tilde{x}}_2 = a^o_y = \ddot{\tilde{y}}_{f2} = \tilde{u}_{f2}$ sowie $ \dot{\tilde{x}}_3 = a^o_z = \ddot{\tilde{y}}_{f3} = \tilde{u}_{f3}$. Damit kann der Schub $ T $ als Betrag der im o-frame wirkenden Kräfte, bzw. geforderten Beschleunigungen multipliziert mit der Masse dargestellt werden.
+Für die Eingangsgrößen $ \tilde{u} $ werden die Zustandsgleichungen für $ \dot{\tilde{x}}_1$, $ \dot{\tilde{x}}_2 $ und $ \dot{\tilde{x}}_3 $ (vgl. Gleichung \ref{eq:zstd}) nach $ \phi $, $ \theta $ und $ T $ aufgelöst. Dabei entspricht $ \dot{\tilde{x}}_1 = a^o_x = \ddot{\tilde{y}}_{f1} = \tilde{u}_{f1}$, $ \dot{\tilde{x}}_2 = a^o_y = \ddot{\tilde{y}}_{f2} = \tilde{u}_{f2}$ sowie $ \dot{\tilde{x}}_3 = a^o_z = \ddot{\tilde{y}}_{f3} = \tilde{u}_{f3}$. Damit wird der Schub $ T $ als Betrag der im o-frame wirkenden Kräfte, bzw. geforderten Beschleunigungen multipliziert mit der Masse dargestellt.
 
 \begin{equation}
 \begin{split}
@@ -250,7 +249,7 @@ T &= m \cdot \sqrt{\ddot{\tilde{y}}_{f1}^2 +\ddot{\tilde{y}}_{f}^2+(\ddot{\tilde
 \label{eq:invT}
 \end{equation}    
 
-Nun da $ T $ bestimmt, ist unter Beachtung das $ \psi = 0 $, durch die vorgelagerte Transformation, $ \dot{\tilde{x}}_2 $ aus  Gleichung \ref{eq:zstd} nach  $ \phi $ aufzulösen. Damit ergibt sich,
+Da $ T $ bestimmt ist, ist unter Beachtung das $ \psi = 0 $, durch die vorgelagerte Transformation, $ \dot{\tilde{x}}_2 $ aus  Gleichung \ref{eq:zstd} nach  $ \phi $ aufzulösen. Damit ergibt sich:
 
 \begin{equation}
 \begin{split}
@@ -278,10 +277,10 @@ $ \theta $ lässt sich aufgrund der trigonometrischen Beziehung $ tan\alpha = \fr
 
 Die Stellgesetze der exakten Zustandslinearisierung sind damit über Gleichung (\ref{eq:invT}), (\ref{eq:invphi}) und (\ref{eq:invtheta}) mathematisch beschrieben. In Verbindung mit der Koordinatentransformation von $ \psi $ ergibt sich die in Abbildung \ref{fig:Gesamtinversion} dargestellte Inversion.
 
-Die Richtigkeit dieser lässt sich über eine Simulation beweisen. Das Modell besteht dabei aus Inversion (Abbildung \ref{fig:Gesamtinversion}) und Translationsmodell (Abbildung \ref{fig:modstrukquad}). Über den neuen Eingang $ u_f $ werden dabei Beschleunigungswerte im n-frame vorgegeben (Abbildung \ref{fig:inv_uf}). Unter Einfluss ständig wechselnden  
-Orientierung um die Hochachse (Abbildung ), ergeben sich die in Abbildung dargestellten Vorgaben für das Exaktzustandslineariesierden Stellgesetz. Die daraus resultierende Schubvorgabe und Winkel werden dem Bewegungsmodell übergeben. Mit dem Ergenis, das die resultierendne Beschleunigungen des Modells denn Beschleunigunsvorgaben entspricht.
+Die Richtigkeit lässt sich über eine Simulation beweisen. Das Modell besteht dabei aus Inversion (Abbildung \ref{fig:Gesamtinversion}) und Translationsmodell (Abbildung \ref{fig:modstrukquad}). Über den neuen Eingang $ u_f $ werden dabei Beschleunigungswerte im n-frame vorgegeben (Abbildung \ref{fig:inv_uf}). Unter Einfluss ständig wechselnder  
+Orientierung um die Hochachse (Abbildung), ergeben sich die in der Abbildung dargestellten Vorgaben für das exaktzustandslinearisierende Stellgesetz. Die daraus resultierende Schubvorgabe und Winkel werden dem Bewegungsmodell übergeben. Mit dem Ergebnis, dass die resultierenden Beschleunigungen des Modells den Beschleunigunsvorgaben entsprechen.
 
-Dadurch kann nun das zu regelnde System als lineares Modell bestehend aus drei entkoppelten Integrierketten (Abbildung \ref{fig:drIntket}) gesehen werden. Dieses System ist jedoch instabil. Das bedeutet, für Vorgabe einer konstanten Beschleunigung, schwingt der Quadrocopter auf keiner konstanten Position ein, sondern Integriert seine Position immer weiter auf. Begründet ist diese Verhalten auch durch das Weg-Zeit-Gesetz (Gleichung \ref{eq:weg-zeit}). Möglich ist es jedoch einen Beschleunigungsverlauf vorzugeben, für den der Quadrocopter in eine neue Position überführt wird. Dafür benötigt wird eine Vorsteuerung.
+Dadurch ist das zu regelnde System als lineares Modell zusehen, bestehend aus drei entkoppelten Integrierketten (Abbildung \ref{fig:drIntket}). Dieses System ist jedoch instabil. Das bedeutet für die Vorgabe einer konstanten Beschleunigung schwingt der Quadrocopter auf keiner konstanten Position ein, sondern Integriert seine Position immer weiter auf. Begründet ist dieses Verhalten auch durch das Weg-Zeit-Gesetz (Gleichung \ref{eq:weg-zeit}). Jedoch besteht die Möglichkeit einen Beschleunigungsverlauf vorzugeben, für den der Quadrocopter in eine neue Position überführt wird. Dafür wird eine Vorsteuerung benötigt.
 
 
  \begin{figure}
@@ -320,9 +319,9 @@ Dadurch kann nun das zu regelnde System als lineares Modell bestehend aus drei e
 
 \section{Vorsteuerung/Referenzmodell}
 \label{sec:referenzmodell}
-Eine Vorsteuerung erzeugt anhand einer Sollwertvorgabe einen Stellgrößenverlauf, der benötigt wird um System im störungsfreien Fall in diesen Zustand zu überführen. In \cite{Achtelik11} wird deshalb auch von Referenzmodell gesprochen. 
+Eine Vorsteuerung erzeugt anhand einer Sollwertvorgabe einen Stellgrößenverlauf, der erforderlich ist, um das System im störungsfreien Fall in diesen Zustand zu überführen. In \cite{Achtelik11} wird deshalb auch von Referenzmodell gesprochen. 
  
-Im Sachen Positionsregelung bedeutet dies, es wird eine anzufliegende Position $ P^n_{cmd} $ übergeben. Daraus generiert die Vorsteuerung eine Trajektorie. Der Pfad $ P^n_{ref} $ mit dem der Quadrocopter in den Zustand überführt werden soll muss dabei einmal stetig differenzierbar sein. Der Grund, die Stellgröße der Inversion sind Beschleunigungsvorgaben. Demzufolge muss die zweite Ableitung der Position mindestens stückweise existiert. Damit dies gewährleistet ist, ist nach \cite{deutNL} folgende Differenzialgleichung für das Referenzmodell aufzustellen. 
+Im Sachen Positionsregelung bedeutet das die Übergabe einer anzufliegende Position $ P^n_{cmd} $. Daraus generiert die Vorsteuerung eine Trajektorie. Der Pfad $ P^n_{ref} $ mit dem der Quadrocopter in diesen Zustand überführt wird, muss dabei einmal stetig differenzierbar sein. Der Grund, die Stellgröße der Inversion sind Beschleunigungsvorgaben. Demzufolge muss die zweite Ableitung der Position mindestens stückweise existieren. Damit dies gewährleistet ist, ist nach \cite{deutNL} folgende Differenzialgleichung für das Referenzmodell aufzustellen. 
 
 %Zur Vorgabe des gewünschte benötigt man als Vorsteuerung ein Referenzmodell. Diesem werden die anzufliegenden Positionen $ P^n_{cmd} $ übergeben. Aufgabe der Vorsteuerung ist es daraus eine Trajektorie zu generieren. Diese beschreibt den Pfad über den der Quadrocopter in diese Koordinate überführt wird. Da die neuen Eingangsgrößen $ u_f $ des zustandslinearisierten Modells Beschleunigungsvorgaben sind, muss der Verlauf der Positionsvorgabe der Vorsteuerung $ P^n_{ref} $ einmal stetig differenzierbar sein, sodass die zweite Ableitung existiert. Damit dies gewährleistet kann nach \cite{deutNL} die E/A Dynamik für dieses System über folgende Formel vorgegeben werden.
 
@@ -330,21 +329,21 @@ Im Sachen Positionsregelung bedeutet dies, es wird eine anzufliegende Position $
 	\ddot{P}^n_{ref} + c_1 \cdot \dot{P}^n_{ref}+c_0\cdot P^n_{ref}=c_0 \cdot P^n_{cmd}
 	\label{eq:dynref}
 \end{equation}
-Hierbei kann die Dynamik mit der das Fluggerät überführt werden soll, über die Koeffizienten eingestellt werden. Stellt man für (\ref{eq:dynref}) die Übertragungsfunktion $ G(s) $ auf.
+Hierbei kann die Dynamik mit der das Fluggerät überführt wird, über die Koeffizienten eingestellt werden. Stellt man für (\ref{eq:dynref}) die Übertragungsfunktion $ G(s) $ auf.
 \begin{equation}
 \begin{split}
-G(s)=\frac{P^n_{cmd}}{P^n_{ref}} &=\frac{c_0}{s^2+c_1\cdot s+c_0}\\
+G(s)=\frac{P^n_{ref}}{P^n_{cmd}} &=\frac{c_0}{s^2+c_1\cdot s+c_0}\\
 &= \frac{1}{\frac{1}{c_o}s^2+\frac{c_1}{c_0}\cdot s+1}
 \end{split}	
 \label{eq:gsref}
 \end{equation}
-Kann man erkennen das diese in ihrer Form einem PT2-Glied entspricht.
+Ist erkennbar, dass diese in ihrer Form einem PT2-Glied entspricht.
 \begin{equation}
 	G_{PT2}(s)=\frac{1}{(\frac{1}{\omega_o})^2s^2+\frac{2D}{\omega_0}\cdot s+1}
 	\label{eq:gspt2}
 \end{equation}
 
-Setzt man (\ref{eq:gspt2}) mit (\ref{eq:gsref}) gleich kann man die Koeffizienten $ c_0 $ und $ c_1 $ abhängig der gewünschten Eigenfrequenz $ \omega_0 $ und Dämpfung $ D $ wählen.
+Setzt man (\ref{eq:gspt2}) mit (\ref{eq:gsref}) gleich, kann man die Koeffizienten $ c_0 $ und $ c_1 $ abhängig der gewünschten Eigenfrequenz $ \omega_0 $ und Dämpfung $ D $ wählen.
 \begin{equation}
 c_0= \omega_0^2
 \label{eq:ref_c0}
@@ -354,10 +353,10 @@ c_1= 2 D\omega_0
 \label{eq:ref_c1}
 \end{equation}
 Der Vorteil, die Dynamik der Vorsteuerung ist über die in den Grundlagen der Regelungstechnik vermittelten Entwurfskriterien für PT2-Glieder einstellbar.
-So lässt sich über $ \omega $ einstellen wir schnell die Zielkoordinate erreicht werden soll. Das wie, lässt sich über die Dämpfung $ D $ bestimmen. So wird für alle $ D \le 1 $ eine Pfad ohne Überschwinger generiert. 
-Die Dynamikvorgabe ist jedoch durch die maximal zulässige Stellgröße beschränkt. So kann zumindest $ \omega $ nicht beliebig Groß gewählt werden. 
+So lässt sich über $ \omega $ einstellen, wie schnell die Zielkoordinate erreicht werden soll. Das wie, lässt sich über die Dämpfung $ D $ bestimmen. So wird für alle $ D \le 1 $ eine Pfad ohne Überschwinger generiert. 
+Die Dynamikvorgabe ist durch die maximal zulässige Stellgröße beschränkt. So kann zumindest $ \omega $ nicht beliebig groß gewählt werden. 
 
-Der Stellgrößenverlauf $ u_{f_{ref}} = \ddot{P}^n_{ref}  $ ist somit über (\ref{eq:dynref}) mit (\ref{eq:ref_c0}) und (\ref{eq:ref_c1}) folgendermaßen festgelegt.
+Der Stellgrößenverlauf $ u_{f_{ref}} = \ddot{P}^n_{ref}  $ ist damit über (\ref{eq:dynref}) mit (\ref{eq:ref_c0}) und (\ref{eq:ref_c1}) folgendermaßen festgelegt.
 \begin{equation}
 u_{f_{ref}} = \omega_0^2 \cdot(P^n_{cmd}-P^n_{ref})-2D\omega_0\cdot \dot{P}^n_{ref}
 \label{eq:ref_mdl}
@@ -369,7 +368,7 @@ u_{f_{ref}} = \omega_0^2 \cdot(P^n_{cmd}-P^n_{ref})-2D\omega_0\cdot \dot{P}^n_{r
 	\caption[]{Strukturbild Vorsteuerung} %
 	\label{fig:strucref}
 \end{figure}
-Das resultierende Strukturbild der Vorsteuerung ist in Abbildung \ref{fig:strucref} visualisiert. Für ein Positionsverschiebung von $ 1~m $ erzeugt das Referenzmodell die in Abbildung \ref{fig:tragen} Trajektorie bzw. den in Grafik \ref{fig:tragen_aref} dargestellten Stellwertverlauf. Hier ist anzumerken, das  aufgrund der entkoppelten Integriererketten (Kapitel \ref{sec:exkt.zstdlin}) eine separate Dynamikvorgabe für jeden Zweig des zustandslinearisierten Modells möglich ist. 
+Das resultierende Strukturbild der Vorsteuerung ist in Abbildung \ref{fig:strucref} visualisiert. Für eine Positionsverschiebung von $ 1~m $ erzeugt das Referenzmodell die in Abbildung \ref{fig:tragen} Trajektorie bzw. den in Grafik \ref{fig:tragen_aref} dargestellten Stellwertverlauf. Hier ist anzumerken, dass aufgrund der entkoppelten Integriererketten (Kapitel \ref{sec:exkt.zstdlin}) eine separate Dynamikvorgabe für jeden Zweig des zustandslinearisierten Modells möglich ist. 
  \begin{figure}
  	\centering{
  		\subfloat[Positionsvorgabe über $ p_{cmd} $ und generierte Positionsvorgabe $ p_{ref} $]{
@@ -388,20 +387,20 @@ Das resultierende Strukturbild der Vorsteuerung ist in Abbildung \ref{fig:strucr
  	\caption[Simulationsergebnisse Referenzmodell]{Simulationsergebnis des Referenzmodells für eine Achse mit $ \omega_0 = 1.5~Hz$ $ D = 1 $}
 \label{fig:tragen}
  \end{figure}
-Weiterhin besteht die Möglichkeit die Vorsteuerung auszubauen, so dass  Geschwindigkeitsvorgaben gemacht werden können. Dies erleichtert unter anderem das manuelle Navigieren mittels einer Fernsteuerung. Dabei erfolgt die Vorgabe der Soll-Geschwindigkeiten $ v^o_{cmd} $ im o-frame. Diese Vorgabe wird ins n-frame transformiert und dort über die Zeit integriert. Somit ergibt sich eine stetig Positionsvorgabe für $ P^n_{cmd} $. 
+Weiterhin besteht die Möglichkeit die Vorsteuerung auszubauen, sodass  Geschwindigkeitsvorgaben gemacht werden können. Dies erleichtert unter anderem das manuelle Navigieren mittels einer Fernsteuerung. Dabei erfolgt die Vorgabe der Soll-Geschwindigkeiten $ v^o_{cmd} $ im o-frame. Diese Vorgabe wird ins n-frame transformiert und dort über die Zeit integriert. Somit ergibt sich eine stetige Positionsvorgabe für $ P^n_{cmd} $. 
 
 \begin{equation}
 P^n_{cmd} = \int (M_z^T\cdot v^o_{cmd}) dt + P^n_{cmd_0}
 \label{eq:v_Pcmd}
 \end{equation}
 
-Mit dieser wird das Referenzmodell (\ref{eq:ref_mdl}) gespießt. Es wird ein Stellgröße erzeugt für das die Position des Quadrocopter der stetigen Positionsvorgabe (\ref{eq:v_Pcmd}) folgt. Die maximale Geschwindigkeit ist deshalb durch die Grenzfrequenz $ \omega_0 $ des Referenzmodells begrenzt. Je größer $ \omega_0 $ die desto höher die mögliche Geschwindigkeit.
+Mit dieser wird das Referenzmodell (\ref{eq:ref_mdl}) gespeist. Es wird ein Stellgröße erzeugt, für das die Position des Quadrocopter der stetigen Positionsvorgabe (\ref{eq:v_Pcmd}) folgt. Die maximale Geschwindigkeit ist deshalb durch die Grenzfrequenz $ \omega_0 $ des Referenzmodells begrenzt. Je größer $ \omega_0 $ ist, desto höher die maximal mögliche Geschwindigkeit.
   
-Die Vorsteuerung ist somit für alle Anwendungszwecke entworfen. Speist man das exakt Zustandslinearisierte mit dem in Abbildung \ref{fig:tragen} generierten Sollwertverlauf so folgt der Quadrocopter der Trajektorie. Dies gilt allerdings nur für den Fall konsistenter Anfangszustände (Abbildung \ref{fig:vor_ohnestr}). Ist dies nicht gegeben, ist wie in Abbildung zu erkennen das Positionsverlauf des Translationsmodell für den gleichen Stellgrößenverlauf nicht der Referenz entspricht. Das gleiche gilt für Unsicherheiten der Modellparameter (Abbildung \ref{fig:vor_unsichmdlpara}). Hierbei berechnet die Inversion einen unzureichenden oder überdimensionierten Schubvektor. 
+Die Vorsteuerung ist hiermit für alle Anwendungszwecke entworfen. Speist man das exaktzustandslinearisierte Stellgesetz mit dem in Abbildung \ref{fig:tragen} generierten Sollwertverlauf, so folgt das Modell des Quadrocopter der Trajektorie. Dies gilt allerdings nur für den Fall konsistenter Anfangszustände (Abbildung \ref{fig:vor_ohnestr}). Ist dies nicht gegeben, ist wie in Abbildung zu erkennen, dass der Positionsverlauf des Translationsmodells für den gleichen Stellgrößenverlauf nicht der Referenz entspricht. Das gleiche gilt für Unsicherheiten der Modellparameter (Abbildung \ref{fig:vor_unsichmdlpara}). Hierbei berechnet die Inversion einen unzureichenden oder überdimensionierten Schubvektor. 
 
 %Simuliert man das Modell (Abbildung \ref{fig:Gesamtinversion}) inklusive des Stellgesetzes der Vorsteuerung Gleichung (\ref{eq:ref_mdl}) für konsistente Anfangsbedingungen $ P_{ref0}^n = P_0^n $ so ergibt sich die gewünschte Flugkurve. In der Realität ist die Konsistens der Angfangsbedingungen jedoch nicht immer gegeben. 
 
-Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um all diesen Effekten entgegenzuwirken benötigt man einen Folgeregler. Dessen Aufgabe besteht darin diese Einflüsse zu eliminieren, sodass das Modellverlauf auch im gestörten Fall der Trajektorie entspricht.
+Unter anderem können äußere Krafteinwirkungen, wie zum Bespiel Winde wirken, die den Quadrocopter von der Trajektorie auslenken. Um all diesen Effekten entgegenzuwirken benötigt man einen Folgeregler. Dessen Aufgabe besteht darin, diese Einflüsse zu eliminieren, sodass der Modellverlauf auch im gestörten Fall der Trajektorie entspricht.
  \begin{figure}
  	\centering{
  		\subfloat[Konsistente Anfangszustände $ p_{ref_0}~=~p_{mdl_0}~=~0 $ und $ v_{ref_0}~=v_{mdl_0}~=~0 $, ideales Modell]{
@@ -423,7 +422,7 @@ Außerdem können äußere Krafteinwirkungen wie zum Bespiel Winde wirken, die den Q
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \section{Folgeregler}
 \label{sec:folgeregeler}
-Inkonsistente Anfangsbedingungen, externe Störungen sowie Modellunsicherheiten bewirken einen Ausgangsfolgefehler $e = P^n_{ref} - P^n $. Dieser Pflanzt sich weiter fort, da es sich bei dem Stellsignal $  u_{f_{ref}} $ (\ref{eq:ref_mdl}) nicht um das Stellsignal $ u_f $ handelt welches den Quadrocopter zurück auf die Trajektorie führt. Dies gilt auch im Falle eines unzureichenden Stellsignalverlaufs in Folge von Modellunsicherheiten. Modellieren lässt sich die Fortpflanzung des Folgefehlers aufgrund des linearisierten Modells in Form einer doppelten Integriererkette. 
+Inkonsistente Anfangsbedingungen, externe Störungen sowie Modellunsicherheiten bewirken einen Ausgangsfolgefehler $e = P^n_{ref} - P^n $. Dieser pflanzt sich weiter fort, da es sich bei dem Stellsignal $  u_{f_{ref}} $ (\ref{eq:ref_mdl}) nicht um das Stellsignal $ u_f $ handelt, welches den Quadrocopter zurück auf die Trajektorie führt. Das gilt auch im Falle eines unzureichenden Stellsignalverlaufs in Folge von Modellunsicherheiten. Modellieren lässt sich die Fortpflanzung des Folgefehlers aufgrund des linearisierten Modells in Form einer doppelten Integriererkette. 
 %Dieser ergibt sich durch die Fortpflanzung des für das reale System nicht ausreichenden Stellsignals $\ddot{e} = u_{f_{ref}} - u_f$. Das bedeutet, die Fehlerdynamik kann ebenfalls über eine zweifache Integriererkette modelliert werden. 
 Zweifache Integriererkette ergo instabiles System. Damit später die Flugbahn des Quadrocopter mit der Solltrajektorie konvergiert, muss die Fehlerdynamik stabilisiert werden. 
 %Dafür ist es von nöten, die Dynamik der Folgefehler vorgeben zu können. 
@@ -431,14 +430,14 @@ Zu diesem Zwecke werden die Zustandsgrößen des Ausgangsfolgefehlermodells zurück
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/fehlermdl}
-	\caption[]{Ausgabgsfolgefehlermodell mit Zustandsrückführung} %
+	\caption[]{Ausgangsfolgefehlermodell mit Zustandsrückführung} %
 	\label{fig:rückfolgefeh}
 \end{figure}
 \begin{equation}
 \ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e = 0
 \label{eq:fehlerdyn}
 \end{equation}
- mit 
+ Mit 
 \begin{equation}
 \begin{split}
 e &= P^n_{ref} - P^n\\
@@ -446,32 +445,32 @@ e &= P^n_{ref} - P^n\\
 \ddot{e} &= u_{f_{ref}} - u_f
 \end{split}
 \end{equation}
-Diese kann nach $ u_f $ um gestellt werden. Damit ergibt sich das nachfolgende Stellgesetz für die Eingangsgröße $ u_f $ des zustandslinearsierenten Systems welches den Folgefehler ausregelt. 
+Diese kann nach $ u_f $ umgestellt werden. Dadurch ergibt sich das nachfolgende Stellgesetz für die Eingangsgröße $ u_f $ des zustandslinearsierenten Systems, welches den Folgefehler ausregelt. 
 \begin{equation}
 u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n) +\tilde{c}_0\cdot (P^n_{ref} - P^n)}
 \end{equation}
-Die Annäherungsverhalten ist Abhängig von den Koeffizienten $ \tilde{c}_0 $ und $ \tilde{c}_1 $. Anhand von \ref{eq:fehlerdyn} lassen sich für diese mittels der Polvorgabe (Kapitel \ref{subsec:polvor}) die Dynamik vorgegeben.
+Die Annäherungsverhalten ist abhängig von den Koeffizienten $ \tilde{c}_0 $ und $ \tilde{c}_1 $. Anhand von \ref({eq:fehlerdyn}) lassen sich für diese mittels der Polvorgabe (Kapitel \ref{subsec:polvor}) die Dynamik vorgegeben.
 
-Nicht bekämpft werden durch dieses Stellgesetz konstante Dauerstörungen. Hervorgerufen zum Beispiel durch Winde die über einen längeren Zeitraum als Konstant anzusehen sind. Mit einer konstanten Kraft wirken diese auf das Flugsystem. Beachtet man die von dieser Kraft hervorgerufenen Beschleunigungsbeitrag $ a_st $ in der Fehlerdifferenzialgleichung. 
+Nicht bekämpft werden durch dieses Stellgesetz konstante Dauerstörungen. Hervorgerufen zum Beispiel durch Winde, die über einen längeren Zeitraum als konstant anzusehen sind. Mit einer konstanten Kraft wirken sie auf das Flugsystem. Beachtet man die von dieser Kraft hervorgerufenen Beschleunigungsbeitrag $ a_st $ in der Fehlerdifferenzialgleichung. 
 \begin{equation}
 \ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e +a_{st}= 0
 \label{eq:fehlerdyn_st}
 \end{equation}
-Folgt im stationären Zustand, das heißt alle Zeitableitungen gleich Null, ein dauerhafter Positionsfehler.
+Folgt im stationären Zustand, dass heißt alle Zeitableitungen gleich Null, ein dauerhafter Positionsfehler.
 \begin{equation}
 e = -\frac{a_{st}}{\tilde{c}_0}
 \end{equation} 
-Lösung dieses Problems ist nach \cite{deutNL} die Erweiterung des Folgeregler mit einer Integrierenden Komponente.
+Lösung dieses Problems ist nach \cite{deutNL} die Erweiterung des Folgereglers mit einer integrierenden Komponente.
 \begin{equation}
 \ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e + \underset{I-Anteil}{\tilde{c}_{-1} \int e(\tau)d\tau} +a_{st}= 0
 \label{eq:integodif}
 \end{equation} 
-Der I-Anteil liefert einen Signalanteil zur Kompensation der Störung im stationären Zustand. Den Beweis dafür erhält man, wenn man die Integro-Differentialgleichung (\ref{eq:integodif}) nach der Zeit ableitet. Danach ergibt sich Folgenden Differentialgleichung. 
+Der I-Anteil liefert ein Signalanteil zur Kompensation der Störung im stationären Zustand. Den Beweis dafür erhält man, wenn man die Integro-Differentialgleichung (\ref{eq:integodif}) nach der Zeit ableitet. Danach ergibt sich folgende Differentialgleichung. 
 \begin{equation}
 	\dddot{e} + \tilde{c}_1 \cdot \ddot{e}+ \tilde{c}_0\cdot \dot{e} + \tilde{c}_{-1} \cdot e = 0
 	\label{eq:ifehlerdyn}
 \end{equation}
-Im eingeschwungenen Zustand, ergibt sich so für den Positionsfehler
+Im eingeschwungenen Zustand ergibt sich so für den Positionsfehler
 \begin{equation}
  e = 0
 \end{equation}
@@ -486,9 +485,9 @@ u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-
 	\caption[Folgeregler]{Folgeregler} %
 	\label{fig:folgeregler}
 \end{figure}
-Dieses Stellgesetz führt den Quadrocopter entlang Referenztrajektorie. Zur erkennen ist dies auch in der Simulation (\ref{fig:folg_RefaliasVor}) mit Regler Regler. So wird für Inkonsistene Anfangsbedingungen (Abbildung \ref{fig:folg_inkonAzust}) das Fluggerät auf die Trajektorie geführt. Für Modellunsicherheiten (Abbildung \ref{fig:folg_unsichmdlpara}) passt der Folgeregler das Stellsignal so an, das der Quadrocopter entlang des vorgegebenen Pfad fliegt. Vergleich hierzu reine Vorsteuerung (Abbildung \ref{fig:RefaliasVor}).
+Dieses Stellgesetz führt den Quadrocopter entlang der Referenztrajektorie. Zur erkennen ist dies auch in der Simulation (\ref{fig:folg_RefaliasVor}) mit Regler. So wird für inkonsistente Anfangsbedingungen (Abbildung \ref{fig:folg_inkonAzust}) das Fluggerät auf die Trajektorie geführt. Für Modellunsicherheiten (Abbildung \ref{fig:folg_unsichmdlpara}) passt der Folgeregler das Stellsignal so an, dass der Quadrocopter entlang des vorgegebenen Pfades fliegt. Vergleich hierzu reine Vorsteuerung (Abbildung \ref{fig:RefaliasVor}).
 
-Wie auch schon zuvor kann das Einschwingverhalten für den Folgeregler mit I-Anteil über die Polvorgabe festgelegt werden. Für diesen ist die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden. 
+Wie zuvor kann das Einschwingverhalten für den Folgeregler mit I-Anteil über die Polvorgabe festgelegt werden. Für diesen Fall ist die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden. 
  \begin{figure}
  	\centering{
  		
@@ -509,9 +508,9 @@ Wie auch schon zuvor kann das Einschwingverhalten für den Folgeregler mit I-Ante
  %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \subsection{Einstellung der Dynamik mittels Polvorgabe}
 \label{subsec:polvor}
-Anhand der Lage der Polstellen einer Übertragungsfunktion, können Rückschlüsse über die Stabilität und das Einschwingverhalten getroffen werden. Ziel einer Zustandsregelung, wie der Folgereregelung, ist die Pollagen der zu regelnden Strecke so zu verschieben, dass das Einausgangsverhalten die gewünschte Dynamik aufweist.
+Anhand der Lage der Polstellen einer Übertragungsfunktion, werden Rückschlüsse über die Stabilität und das Einschwingverhalten getroffen. Ziel einer Zustandsregelung, wie der Folgeregelung ist, die Pollagen der zu regelnden Strecke so zu verschieben, dass das Ein-/Ausgangsverhalten die gewünschte Dynamik aufweist.
 
-Zunächst ist zu klären was die Polstellenlage in der komplexen Ebene über das Verhalten aussagt. Dabei entspricht die Anzahl der Pole $ \lambda_i $ der Ordnung $ n $ des Systems.
+Zunächst ist zu klären, was die Polstellenlage in der komplexen Ebene über das Verhalten aussagt. Dabei entspricht die Anzahl der Pole $ \lambda_i $ der Ordnung $ n $ des Systems.
 \begin{figure}
 	\centering
 	\includegraphics[width = 0.75 \textwidth]{images/stabgeb}
@@ -519,36 +518,36 @@ Zunächst ist zu klären was die Polstellenlage in der komplexen Ebene über das Ve
 	\label{fig:stabgeb}
 \end{figure}
 \begin{itemize}
-	\item Befinden sich alle Pole $ \lambda_i $ links der Imaginärachse ($ Re(\lambda_i) < 0 $), so ist das System asymptotisch stabil, ansonsten instabil (Abbildung \ref{fig:stabgeb}).
-	\item Komplexe Pole können nur in Formen von Polpaaren auftauchen. Ist ein Komplexes Polpaar vorhanden, führt das System nach Anregung eine Schwingung aus . Befindet sich die Polpaare in der linken Halbebene des Imaginärteil, nimmt die Amplitude der Schwingung exponentiell ab.
+	\item Befinden sich alle Pole $ \lambda_i $ links der Imaginärachse ($ Re(\lambda_i) < 0 $) ist das System asymptotisch stabil, ansonsten instabil (Abbildung \ref{fig:stabgeb}).
+	\item Komplexe Pole tauchen nur in Formen von Polpaaren auf. Ist ein komplexes Polpaar vorhanden, führt das System nach Anregung eine Schwingung aus. Befinden sich die Polpaare in der linken Halbebene des Imaginärteil, nimmt die Amplitude der Schwingung exponentiell ab.
 	\item Je weiter links sich die Pole auf der reellen Achse befinden, desto schneller ist das System. 
-	\item Bei mehreren Polstellen wird das Verhalten hauptsächlich über den Pole bzw. die Polpaare mit dem größten Realteil bestimmt. Sie werden deshalb als dominante Pole bezeichnet.
+	\item Bei mehreren Polstellen wird das Verhalten hauptsächlich über den Pole bzw. das Polpaar mit dem größten Realteil bestimmt. Sie werden deshalb als dominante Pole bezeichnet.
 \end{itemize}
 Betrachtet man eine beliebige Übertragungsfunktion im Bildbereich.
 \begin{equation}
 G_e(s) = \frac{Z(s)}{N(s)}
 \label{eq:Ge}
 \end{equation}  
-Entsprechen die Polstellen $ \lambda_i $ des Systems, denn Nullstellen $ s_i $ des Nennerpolynom.
+Entsprechen die Polstellen $ \lambda_i $ des Systems den Nullstellen $ s_i $ des Nennerpolynom.
 \begin{equation}
 N(s)=  s^n+c_{n-1} \cdot s^{n-1}+ \cdots + c_1 \cdot s+ c_0 = \prod\limits_{n}^{i=1} (s-\lambda_i)= 0
 \label{eq:N}
 \end{equation}
-Das dynamische Verhalten kann anhand dieser Pollage analysiert werden. Im Umkehrschluss können für frei wählbare Koeffizienten des Nennerpolynoms die Dynamik über Vorgabe von Polstellen $ \lambda_{si} $ erfolgen. Dies erfolgt über einen Koeffizientenvergleich.
+Das dynamische Verhalten lässt sich anhand dieser Pollage analysieren. Im Umkehrschluss kann die Dynamik für frei wählbare Koeffizienten des Nennerpolynoms über die Vorgabe von Polstellen $ \lambda_{si} $, über einen Koeffizientenvergleich, erfolgen.
 \begin{equation}
 N(s)=  s^n+c_{n-1} \cdot s^{n-1}+ \cdots + c_1 \cdot s+ c_0 =\prod\limits_{n}^{i=1} (s-\lambda_{si}) 
 \end{equation}
-Somit ist es möglich über die Koeffizienten von (\ref{eq:fehlerdyn}) oder (\ref{eq:ifehlerdyn}) das Einschwingverhalten  des Folgereglers mittel der Platzierung von Polen vorzugeben. Wie jedoch die Polstellen optimal bestimmt, dafür gibt es keine generelle Vorgehensweise. In der Regel werden sie empirisch über Simulationen festgelegt. Anschließend am realen Modell getestet und gegebenenfalls optimiert. Diese Optimierung gesieht meist händisch. Allerdings gibt es hier Bemühungen diese letzte Optimierung am realen System automatisiert durchzuführen. 
+Somit ist es möglich, über die Koeffizienten von (\ref{eq:fehlerdyn}) oder (\ref{eq:ifehlerdyn}) das Einschwingverhalten des Folgereglers mittels der Platzierung von Polen vorzugeben. Wie jedoch die Polstellen optimal bestimmt werden, dafür gibt es keine generelle Vorgehensweise. In der Regel werden sie empirisch über Simulationen festgelegt, anschließend am realen Modell getestet und gegebenenfalls optimiert. Diese Optimierung geschieht meist händisch. Hier gibt es Bemühungen, diese letzte Optimierung am realen System zu automatisieren. 
   
 \subsection{Automatische Optimierung der Reglerparameter}
 \label{sec:selftun}
-In der Simulation ermittelte Parameter müssen meist für das realen System leicht angepasst werden. Von Vorteil ist es deshalb, einen Algorithmus zu implementieren, der online und kontinuierlich die Einstellung optimiert. Die Bezeichnung dieses Vorgangs heißt selftuning. 
+In der Simulation ermittelte Parameter müssen häufig für das reale System leicht angepasst werden. Von Vorteil ist es deshalb, einen Algorithmus zu implementieren, der online und kontinuierlich die Einstellung optimiert. Die Bezeichnung dieses Vorgangs heißt selftuning. 
 
-Da der implementierte Folgeregler inklusive I-Anteil besteht aus einem Proportionalverstärker $ P $, einem Differentiellen Anteil $ D $ sowie einem Integrationsanteil $ I $ zusammensetzt.
+Der implementierte Folgeregler inklusive I-Anteil setzt sich aus einem Proportionalverstärker $ P $, einem Differentiellen Anteil $ D $ sowie einem Integrationsanteil $ I $ zusammen.
 \begin{equation}
 u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{D-Anteil}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n)} +\underset{P-Anteil}{\tilde{c}_0\cdot (P^n_{ref} - P^n)}+\underset{I-Anteil}{\tilde{c}_{-1} \int e(\tau)d\tau}
 \end{equation}
-Können Tuningalgorithmen angewandt werden, die für einen PID-Regler entwickelt worden sind. So kann der unter \cite{selftun} vorgestellte Algorithmus angewendet werden. Dieser tunt die Regelparameter über eine adaptive Interaktion tunt. Die Interaktion besteht dabei aus drei Differentialgleichungen zur Anpassung der Koeffizienten des Reglers.
+Dadurch können Tuning-Algorithmen verwendet werden, die für einen PID-Regler entwickelt worden sind. Somit kann der unter \cite{selftun} vorgestellte Algorithmus angewendet werden. Dieser tunt die Regelparameter über eine adaptive Interaktion. Die Interaktion besteht dabei aus drei Differentialgleichungen zur Anpassung der Koeffizienten des Reglers.
 \begin{equation}
 \begin{split}
 \dot{k}_p &= \dot{\tilde{c}}_0 = \gamma \cdot e^2\\
@@ -557,54 +556,54 @@ Können Tuningalgorithmen angewandt werden, die für einen PID-Regler entwickelt w
 \end{split}
 \end{equation} 
 
-Dabei entspricht $ \gamma $ dem Anpassungskoeffizient. In \cite{selftun} ist $ \gamma = 10 $ empfohlen. Die Struktur des sich daraus ergebenden Folgeregler mit selbstoptimierung ist in Abbildung dargestellt. 
+Dabei entspricht $ \gamma $ dem Anpassungskoeffizient. In \cite{selftun} wird $ \gamma = 10 $ empfohlen. Die Struktur, des sich daraus ergebenden Folgeregler mit Selbstoptimierung, ist in Abbildung dargestellt. 
   \begin{figure}
   	\centering
   	\includegraphics[width = \textwidth]{images/Platzhalter}
   	\caption[Selftuning Folgeregler]{Folgeregler inklusive Selftuning} %
   	\label{fig:selftun00}
   \end{figure}
-Anzumerken ist das die Qualität der Optimierung  Abhängig von den zu Beginn übergebenen Parameter ist. Welche zuvor zum Beispiel über die Polvorgabe bestimmt worden sind. 
+Anzumerken ist, dass die Qualität der Optimierung abhängig von den zu Beginn übergebenen Parametern ist. Die zuvor zum Beispiel über die Polvorgabe bestimmt werden. 
 
 \section{Zustandsschätzung}
 \label{sec:Zustandsbestimmung}
 
 Bei der Folgeregelung handelt es sich um einen Zustandsregler. 
 %Das bedeutet die Werte aller Zustände des realen Systems müssen bekannt sein. 
-Betrachtet man das Stellgesetz \ref{eq:folgreg_stelgeI} bedeutet dies, das Position $ P^n $ und die Geschwindigkeit $ v^n $ mit der sich der Quadrocopter im n-frame bewegt müssen zur Verfügung stehen. Bereits bekannt ist, das die Position $ P^n $ mittels des Laser (Kapitel \ref{sec:laser_scan_matching}) bestimmt wird. Die Updaterate beträgt dabei nur $ 40 Hz $.
+Betrachtet man das Stellgesetz (\ref{eq:folgreg_stelgeI}) bedeutet dies, dass die Position $ P^n $ und die Geschwindigkeit $ v^n $ mit der sich der Quadrocopter im n-frame bewegt zur Verfügung stehen müssen. Bereits bekannt ist, dass die Position $ P^n $ mittels des Lasers (Kapitel \ref{sec:laser_scan_matching}) bestimmt wird. Die Updaterate beträgt dabei nur $ 40 Hz $.
 %Die Position $ P^n $ ist bereits über den Laser (Kapitel \ref{chap:2Dpositionsbestimmung}) bestimmt. 
 %Besitzt allerdings nur eine Updaterate von $ 40 Hz $.
- Daher ist es nützlich Zwischenwerte zu schätzen, sodass die Positionsdaten dem Folgeregler in einer höheren Taktrate zur Verfügung stehen. 
+ Daher ist es sinnvoll Zwischenwerte zu schätzen, sodass die Positionsdaten dem Folgeregler in einer höheren Taktrate zur Verfügung stehen. 
  
- Der Zustand der Geschwindigkeit $ v^n $ ist messtechnisch sehr schwer zu ermitteln. Eine Möglichkeit zur messtechnischen Erfassung wäre die Integration eines Dopplerradars \cite{ras12} auf dem Quadrocopter. Dieser basiert auf dem Doppler-Effekt. Dabei wird ein periodisches Signal ausgesendet und je nach Geschwindigkeit verkleinert sich Periodendauer, bzw. vergrößert sich für negative Geschwindigkeiten. So kann anhand der Frequenzänderung des reflektierten Signals auf die Geschwindigkeit geschlossen werden. Diese Umsetzung bedeutet die Integration eines weiteren Sensor. Aus Gewichts- und Kostengründen sind somit  Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit des Quadrocopters feststellen.
+ Der Zustand der Geschwindigkeit $ v^n $ ist messtechnisch sehr schwer zu ermitteln. Eine Möglichkeit zur messtechnischen Erfassung ist die Integration eines Dopplerradars \cite{ras12} auf dem Quadrocopter, der auf dem Doppler-Effekt basiert. Dabei wird ein periodisches Signal ausgesendet und je nach Geschwindigkeit verkleinert sich die Periodendauer, bzw. vergrößert sich für negative Geschwindigkeiten. So kann anhand der Frequenzänderung des reflektierten Signals auf die Geschwindigkeit geschlossen werden. Diese Umsetzung bedeutet die Integration eines weiteren Sensor. Aus Gewichts- und Kostengründen sind deshalb Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit des Quadrocopters feststellen.
 
 \subsection{Geschwindigkeitsbestimmung über die Inertialsenorik}
 \label{subsec:Vimu}
-Die \gls{imu} beinhaltet einen 3D-Bewegungsseonsor. Dieser nimmt die auf Beschleunigung in x, y und z- Achse des Quadrocopters auf und stellt die Messwerte mit einer Frequenz von 1kHz ($ T_{imu}=1ms $) zur Verfügung. Aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Integration der Beschleunigung bestimmen. Für den diskreten Fall lässt sich diese mittels des Eulerverfahren approximieren. Zuvor müssen die Beschleunigungsmesswerte jedoch ins n-frame Transformiert (Gleichung (\ref{eq:inverse_transM})) werden.  
+Die \gls{imu} beinhaltet einen 3D-Bewegungsseonsor. Dieser nimmt die Beschleunigung in x, y und z- Achse des Quadrocopters auf und stellt die Messwerte mit einer Frequenz von $ 1~kHz $ ($ T_{imu}=1~ms $) zur Verfügung. Aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Integration der Beschleunigung bestimmen. Für den diskreten Fall lässt sich diese mittels des Euler-Verfahrens approximieren. Zuvor werden dafür die Beschleunigungsmesswerte ins n-frame transformiert (Gleichung (\ref{eq:inverse_transM})).  
 \begin{equation}
 v^n_{k+1} = v^n_k + T_{imu} \cdot (M_{nb}\cdot a^b_k) = v^n_k + T \cdot a^n_k 
 \end{equation}
-Somit ist die Geschwindigkeit bestimmt. In der Praxis führt diese Methode allerdings zu keinem gutem Ergebnis. Grund dafür ist das Sensorrauschen $ r_{a_k} $ sowie der Bias b, der trotz Initialisierung nicht vollständig zu eliminiert ist. Somit ist der Messwert $ a^b_k $ nicht der tatsächlichen Beschleunigung $ a^b_{k_{tat}} $.
+Auf diese Weise ist die Geschwindigkeit bestimmt. In der Praxis führt diese Methode allerdings zu keinem guten Ergebnis. Grund dafür ist das Sensorrauschen $ r_{a_k} $ sowie der Bias b, der trotz Initialisierung nicht vollständig zu eliminieren ist. Damit entspricht der Messwert $ a^b_k $ nicht der tatsächlichen Beschleunigung $ a^b_{k_{tat}} $.
 \begin{equation}
 a^b_k = a^b_{k_{tat}} +  r_{a_k}+b
 \end{equation}  
-Das Problem, der Fehler wird mit Integriert. Damit driften geschätzte und reelen Geschwindigkeit auseinander. Somit ist eine Geschwindigkeitsbestimmung ausschließlich über die Inertialsensorik nicht möglich. 
+Das Problem ist, der Fehler wird mit integriert. Damit driften geschätzte und reale Geschwindigkeit auseinander. Dadurch ist eine Geschwindigkeitsbestimmung ausschließlich über die Inertialsensorik nicht möglich. 
 
 \subsection{Geschwindigkeit als Ableitung der Position}
 \label{subsec:abpos}
-Ebenfalls auf Basis des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Ableitung der Quadrocopterpositionen bestimmen.
+Ebenfalls auf Basis des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) bestimmt sich die Geschwindigkeit über die Ableitung der Quadrocopterpositionen.
 %lässt sich die Geschwindigkeit aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) über Ableitung der Quadrocopterpositionen bestimmen. 
-Da es bei den Positionsdaten um diskrete Werte handelt, lässt sich die Ableitung  anhand des Euler-Verfahren (\ref{eq:eul}) approximieren.
+Da es sich bei den Positionsdaten um diskrete Werte handelt, lässt sich die Ableitung  anhand des Euler-Verfahren s(\ref{eq:eul}) approximieren.
 \begin{equation}
 P^n_k=P^n_{k-1}+T_l \cdot v^n_k 
 \label{eq:eul}
 \end{equation}
-Für die Geschwindigkeit ergibt sich so
+Für die Geschwindigkeit ergibt sich
 \begin{equation}
 v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l}
 \label{eq:v_eul}
 \end{equation}
-Die Abtastzeit $ T_l = 25ms $ ($f_l = 40Hz $). Diese entspricht der Updaterate  der Umgebungsscans des Lasers mit denen die Algorithmen zur Positionsbestimmung gespeist werden. Bei der Approximation der Geschwindigkeit ist zu beachten, dass das Positionssignal aufgrund von Sensorrauschen von Laser und Gyroskope sowie der Varianz des \gls{icp}-Algorithmus eine Abweichung vom tatsächlichen Positionswert $ P^n_{k_{tat}} $ aufweist. Diese Abweichung ist nicht konstant und ist als Positionsrauschen$ r_{P_k} $ darzustellen. 
+Die Abtastzeit $ T_l = 25~ms $ ($f_l = 40~Hz $). Sie entspricht der Updaterate  der Umgebungsscans des Lasers mit denen die Algorithmen zur Positionsbestimmung gespeist werden. Bei der Approximation der Geschwindigkeit ist zu beachten, dass das Positionssignal aufgrund von Sensorrauschen von Laser und Gyroskope sowie der Varianz des \gls{icp}-Algorithmus eine Abweichung vom tatsächlichen Positionswert $ P^n_{k_{tat}} $ aufweist. Diese Abweichung ist nicht konstant und ist als Positionsrauschen $ r_{P_k} $ darzustellen. 
 \begin{equation}
 P^n_k = P^n_{k_{tat}}+r_{P_k}
 \end{equation}
@@ -613,7 +612,7 @@ Dieses Positonsrauschen $ r_P $ überträgt sich auf die Geschwindigkeit.
 v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
 \label{eq:vn_diskabrau}
 \end{equation} 
- Diese führt jedoch nicht dazu, das wie bei der Geschwindigkeitsbestimmung mittels der Beschleunigungssensoren, das Schätzwert und Realwert auseinander divergiert. Nichtsdestotrotz hat das Rauschen einen Einfluss auf die Qualität der Geschwindigkeitsberechnung. So fällt bei niedrigen Geschwindigkeiten der Abstand zwischen zwei Positionswerten geringer aus. Der Betrag des Rauschanteils jedoch bleibt konstant. Dies führt vor allem bei Schwebeflügen sowie Flügen mit geringer Dynamik zu einer erhöhten Unsicherheit der Schätzung (Abbildung \ref{fig:VarPosVerschHohe}). Zwar zeigt Grafik \ref{fig:VarPosVerschNierdrig} das der Einfluss des Rauschen auf die Varianz der errechneten Geschwindigkeit (\ref{eq:vn_diskabrau}) mit der Größe der Positionsverschiebung abnimmt. Ungeachtet dessen ist es jedoch notwendig gerade für Bewegungen mir geringer Geschwindigkeit den Einfluss des Positionsrauschens zu minimieren.  
+ Diese führt nicht dazu, das wie bei der Geschwindigkeitsbestimmung mittels der Beschleunigungssensoren, dass Schätzwert und Realwert auseinander divergieren. Nichtsdestotrotz besitzt das Rauschen einen Einfluss auf die Qualität der Geschwindigkeitsberechnung. So fällt bei niedrigen Geschwindigkeiten der Abstand zwischen zwei Positionswerten geringer aus. Der Betrag des Rauschanteils bleibt konstant. Dies führt vor allem bei Schwebeflügen sowie Flügen mit geringer Dynamik zu einer erhöhten Unsicherheit der Schätzung (Abbildung \ref{fig:VarPosVerschHohe}). Zwar zeigt die Grafik \ref{fig:VarPosVerschNierdrig}, dass der Einfluss des Rauschen auf die Varianz der errechneten Geschwindigkeit (\ref{eq:vn_diskabrau}) mit der Größe der Positionsverschiebung abnimmt. Ungeachtet dessen ist es gerade notwendig für Bewegungen mit geringer Geschwindigkeit den Einfluss des Positionsrauschens zu minimieren.  
  \begin{figure}
  	\centering{
  		\subfloat[Keine/kleine Positionsverschiebung, hohe Varianz]{
@@ -629,52 +628,51 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  	\caption[Auswirkung der Positionsverschiebung auf Varianz der Geschwindigkeit]{Auswirkung der Größe der Positionsverschiebung innerhalb eines Schätzwertes auf die Varianz der Geschwindigkeitsschätzung}
  	\label{fig:VarPosVersch}
  \end{figure}
- Geht man davon aus, das die Frequenz des Rauschanteils oberhalb des Frequenzbades der Positionsänderungen liegt. Kann das Nutzsignal mittels eines Tiefpassfilters vom Rauschanteil getrennt werden. Das Tiefpassfilter lässt sich dabei mittels eines rekursiven \gls{iir}-Filters realisieren \cite{des14}. Die gefilterte Geschwindigkeit $ \hat{v}^n_k $ hängt dabei nicht nur von vorherigen Messwerten $v^n_k $  sondern auch von den vorherigen Filterergebnissen.
+ Geht man davon aus, dass die Frequenz des Rauschanteils oberhalb des Frequenzbades der Positionsänderungen liegt, kann das Nutzsignal mittels eines Tiefpassfilters vom Rauschanteil getrennt werden. Das Tiefpassfilter lässt sich dabei mittels eines rekursiven \gls{iir}-Filters realisieren \cite{des14}. Die gefilterte Geschwindigkeit $ \hat{v}^n_k $ hängt dabei nicht nur von den vorherigen Messwerten $v^n $, sondern auch von den vorherigen Filterergebnissen $ \hat{v}^n  $ ab.
  \begin{equation}
  \hat{v}^n_k = \sum\limits_{j = 0}^{n}a_j \cdot v^n_{k-j}+ \sum\limits_{i = 1}^{n}b_j \cdot \hat{v}^n_{k-i}
  \label{eq:filter}
  \end{equation}
- Mittels der Koeffizienten $ a_j $ und $ b_i $ kann nun das gewünschte Filterverhalten, zum Beispiel das eines Butterworth-Filters, mit der benötigten Grenzfrequenz realisiert werden. Die Ordnung $ n $ des Filter beschreibt wie viele der vorangegangenen Messwerten in die Filterung mit einzubeziehen sind. Beim Design des Filters müssen jedoch Kompromisse zwischen Zeitverzögerung, Phasenverzerrung, Dämpfung und Stoppbandeigenschaften getroffen werden. Für die Folgeregelung ist es dabei Wichtig, das die beiden erste genannten Kriterien möglichst gering ausfallen. Ist dies nicht der Fall, wirkt es destabilisierend auf den Regler. 
+ Mittels der Koeffizienten $ a_j $ und $ b_i $ wird das gewünschte Filterverhalten, zum Beispiel das eines Butterworth-Filters, mit der benötigten Grenzfrequenz realisiert. Die Ordnung $ n $ des Filter beschreibt wie viele der vorangegangenen Messwerten in die Filterung mit einzubeziehen sind. Beim Design des Filters werden jedoch Kompromisse zwischen Zeitverzögerung, Phasenverzerrung, Dämpfung und Stoppbandeigenschaften getroffen. Für die Folgeregelung ist es dabei wichtig, dass die beiden erstgenannten Kriterien möglichst gering ausfallen. Ist dies nicht der Fall, wirkt es destabilisierend auf den Regler. 
  
- Des weiteren lassen sich Aufgrund der geringe Updaterate von $ 40 Hz $ der Positionsdaten, die Dynamik des Quadrocopters und das Positionsrauschen Spektral nicht von einander trennen. Möchte man also das Positionsrauschen unterdrücken, werden auch schnelle Positionsänderungen des Quadrocoptes weg gefiltert. Für die hohe Dynamik des Quadrocopters ist die Anwendung eines Tiefpassfilter mit Grenzfrequenz nicht möglich. Gesucht ist nun eine Methode, die für Flüge mit geringer Dynamik die Varianz der Geschwindigkeitsschätzung verursacht durch Positionsrauschen möglichst stark verringert. Gleichzeitig jedoch der Hohen Dynamik des Quadrocopters folge leisten kann.  
+ Des Weiteren lassen sich Aufgrund der geringen Updaterate von $ 40 Hz $ der Positionsdaten, die Dynamik des Quadrocopters und das Positionsrauschen spektral nicht eindeutig voneinander trennen. Unterdrückt man das Positionsrauschen, werden auch schnelle Positionsänderungen des Quadrocoptes weg gefiltert. Für die hohe Dynamik des Quadrocopters ist die Anwendung eines Tiefpassfilter mit Grenzfrequenz nicht gangbar. Gesucht ist eine Methode, die für Flüge mit geringer Dynamik die Varianz der Geschwindigkeitsschätzung, verursacht durch Positionsrauschen, möglichst stark verringert. Gleichzeitig jedoch der hohen Dynamik des Quadrocopters folge leisten kann.  
  
  \subsection{Geschwindigkeitsbestimmung über die Methode First-Order Adaptive Windowing }
  \label{subsec:adaptwind}
- (Hier fehlt 1kHz und Position zwar höhrer Abtastrate verfügbar, Fehler drifftet durch doppelte Integration zu schnell zu weit weg)
- Wie schon in Kaptiel \ref{subsec:abpos} erkannt, nimmt die Varianz der Geschwindigkeitsschätzung ab je weiter die Positionswerte auseinander liegen. Hierfür sei auf Grafik \ref{fig:VarPosVerschNierdrig} verwiesen. Der gleiche Effekt tritt auf, je mehr Abtastschritte $ n $ der für die Eulerapproximation verwendete Bezugspunkt $ P^n_{k-n} $ in der Vergangenheit liegt. 
+ Wie in Kaptiel \ref{subsec:abpos} erläutert, nimmt die Varianz der Geschwindigkeitsschätzung ab, je weiter die Positionswerte auseinander liegen. Hierfür ist auf Grafik \ref{fig:VarPosVerschNierdrig} verwiesen. Der gleiche Effekt tritt auf, je mehr Abtastschritte $ n $ der für die Euler-Approximation verwendete Bezugspunkte $ P^n_{k-n} $ in der Vergangenheit liegen. 
  \begin{equation}
  \hat{v}^n_k = \frac{P^n_k-P^n_{k-n}}{nT_l}=
  \label{eq:v_eul_n}
  \end{equation}
- Dabei ist die Verwendung der Bezugsposition $ P^n_{k-n} $ gleichzusetzen mit der Mittlung der letzten $ n $ Geschwindigkeitsschätzungen ($ v^n_k,v^n_{k-1},\cdots,v^n_{k-1} $) mittels (\ref{eq:v_eul}). Deshalb spricht man auch von Fensterung beziehungsweise Windowing. Siehe zur Veranschaulichung Abbildung~\ref{fig:Fensterung}. Vergrößert man das Fenster hat das eine äquivalente Wirkung wie die Reduzierung der Abtastrate.
+ Dabei ist die Verwendung der Bezugsposition $ P^n_{k-n} $ gleichzusetzen mit der Mittlung der letzten $ n $ Geschwindigkeitsschätzungen ($ v^n_k,v^n_{k-1},\cdots,v^n_{k-1} $) mittels (\ref{eq:v_eul}). Deshalb spricht man auch von Fensterung beziehungsweise Windowing. Siehe zur Veranschaulichung Abbildung~\ref{fig:Fensterung}. Vergrößert man das Fenster, besitzt das eine äquivalente Wirkung wie die Reduzierung der Abtastrate.
   \begin{figure}
   	\centering
   	\includegraphics[width = \textwidth]{images/wind_avg}
   	\caption[Fensterung]{Fensterung} %
   	\label{fig:Fensterung}
   \end{figure}
- Das Windowing verhält sich wie ein Filter. So führt ein großes Fenster bei geringen Dynamiken zu einer sehr präzisen Geschwindigkeitsschätzung durch Rauschunterdrückung. Schätzungen für Hochfrequenter Bewegungen des Quadrocopter werden jedoch stark gedämpft und Zeitverzögert ausgegeben, womit die Verlässlichkeit der Schätzung abnimmt. Es wirkt somit ähnlich wie das Filter (\ref{eq:filter}). Allerdings mit dem Vorteil, das Filterverhalten nur über eine Parameter einstellbar ist. Der Fenstergröße $ n $. So sollte das Window klein sein, wenn der Quadrocopter Hochfrequente Änderungen der Bewegung vornimmt, damit die abrupten Geschwindigkeitsänderungen möglichst ungedämpft erfasst werden. Bei geringen Dynamiken soll die Fenstergröße jedoch zunehmen, wodurch der Einfluss des Positionsrauschens minimiert werden soll. 
+ Das Windowing verhält sich wie ein Filter. So führt ein großes Fenster bei geringen Dynamiken zu einer sehr präzisen Geschwindigkeitsschätzung durch Rauschunterdrückung. Schätzungen für hochfrequente Bewegungen des Quadrocopter werden jedoch stark gedämpft und zeitverzögert ausgegeben, womit die Verlässlichkeit der Schätzung abnimmt. Es wirkt ähnlich wie das Filter (\ref{eq:filter}). Allerdings mit dem Vorteil, dass das Filterverhalten nur über einen Parameter einstellbar ist, der Fenstergröße $ n $. So sollte das Window klein sein, wenn der Quadrocopter hochfrequente Änderungen der Bewegung vornimmt, damit die abrupten Geschwindigkeitsänderungen möglichst ungedämpft erfasst werden. Bei geringen Dynamiken soll die Fenstergröße jedoch zunehmen, wodurch der Einfluss des Positionsrauschens minimiert werden soll. 
    \begin{figure}
    	\centering
    	\includegraphics[width = \textwidth]{images/End-fit-foaw}
    	\caption[End-fit \gls{foaw}]{End-fit \gls{foaw}} %
    	\label{fig:foaw}
    \end{figure}
- Dabei muss die Anpassung der Fenstergröße online und für jeden Punkt Abhängig der Achse des n-frame separat erfolgen. Im Paper \cite{adaptWin} wird dafür die Methode des \gls{foaw} vorgestellt. Diese Besagt, existiert eine Grade zwischen den Positionswerten $ p^n_k $ und $ p^n_{k-n} $ einer Achse, die alle $ n $ Punkte innerhalb einer Tolerenz $ \pm d $ schneidet, stellt die Steigung dieser und somit die Geschwindigkeit einen optimalen Kompromiss zwischen Rauschunterdrückung (Präzision) und Verlässlichkeit dar. Die möglichen Schätzwerte für die Geschwindigkeit abhängig von der Fenstergröße $ n $ und der Toleranz $ d $ sind im folgenden Datensatz dargestellt.
+ Dabei erfolgt die Anpassung der Fenstergröße online und für jeden Punkt abhängig der Achse des n-frame. Im Paper \cite{adaptWin} wird dafür die Methode des \gls{foaw} vorgestellt. Diese besagt, existiert eine Grade zwischen den Positionswerten $ p^n_k $ und $ p^n_{k-n} $ einer Achse, die alle $ n $ Punkte innerhalb einer Tolerenz $ \pm d $ schneidet, stellt die Steigung dieser und somit die Geschwindigkeit einen optimalen Kompromiss zwischen Rauschunterdrückung (Präzision) und Verlässlichkeit dar. Die möglichen Schätzwerte für die Geschwindigkeit, abhängig von der Fenstergröße $ n $ und der Toleranz $ d $, sind im folgenden Datensatz dargestellt.
  
  \begin{equation}
  \hat{v}_k \in [\frac{p^n_k-p^n_{k-n}}{n T_l}-\frac{2d}{n T_l}, \frac{p^n_k-p^n_{k-n}}{n T_l}-\frac{2d}{n T_l}]
  \end{equation}
-  Die Toleranz $ d $ ist dabei durch den Betrag der maximalen Rauschabweichung festgelegt und somit als Konstante zu sehen.
+  Die Toleranz $ d $ ist dabei durch den Betrag der maximalen Rauschabweichung festgelegt und als Konstante zu sehen.
  \begin{equation}
  d = ||r_{max}||
  \end{equation}
-Zu erkennen ist, das die Varianz der Schätzung für eine steigende Fenstergröße $ n $ abnimmt. Somit ist ausgehend von der aktuellen Position $ p^n_k $ die maximale mögliche Fenstergröße $ n = max\{1,2,3,\dots\} $ zu ermitteln für die gilt,
+Zu erkennen ist, dass die Varianz der Schätzung für eine steigende Fenstergröße $ n $ abnimmt. Somit ist ausgehend von der aktuellen Position $ p^n_k $ die maximale mögliche Fenstergröße $ n = max\{1,2,3,\dots\} $ zu ermitteln, für die gilt,
 \begin{equation}
 |p^n_{k-i} - \hat{p}^n_{k-i}|\le d \hspace{1.5cm}\forall i \in \{1,2,\dots,n\}
 \label{eq:toleranz}
 \end{equation} 
-Dabei entspricht $ \hat{p}^n_{k-i} $ den Punkte auf der approximierenden Geradengleichung.
+Dabei entspricht $ \hat{p}^n_{k-i} $ den Punkten auf der approximierenden Geradengleichung.
 \begin{equation}
 \hat{p}^n_{k-i} = a_n + b_n \cdot(k-i) T_l
 \label{eq:gradengl}
@@ -694,10 +692,10 @@ b_n =\frac{p^n_{k} - p^n_{k-n}}{n T_l}
 Da die Steigung $ b_n $ aus den zwei Rändern des Fensters gebildet wird, spricht man von der End-fit-\gls{foaw}.  
 
 
-Der Ablauf der des Interationsalgorithmus sieht dann wie folgt aus.
+Der Ablauf des Interations-Algorithmus sieht wie folgt aus.
 
 \begin{itemize}
-	\item \textbf{Schritt 1:} Man verschiebt die Zeitachse so, dass für den Zeitpunkt des neusten Wert $ p^n_k $ gilt $ t_k = k\cdot T_l = 0 $. Die Folge ist eine vom Faktor $ k $ unabhängige Geradengleichung.
+	\item \textbf{Schritt 1:} Man verschiebt die Zeitachse so, dass für den Zeitpunkt des neusten Wertes $ p^n_k $ gilt $ t_k = k\cdot T_l = 0 $. Die Folge ist eine vom Faktor $ k $ unabhängige Geradengleichung.
 	\begin{equation}
 	\hat{p}^n_{k-i} = a_n + b_n \cdot(-i) \cdot T_l
 	\label{eq:gradengl_t0}
@@ -706,18 +704,18 @@ Der Ablauf der des Interationsalgorithmus sieht dann wie folgt aus.
 	 \begin{equation}
 	a_n = p^n_k
 	\end{equation}
-	und $ b_n  $ weiterhin über (\ref{eq:a_n}) berechnet werden kann. Vorteil, es muss jeweils nur die Steigung neu berechnet werden.
+	und $ b_n  $ weiterhin über (\ref{eq:a_n}) berechnet wird. Vorteil, es muss jeweils nur die Steigung neu berechnet werden.
 	\item \textbf{Schritt 2:} Fenstergröße j = 1.
-	\item \textbf{Schritt 2:} Berechnung des Parameters $b_j $ (\ref{eq:b_n}) der Geradengleichung (\ref{eq:gradengl_t0}) in Abhängigkeit der Fenstergröße $ j $.
-	\item \textbf{Schritt 3:} Überprüfen ob die berechnete Gerade alle im Fester befindlichen Punkte $p^n_{k-i} i \in \{1,2,\dots,j\} $ innerhalb  der Toleranz passiert. Bedingung (\ref{eq:toleranz}) 
-	\item \textbf{Schritt 4:} Ist Schritt 3 erfüllt, inkrementiere die Fenstergröße $ j =j+1 $ und gehe zu Schritt 2. Wenn Bedingung nicht erfüllt, ist die Steigung der vorhergegangen Geradengleichung als Schätzwert der Geschwindigkeit auszugeben. 
+	\item \textbf{Schritt 3:} Berechnung des Parameters $b_j $ (\ref{eq:b_n}) der Geradengleichung (\ref{eq:gradengl_t0}) in Abhängigkeit der Fenstergröße $ j $.
+	\item \textbf{Schritt 4:} Überprüfen ob die berechnete Gerade alle im Fester befindlichen Punkte $p^n_{k-i} i \in \{1,2,\dots,j\} $ innerhalb  der Toleranz passiert. Bedingung (\ref{eq:toleranz}) 
+	\item \textbf{Schritt 5:} Ist Schritt 4 erfüllt, inkrementiere die Fenstergröße $ j =j+1 $ und gehe zu Schritt 2. Wenn Bedingung nicht erfüllt ist, ist die Steigung der vorhergegangen Geradengleichung als Schätzwert der Geschwindigkeit auszugeben. 
 	\begin{equation}
 	 \hat{v}_k = b_{j-1}=b_n
 	\end{equation} 
 	Die maximale Fenstergröße $ n $ entspricht für Position $ p^n_{k} $  somit $ n = j-1 $ 
 \end{itemize} 
 
- Dieser Vorgang wird für jeden Aktualisierung  $ k = k+1 $ des Positionswert $ p^n_{k} $ neu gestartet. Zur Veranschaulichung ist der Algorithmus noch einmal in einen Flussdiagramm (Abbildung \ref{fig:flussfoaw}) dargestellt.  
+ Dieser Vorgang wird für jede Aktualisierung  $ k = k+1 $ des Positionswert $ p^n_{k} $ neu gestartet. Zur Veranschaulichung ist der Algorithmus noch einmal in einen Flussdiagramm (Abbildung \ref{fig:flussfoaw}) dargestellt.  
 
  \begin{figure}
  	\centering
@@ -725,7 +723,7 @@ Der Ablauf der des Interationsalgorithmus sieht dann wie folgt aus.
  	\caption[Flussdiagramm \gls{foaw}]{Flussdiagramm \gls{foaw}} %
  	\label{fig:flussfoaw}
  \end{figure}
- Die End-fit-\gls{foaw} verwendet für den Schätzvorgang die zwei Endpunkte des Fensters. In \cite{adaptWin} wird deshalb noch die Best-fit\gls{foaw} vorgestellt. Dabei wird die Steigung, über die Methode der des kleinsten quadratischen Fehler bestimmt. Das bedeutet für die zeitnormierte Geradengleichung ist eine Steigung $ b_n $ gesucht für die die Summe der Fehlerquadrat $ e^2 $ ein Minimum aufweist.  
+ Die End-fit-\gls{foaw} verwendet für den Schätzvorgang die zwei Endpunkte des Fensters. In \cite{adaptWin} wird deshalb zur Verbesserung die Best-fit\gls{foaw} vorgestellt. Dabei wird die Steigung über die Methode, der des kleinsten quadratischen Fehler, bestimmt. Das bedeutet für die zeitnormierte Geradengleichung ist eine Steigung $ b_n $ gesucht, für die die Summe der Fehlerquadrat $ e^2 $ ein Minimum aufweist.  
  \begin{equation}
  e_{min}^2 = min \sum\limits_{i=0}^{n}(p^n_{k-i} - \hat{p}^n_{k-i})^2
  \label{eq:quade}
@@ -734,15 +732,16 @@ Der Ablauf der des Interationsalgorithmus sieht dann wie folgt aus.
  \begin{equation}
 \hat{p}^n_{k-i} = p^n_{k} - b_n \cdot i \cdot T_l 
  \end{equation}
-Um das Minimum der Fehlergleichung (\ref{eq:quade}) in Abhängigkeit der Steigung bestimmen zu können, muss diese nach $ b_n $ abzuleiten. Da es sich um eine quadratische Gleichung handelt, weist der Fehler Tiefpunkt auf wenn diese Ableitung Null ergibt.
+Um das Minimum der Fehlergleichung (\ref{eq:quade}) in Abhängigkeit der Steigung bestimmen zu können, ist diese nach $ b_n $ abzuleiten. Da es sich um eine quadratische Gleichung handelt, weist der Fehler einen Tiefpunkt auf, wenn diese Ableitung Null ergibt.
 \begin{equation}
 \frac{d e^2}{d b_n}=0
 \end{equation}
 Löst man unter dieser Bedingung die Ableitung nach $ b_n $ auf. Erhält man die Steigung die die Summe der kleinsten quadratischen Fehler aufweist.
 \begin{equation}
 b_n = \frac{(n\sum\limits_{ i=0}^{n}y_{k-1}-2\sum\limits_{i=0}^{n} i\cdot y_{k-1})\cdot 6 }{T_l n(n+1)(n+2)}
+\label{eq:bn_bestfit}
 \end{equation}
-Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Umsetzung der best-fit-\gls{foaw} in der Software erfolgt nach dem gleichen Schema wie bei der end-fit-\gls{foaw}. Einziger Unterschied, zur Berechnung der Steigung $ b_n $ wir die Gleichung verwendet. Das Ergbnis ist eine präzisere Schätzung bei gleichbleibender Zuverlässigkeit der Messung. Beide Methoden sind jedoch anfällig gegen sogenannte Outliner. Einzelne Signalwerte die eine höheren Fehler als die maximale durch das Rauschen verursachte Abweichung $ d $ aufweisen. Outliner lassen sich jedoch sehr einfach durch eine robuster Abbruchkriterium in Schritt 3 bekämpfen. So gilt die Bedingung (\ref{eq:toleranz}) erst dann für nicht bestimmt, wenn zwei aufeinanderfolgende Werte das Kriterum nicht erfüllen. Erst dann wird die Vergrößerung des Fensters gestoppt. Diese Variante nennt sich best-fit-\gls{foaw}-R.
+Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Umsetzung der best-fit-\gls{foaw} in der Software erfolgt nach dem gleichen Schema wie bei der end-fit-\gls{foaw}. Einziger Unterschied, zur Berechnung der Steigung $ b_n $ wir die Gleichung (\ref{eq:bn_bestfit}) verwendet. Das Ergebnis ist eine präzisere Schätzung bei gleichbleibender Zuverlässigkeit der Messung. Beide Methoden sind anfällig gegen sogenannte Outliner. Einzelne Signalwerte, die einen höheren Fehler als die maximale durch das Rauschen verursachte Abweichung $ d $ aufweisen. Outliner lassen sich sehr einfach durch ein robustes Abbruchkriterium in Schritt 4 bekämpfen. So gilt die Bedingung (\ref{eq:toleranz}) erst dann für nicht erfüllt, wenn zwei aufeinanderfolgende Werte dem Kriterium nicht gerecht sind. Erst dadurch wird die Vergrößerung des Fensters gestoppt. Diese Variante nennt sich best-fit-\gls{foaw}-R.
  \begin{figure}
  	
  	\centering{
@@ -770,11 +769,11 @@ Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Um
 
 
 
-Die Methoden des \gls{foaw} bietet eine sehr Möglichkeit die Geschwindigkeit auf Basis eines verrauschten Positionssignal zu ermitteln. Problematisch ist jedoch die geringe Abtastrate von $ 40 Hz $ des Lasers. Schon bei Flügen bei mittlerer Dynamik führt dies dazu, das die Fenstergröße stark reduziert wird. Somit auch der Einfluss des Positionsrauschens stark zunimmt. Somit kann selbst diese Konzept limitiert durch die Tastrate des Lasers der Dynamik des Quadrocopters nicht nachkommen. Es ist somit klar das eine Methode benötigt wird, die Position und Geschwindigkeit in einer höhren Taktrate zur Verfügung stellt. Gleichzeit müssen beide Signale ausreichend Rauschunterdrückt sein. 
+Die Methoden des \gls{foaw} bieten eine sehr gute Möglichkeit die Geschwindigkeit auf Basis eines verrauschten Positionssignals zu ermitteln. Problematisch ist allerdings die geringe Abtastrate von $ 40 Hz $ des Lasers. Schon bei Flügen mit mittlerer Dynamik führt das dazu, dass die Fenstergröße stark reduziert wird. Somit auch der Einfluss des Positionsrauschens stark zunimmt. Als Folge kann selbst dieses Konzept, limitiert durch die Tastrate des Lasers, der Dynamik des Quadrocopters nicht folgen. Es ist klar, dass eine Methode benötigt wird, die die Position und die Geschwindigkeit in einer höheren Taktrate zur Verfügung stellt. Gleichzeit müssen beide Signale ausreichend rauschunterdrückt sein. 
 
  \subsection{Bestimmung der Zustände mittels eines Fusionsfilter}
  \label{subsec:Fusionsfilter}
- Wie aus den oberen Kapitel zuerkenne wird keine der Methoden den zuvor gestellten Ansprüche gerecht. So erfüllt die Integration der Beschleunigung (Kapitel \ref{subsec:Vimu}) zwar das Kriterium zur Erhöhung der Taktrate. Beschleunigungsmesswerte werden in einem Takt von $ 1 kHz $ zur Verfügung gestellt. Doch durch den Bias des Beschleunigungssensors, divergieren innerhalb kürzester Zeit die geschätzten Zustände von den realen Zuständen. Dieses Phänomen tritt bei den Anwendungen Kaptiel und Kapitel nicht auf. Der Grund, sie beziehen sich auf die vom Laser berechneten Positionswerte. Die Abweichungen dieser Zustandswerte befinden sich dabei in einem konstanten Rahmen um die tatsächliche Position. Diese Positionsrauschen sorgt bei der Geschwindigkeitsschätzung über die Ableitung der Positionswerte dafür, dass das errechnete Geschwindigkeitssignal ebenfalls einen Rauschanteil aufweist. Diesen Rauschanteil zu minimieren ist Ziel der \gls{foaw} Methode. Aufgrund der geringen Abtastfrequenz von $ 40Hz  $ kann dieser Ansatz der hohen Dynamik nicht folge leisten. Schon für geringen Dynamiken ist die Fenstergröße stark dezimiert und somit auch die Rauschunterdrückung. Das Ergebnis, Bechleunigungssensor der \gls{imu} und Laser jeweils für sich bieten keine ausreichende Zustandswerte. Abhilfe, Fusion beider Sensordaten mittels eines Fusionsfilters. Dabei sorgen die Beschleunigungswerte mit ihrer hohen update Rate von $ 1 Khz $ für eine schnelle Reaktionsfähigkeit und tragen somit der Dynamik des Quadrocopters sorge. Die Positionsdaten des Laser indes verhindern ein Abdriften der Schätzwerte. Somit stellen sie die Zuverlässigkeit der Fusionsergebnisse sicher. 
+ Wie aus den vorherigen Kapitel erkennbar, wird keine der Methoden der zuvor gestellten Ansprüche gerecht. So erfüllt die Integration der Beschleunigung (Kapitel \ref{subsec:Vimu}) zwar das Kriterium zur Erhöhung der Taktrate, da Beschleunigungsmesswerte werden in einem Takt von $ 1 kHz $ zur Verfügung stehen. Allerdings durch den Bias des Beschleunigungssensors divergieren innerhalb kürzester Zeit die geschätzten Zustände von den realen Zuständen. Dieses Phänomen tritt bei den Anwendungen Kapitel?? und Kapitel?? nicht auf. Der Grund, sie beziehen sich auf die vom Laser berechneten Positionswerte. Die Abweichungen dieser Zustandswerte befinden sich dabei in einem konstanten Rahmen um die tatsächliche Position. Dieses Positionsrauschen sorgt bei der Geschwindigkeitsschätzung über die Ableitung der Positionswerte dafür, dass das errechnete Geschwindigkeitssignal ebenfalls einen Rauschanteil aufweist. Diesen Rauschanteil zu minimieren ist Ziel der \gls{foaw} Methode. Aufgrund der geringen Abtastfrequenz von $ 40Hz  $ kann dieser Ansatz der hohen Dynamik nicht Folge leisten. Schon für geringe Dynamiken ist die Fenstergröße stark dezimiert und damit auch die Rauschunterdrückung. Das Ergebnis, Beschleunigungssensor der \gls{imu} und Laser bieten jeweils für sich keine ausreichende Zustandswerte. Abhilfe generiert die Fusion beider Sensordaten mittels eines Fusionsfilters. Dabei sorgen die Beschleunigungswerte mit ihrer hohen update-Rate von $ 1 Khz $ für eine schnelle Reaktionsfähigkeit und tragen somit der Dynamik des Quadrocopters sorge. Die Positionsdaten des Laser indes verhindern ein Abdriften der Schätzwerte. Somit stellen sie die Zuverlässigkeit der Fusionsergebnisse sicher. 
  
 Das auf dem \gls{hlp} implementierte Fusionsfilter basiert auf einem Leunberger Beobachter\cite{Achtelik11}. Dieser besteht aus einen linearen Streckenmodell dessen Zustände $ \hat{x} $ mittels eines Korrekturterms ($ L\cdot (y-\hat{y})$) auf die Zustände $ x $ der Regelstrecke einschwingen. Die Zustandsdifferenzialgleichung eines Luenberger Beobachter stellt sich in allgemeiner Form  \cite{regB12} wie folgt dar.
 \begin{equation}
