@@ -163,7 +163,7 @@ z
 \end{split}
 \label{eq:zstd}
 \end{equation}
-Zur Veranschaulichung ist das Modell zusätzlich in Abbildung \label{fig:modstrukquad} visualisiert. 
+Zur Veranschaulichung ist das Modell zusätzlich in Abbildung \ref{fig:modstrukquad} visualisiert. 
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/modell_lage_trans}
@@ -616,12 +616,12 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  \begin{figure}
  	\centering{
  		\subfloat[Keine/kleine Positionsverschiebung, hohe Varianz]{
- 			\includegraphics[width=0.4\textwidth]{images/hoheVar}
+ 			\includegraphics[width=0.4\textwidth]{images/adapt_varklpos}
  			\label{fig:VarPosVerschHohe}
  		}
  		\hspace{0.1\textwidth}
  		\subfloat[Große Positionsverschiebung, geringe Varianz]{
- 			\includegraphics[width=0.4\textwidth]{images/kleineVar}
+ 			\includegraphics[width=0.4\textwidth]{images/adapt_vargrpos}
  			\label{fig:VarPosVerschNierdrig}
  		}
  	}	
@@ -654,7 +654,7 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  Das Windowing verhält sich wie ein Filter. So führt ein großes Fenster bei geringen Dynamiken zu einer sehr präzisen Geschwindigkeitsschätzung durch Rauschunterdrückung. Schätzungen für hochfrequente Bewegungen des Quadrocopter werden jedoch stark gedämpft und zeitverzögert ausgegeben, womit die Verlässlichkeit der Schätzung abnimmt. Es wirkt ähnlich wie das Filter (\ref{eq:filter}). Allerdings mit dem Vorteil, dass das Filterverhalten nur über einen Parameter einstellbar ist, der Fenstergröße $ n $. So sollte das Window klein sein, wenn der Quadrocopter hochfrequente Änderungen der Bewegung vornimmt, damit die abrupten Geschwindigkeitsänderungen möglichst ungedämpft erfasst werden. Bei geringen Dynamiken soll die Fenstergröße jedoch zunehmen, wodurch der Einfluss des Positionsrauschens minimiert werden soll. 
    \begin{figure}
    	\centering
-   	\includegraphics[width = \textwidth]{images/End-fit-foaw}
+   	\includegraphics[width = \textwidth]{images/adapt_endfit}
    	\caption[End-fit \gls{foaw}]{End-fit \gls{foaw}} %
    	\label{fig:foaw}
    \end{figure}
@@ -769,11 +769,11 @@ Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Um
 
 
 
-Die Methoden des \gls{foaw} bieten eine sehr gute Möglichkeit die Geschwindigkeit auf Basis eines verrauschten Positionssignals zu ermitteln. Problematisch ist allerdings die geringe Abtastrate von $ 40 Hz $ des Lasers. Schon bei Flügen mit mittlerer Dynamik führt das dazu, dass die Fenstergröße stark reduziert wird. Somit auch der Einfluss des Positionsrauschens stark zunimmt. Als Folge kann selbst dieses Konzept, limitiert durch die Tastrate des Lasers, der Dynamik des Quadrocopters nicht folgen. Es ist klar, dass eine Methode benötigt wird, die die Position und die Geschwindigkeit in einer höheren Taktrate zur Verfügung stellt. Gleichzeit müssen beide Signale ausreichend rauschunterdrückt sein. 
+Die Methoden des \gls{foaw} bieten eine sehr gute Möglichkeit die Geschwindigkeit auf Basis eines verrauschten Positionssignals zu ermitteln. Problematisch ist allerdings die geringe Abtastrate von $ 40 Hz $ des Lasers. Schon bei Flügen mit mittlerer Dynamik führt das dazu, dass die Fenstergröße stark reduziert wird. Somit auch der Einfluss des Positionsrauschens stark zunimmt. Zu sehen ist dies auch in Abbildung wo die Methoden des FOAW anhand einer realen Messung mit einander verglichen werden. Als Folge kann selbst dieses Konzept, limitiert durch die Tastrate des Lasers, der Dynamik des Quadrocopters nicht folgen. Es ist klar, dass eine Methode benötigt wird, die die Position und die Geschwindigkeit in einer höheren Taktrate zur Verfügung stellt. Gleichzeit müssen beide Signale ausreichend rauschunterdrückt sein. 
 
  \subsection{Bestimmung der Zustände mittels eines Fusionsfilter}
  \label{subsec:Fusionsfilter}
- Wie aus den vorherigen Kapitel erkennbar, wird keine der Methoden der zuvor gestellten Ansprüche gerecht. So erfüllt die Integration der Beschleunigung (Kapitel \ref{subsec:Vimu}) zwar das Kriterium zur Erhöhung der Taktrate, da Beschleunigungsmesswerte werden in einem Takt von $ 1 kHz $ zur Verfügung stehen. Allerdings durch den Bias des Beschleunigungssensors divergieren innerhalb kürzester Zeit die geschätzten Zustände von den realen Zuständen. Dieses Phänomen tritt bei den Anwendungen Kapitel?? und Kapitel?? nicht auf. Der Grund, sie beziehen sich auf die vom Laser berechneten Positionswerte. Die Abweichungen dieser Zustandswerte befinden sich dabei in einem konstanten Rahmen um die tatsächliche Position. Dieses Positionsrauschen sorgt bei der Geschwindigkeitsschätzung über die Ableitung der Positionswerte dafür, dass das errechnete Geschwindigkeitssignal ebenfalls einen Rauschanteil aufweist. Diesen Rauschanteil zu minimieren ist Ziel der \gls{foaw} Methode. Aufgrund der geringen Abtastfrequenz von $ 40Hz  $ kann dieser Ansatz der hohen Dynamik nicht Folge leisten. Schon für geringe Dynamiken ist die Fenstergröße stark dezimiert und damit auch die Rauschunterdrückung. Das Ergebnis, Beschleunigungssensor der \gls{imu} und Laser bieten jeweils für sich keine ausreichende Zustandswerte. Abhilfe generiert die Fusion beider Sensordaten mittels eines Fusionsfilters. Dabei sorgen die Beschleunigungswerte mit ihrer hohen update-Rate von $ 1 Khz $ für eine schnelle Reaktionsfähigkeit und tragen somit der Dynamik des Quadrocopters sorge. Die Positionsdaten des Laser indes verhindern ein Abdriften der Schätzwerte. Somit stellen sie die Zuverlässigkeit der Fusionsergebnisse sicher. 
+ Wie aus den vorherigen Kapitel erkennbar, wird keine der Methoden der zuvor gestellten Ansprüche gerecht. So erfüllt die Integration der Beschleunigung (Kapitel \ref{subsec:Vimu}) zwar das Kriterium zur Erhöhung der Taktrate, da Beschleunigungsmesswerte werden in einem Takt von $ 1 kHz $ zur Verfügung stehen. Allerdings durch den Bias des Beschleunigungssensors divergieren innerhalb kürzester Zeit die geschätzten Zustände von den realen Zuständen. Dieses Phänomen tritt bei den Anwendungen Kapitel?? und Kapitel?? nicht auf. Der Grund, sie beziehen sich auf die vom Laser berechneten Positionswerte. Die Abweichungen dieser Zustandswerte befinden sich dabei in einem konstanten Rahmen um die tatsächliche Position. Dieses Positionsrauschen sorgt bei der Geschwindigkeitsschätzung über die Ableitung der Positionswerte dafür, dass das errechnete Geschwindigkeitssignal ebenfalls einen Rauschanteil aufweist. Diesen Rauschanteil zu minimieren ist Ziel der \gls{foaw} Methode. Aufgrund der geringen Abtastfrequenz von $ 40Hz  $ kann auch dieser Ansatz der hohen Dynamik nicht Folge leisten. Schon für geringe Dynamiken ist die Fenstergröße stark dezimiert und damit auch die Rauschunterdrückung. Das Ergebnis, Beschleunigungssensor der \gls{imu} und Laser bieten jeweils für sich führen zu keinen zuverlässigen Zustandswerte. Abhilfe generiert die Fusion beider Sensordaten mittels eines Fusionsfilters. Dabei sorgen die Beschleunigungswerte mit ihrer hohen Updaterate von $ 1 Khz $ für eine schnelle Reaktionsfähigkeit und tragen somit der Dynamik des Quadrocopters sorge. Die Positionsdaten des Laser indes verhindern ein Abdriften der Schätzwerte. Somit stellen sie die Zuverlässigkeit der Fusionsergebnisse sicher. 
  
 Das auf dem \gls{hlp} implementierte Fusionsfilter basiert auf einem Leunberger Beobachter\cite{Achtelik11}. Dieser besteht aus einen linearen Streckenmodell dessen Zustände $ \hat{x} $ mittels eines Korrekturterms ($ L\cdot (y-\hat{y})$) auf die Zustände $ x $ der Regelstrecke einschwingen. Die Zustandsdifferenzialgleichung eines Luenberger Beobachter stellt sich in allgemeiner Form  \cite{regB12} wie folgt dar.
 \begin{equation}
@@ -783,14 +783,14 @@ Das auf dem \gls{hlp} implementierte Fusionsfilter basiert auf einem Leunberger 
 \end{split}
 \label{eq:algbeo}
 \end{equation} 
-Dabei entspricht $ A $ der Dynamikmatrix, $ B $ dem Eingangsmatrix und $ C $ dem Ausgangsmatrix des linearen Streckenmodells. Aufgrund der Inversion, ist das Bewegungsmodell für jede Achse im n-frame, als Integrationsglied 2.Ordnung gegeben (Abbildung \ref{fig:drIntket}). Dabei entspricht die Eingangsgrößen $ u $ den ins n-frame transformierten Beschleunigungswerten der \gls{imu}. Da die Ketten entkoppelt sind, muss der Beobachter nicht für alle drei Ketten gleichzeitig entworfen werden. Somit ist es ausreichen eine Integrationsglied 2.Ordnung als Streckenmodell heranzuziehen. Weiterhin ist bekannt, das die Beschleunigungswerte der \gls{imu} einen Bias aufweisen. Nach \cite{mzr13} kann das Streckenmodell deshalb wie in Abbildung \ref{emod} erweitert werden. 
+Dabei entspricht $ A $ der Dynamikmatrix, $ B $ dem Eingangsmatrix und $ C $ dem Ausgangsmatrix des linearen Streckenmodells. Aufgrund der Inversion, ist das Bewegungsmodell für jede Achse im n-frame, als Integrationsglied 2.Ordnung gegeben (Abbildung \ref{fig:drIntket}). Dabei entspricht die Eingangsgrößen $ u $ den ins n-frame transformierten Beschleunigungswerten der \gls{imu}. Da die Ketten entkoppelt sind, muss der Beobachter nicht für alle drei Ketten gleichzeitig entworfen werden. Es ist ausreichen eine Integrationsglied 2.Ordnung als Streckenmodell heranzuziehen. Weiterhin ist bekannt, das die Beschleunigungswerte der \gls{imu} einen Bias aufweisen. Um diese Störgröße zu berücksichtigen kann das Streckenmodell nach \cite{mzr13} wie in Abbildung \ref{emod} erweitert werden.  
    \begin{figure}
    	\centering
    	\includegraphics[width = \textwidth]{images/erwModell}
    	\caption[Erweitertes Streckenmodell]{Erweitertes Streckenmodell} %
    	\label{fig:emod}
    \end{figure}
-Dieses erweiterte Modell ist über Zustandsdifferenzialgleichung (\ref{eq:emod}) beschreiben
+Dieses erweiterte Modell ist über die Zustandsdifferenzialgleichung (\ref{eq:emod}) beschreiben
 \begin{equation}
 \begin{split}
 \dot{x} &= \underset{A}{\begin{bmatrix} 
@@ -834,6 +834,7 @@ Anhand von (\ref{eq:algbeo}) folgt daraus für den Beobachter.
 	1& 0& 0
 	\end{bmatrix}} \cdot \hat{x}
 \end{split}
+\label{eq:ewmodelbeo}
 \end{equation} 
 mit,
 \begin{equation}
@@ -841,25 +842,27 @@ mit,
 \hat{p}^n&	\hat{v}^n& 	\hat{b}
 \end{bmatrix}^T
 \end{equation}
-Die Elemente der Beobachtermartix $ L $ sind so zu parametrieren das die Fehlerdynamik das gewünschte Einschwingverhalten aufweist. Da der Zustandsfehler $ \tilde{x} = x-\hat{x} $ gilt, ergibt sich für die Dynamik des Zustandsfehlers
+ \begin{figure}
+ 	\centering
+ 	\includegraphics[width = \textwidth]{images/Beobachter}
+ 	\caption[Beobachter]{Strukturbild Beobachter} %
+ 	\label{fig:strucB}
+ \end{figure}
+Vorteil des erweiterten Beobachters (Abbildung \ref{fig:strucB}), der Bias des Beschleunigungssensors wird ebenfalls geschätzt. Das sorgt dafür, das die Zuverlässigkeit der für die Folgeregelung benötigten Zustände $ \hat{v} $ und $ \hat{p} $ steigt. 
+Das Einschwingverhalten mit dem die Beobachterwerte $ \hat{x} $ auf die realen Zustände $ x $ konvergieren lässt sich über die Beobachtermatrix $ L $ bestimmen. Da der Zustandsfehler $ \tilde{x} = x-\hat{x} $ gilt, ergibt sich für die Dynamik des Zustandsfehlers
 \begin{equation}
 \dot{\tilde{x}}=\dot{x}-\dot{\hat{x}}=(A-LC)\cdot \tilde{x}
 \end{equation}
-Um diese mittels Polvorgabe einstellen zu können, muss charakteristische Polynom gebildet werden \cite{regB12}.
+Um diese mittels Polvorgabe einstellen zu können, muss daraus charakteristische Polynom gebildet werden \cite{regB12}.
 \begin{equation} 
 N(s)=\det(A-LC)
 \end{equation}
-ergibt für das erweitere Zustandsmodell,
+ergibt für das erweitere Zustandsmodell (\ref{eq:ewmodelbeo}),
 \begin{equation} 
 N(s)=s^3+l_1\cdot s^2+l_2 \cdot s + l_3
 \end{equation}
 Anhand dieses Polynom sind Koeffizienten der Beobachtermatrix $ L $ nach Kapitel \ref{subsec:polvor} über Polvorgabe vorgebbar. 
-  \begin{figure}
-  	\centering
-  	\includegraphics[width = \textwidth]{images/Platzhalter}
-  	\caption[Beobachter]{Strukturbild Beobachter} %
-  	\label{fig:strucB}
-  \end{figure}
+ 
  
  \begin{figure}
  	
@@ -888,20 +891,74 @@ Anhand dieses Polynom sind Koeffizienten der Beobachtermatrix $ L $ nach Kapitel
  	\caption[Simulation Beobachter]{Simulationsergebnisse für das Fusionsfilter}
  	\label{fig:bo_sim}
  \end{figure}
-  
-  \begin{figure}
-  	
-  	\centering{
-  		\subfloat[Positionsignal]{
-  			\includegraphics[width=0.5\textwidth]{images/adap_position}
-  			\label{fig:bo_adapt_pos}
-  		}
-  		\subfloat[Ableitung (Kapitel \ref{subsec:abpos}) vs. Beobachter]{
-  			\includegraphics[width=0.5\textwidth]{images/obs_vxvsob}
-  			\label{fig:bo_dvdtvsbo}
-  		}
-  	}	
-  	\caption[Verbesserung des Fusionsfilter im Vergleich \gls{foaw}]{Verbesserung des Fusionsfilter im Vergleich \gls{foaw}}
-  	\label{fig:bo_sim}
-  \end{figure} 
  
+ 
+ 
+ Um Beispielhaft das Einschwingverhalten des Fusionsfilters, für eine Bebachtermatrix mit $ L= \begin{bmatrix} 18 & 46 & 3.75 \end{bmatrix}^T $, aufzeigen zu können wird das zustandslinearisierte Streckenmodell mit einem variierenden Beschleunigungssignal gespeist. Um dem Beobachter ein realistisches Beschleunigungswert zur Verfügung zu stellen wird für diesen dem Signal ein überlagertes Rauschen und ein Bias zugeführt (Abbildung \ref{fig:bo_ua}). Auch dem Positionsergebnis des Streckenmodells wird für das Fusionsfilter mit einem Rauschen beaufschlagt. Zusätzlich wird dieses verrauschte Positionssignal mit einer Frequenz von $ 40~Hz $ abgetastet, da dies der Abtastrate des Lasers entspricht. Mir diesen störbehafteten Eingangsgrößen wird der Beobachter gespeist. Abbildung \ref{fig:bo_bias} zeigt, wie der $ \hat{b} $ auf den invertierten Wert des Beschleunigungsoffset einschwingt. Somit wird der Bias $ b $ kompensiert (Abbildung \ref{fig:bo_beschl}). In Abbildung \ref{fig:bo_geschw} ist deutlich zu erkennen, welchen Einfluss dies auf die Qualität der Geschwindigkeitsschätzung nimmt. Im Gesamtergebnis stellt die Datenfusion dem Folgeregler ein rauschreduziertes Geschwindigkeits- (Abbildung \ref{fig:bo_geschw}) als auch Positionssignal (Abbildung \ref{fig:bo_pos}) zur Verfügung, welches obendrauf noch die Daten mit einer Taktrate von $ 1~kHz $ bereit stellt. In Sachen Zuverlässigkeit und Genauigkeit ist diese Methode so allen vorher genannten Methodiken überlegen. Womit deren Sinnhaftigkeit als zur Zustandsschätzung im Rahmen des asctec\_hl\_framework dargelegt ist. So ist der letzte Bestandteil der Positionsregelung Hergeleitet verifiziert worden. 
+ 
+ %Das resultierende Positionssignals Abbildung  wird ebenfalls dem Beobachter zugeführt. Bei der Simulation des Beobachters     
+  
+  
+%  \begin{figure}
+%  	
+%  	\centering{
+%  		\subfloat[Positionsignal]{
+%  			\includegraphics[width=0.5\textwidth]{images/adap_position}
+%  			\label{fig:bo_adapt_pos}
+%  		}
+%  		\subfloat[Ableitung (Kapitel \ref{subsec:abpos}) vs. Beobachter]{
+%  			\includegraphics[width=0.5\textwidth]{images/obs_vxvsob}
+%  			\label{fig:bo_dvdtvsbo}
+%  		}
+%  	}	
+%  	\caption[Verbesserung des Fusionsfilter im Vergleich \gls{foaw}]{Verbesserung des Fusionsfilter im Vergleich \gls{foaw}}
+%  	\label{fig:bo_sim}
+%  \end{figure} 
+ 
+ \section{Simulation der Positionsreglung}
+ \label{sec:sim_posreg}
+In den vorangegangen Unterkapiteln \ref{sec:exkt.zstdlin} bis \ref{sec:Zustandsbestimmung} wurden die einzelnen Komponenten der Positionsregelung durchleuchtet. Deren Herleitung aufgezeigt und ihr Richtigkeit mittels eines Simulationsbeispiels dargelegt. Aufgabe dieses Kapitels ist es die Funktionsfähigkeit des Gesamtsystems mittels einer Simulation zu beweisen.
+
+Der Simulationsaufbau basiert dabei auf dem in Kapitel \ref{sec:Modelbildung} eingeführten Bewegungsmodell. Um die Simulation möglichst realistisch zu gestalten sind die Ausgangsgrößen denen der Realität angenähert. So sind die Beschleunigungswerte als auch die Positionsdaten mit einem weißen Rauschen überlagert. Darüber hinaus wird die Postion nur in einem diskreten Zeitintervall von $ T_l = 25~ms $ aktualisiert. Die Eingangsgrößen des Modells bestehen  aus der Schubvorgabe sowie den Winkeln zur Beschreibung der Orientierung  ($ u = \begin{bmatrix}T &\phi &\theta &\psi \end{bmatrix}^T $). Daran angeschlossen befindet sich die Inversion, welche das System zustandslinearisiert, so dass als neue Eingangsgrößen die Beschleunigungsgrößen in Richtung der n-frame Koordinatensysteme vorgegeben werden.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  

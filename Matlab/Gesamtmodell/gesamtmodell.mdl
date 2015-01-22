@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.4"
+    ComputedModelVersion    "1.5"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -27,9 +27,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "Matthias"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu Jan 15 18:12:31 2015"
-  RTWModifiedTimeStamp	  343215219
-  ModelVersionFormat	  "1.%<AutoIncrement:4>"
+  LastModifiedDate	  "Thu Jan 22 21:21:45 2015"
+  RTWModifiedTimeStamp	  343861659
+  ModelVersionFormat	  "1.%<AutoIncrement:5>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -67,8 +67,7 @@ Model {
     $ObjectID		    1
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
     model_		    "gesamtmodell"
-    signals_		    []
-    overrideMode_	    [0U]
+    overrideMode_	    [0.0]
     Array {
       Type		      "Cell"
       Dimension		      1
@@ -133,7 +132,7 @@ Model {
 	  $ObjectID		  3
 	  Version		  "1.12.0"
 	  StartTime		  "0.0"
-	  StopTime		  "8"
+	  StopTime		  "6.5"
 	  AbsTol		  "auto"
 	  FixedStep		  "auto"
 	  InitialStep		  "auto"
@@ -866,7 +865,7 @@ Model {
   }
   System {
     Name		    "gesamtmodell"
-    Location		    [1282, -605, 3198, 469]
+    Location		    [1282, -434, 3181, 623]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -878,9 +877,9 @@ Model {
     TiledPaperMargins	    [1.270000, 1.270000, 1.270000, 1.270000]
     TiledPageScale	    1
     ShowPageBoundaries	    off
-    ZoomFactor		    "80"
+    ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "141"
+    SIDHighWatermark	    "152"
     Block {
       BlockType		      SubSystem
       Name		      "Beobachter"
@@ -896,8 +895,8 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"Beobachter"
-	Location		[1304, -363, 3220, 711]
-	Open			off
+	Location		[1224, 318, 3140, 1392]
+	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -1107,7 +1106,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "V_bo_n"
 	  SID			  "96"
-	  Position		  [480, 218, 510, 232]
+	  Position		  [485, 283, 515, 297]
 	  Port			  "2"
 	  IconDisplay		  "Port number"
 	}
@@ -1213,6 +1212,7 @@ Model {
 	    DstPort		    2
 	  }
 	  Branch {
+	    Points		    [10, 0]
 	    DstBlock		    "V_bo_n"
 	    DstPort		    1
 	  }
@@ -1232,6 +1232,36 @@ Model {
       }
     }
     Block {
+      BlockType		      Constant
+      Name		      "Constant"
+      SID		      "148"
+      Position		      [1110, 530, 1140, 560]
+      ZOrder		      -4
+      Value		      "0"
+    }
+    Block {
+      BlockType		      Demux
+      Name		      "Demux"
+      SID		      "142"
+      Ports		      [1, 3]
+      Position		      [2030, 246, 2035, 284]
+      ZOrder		      -6
+      ShowName		      off
+      Outputs		      "3"
+      DisplayOption	      "bar"
+    }
+    Block {
+      BlockType		      Demux
+      Name		      "Demux1"
+      SID		      "146"
+      Ports		      [1, 3]
+      Position		      [1805, 201, 1810, 239]
+      ZOrder		      -6
+      ShowName		      off
+      Outputs		      "3"
+      DisplayOption	      "bar"
+    }
+    Block {
       BlockType		      SubSystem
       Name		      "Folgeregler"
       SID		      "119"
@@ -1246,8 +1276,8 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"Folgeregler"
-	Location		[425, 110, 855, 690]
-	Open			off
+	Location		[423, 78, 874, 711]
+	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -1505,7 +1535,7 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"Inversion"
-	Location		[303, 256, 977, 532]
+	Location		[1508, 89, 2186, 418]
 	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -1807,7 +1837,7 @@ Model {
 	  Position		  [545, 164, 575, 196]
 	  ZOrder		  -16
 	  Floating		  off
-	  Location		  [611, 57, 1275, 761]
+	  Location		  [1281, -460, 3201, 660]
 	  Open			  off
 	  NumInputPorts		  "1"
 	  List {
@@ -2040,7 +2070,7 @@ Model {
       Name		      "Mux1"
       SID		      "111"
       Ports		      [3, 1]
-      Position		      [600, 340, 605, 420]
+      Position		      [630, 360, 635, 440]
       ZOrder		      -12
       ShowName		      off
       Inputs		      "3"
@@ -2426,8 +2456,8 @@ Model {
       Position		      [2105, 804, 2135, 836]
       ZOrder		      -16
       Floating		      off
-      Location		      [1281, -631, 3201, 489]
-      Open		      on
+      Location		      [10, 57, 1272, 761]
+      Open		      off
       NumInputPorts	      "3"
       ZoomMode		      "yonly"
       List {
@@ -2447,8 +2477,8 @@ Model {
 	MarkerStyles		"none|none|none|none|none|none"
       }
       ShowLegends	      off
-      YMin		      "-5~-5~-5"
-      YMax		      "5~5~5"
+      YMin		      "-1.25~-5~-5"
+      YMax		      "0.75~5~5"
       SaveName		      "ScopeData1"
       DataFormat	      "StructureWithTime"
       LimitDataPoints	      off
@@ -2523,7 +2553,7 @@ Model {
       Name		      "Sine Wave"
       SID		      "27"
       Ports		      [0, 1]
-      Position		      [1075, 470, 1105, 500]
+      Position		      [1050, 495, 1080, 525]
       ZOrder		      -21
       SampleTime	      "0"
     }
@@ -2556,7 +2586,7 @@ Model {
       Name		      "To Workspace3"
       SID		      "135"
       Ports		      [1]
-      Position		      [1580, 320, 1640, 350]
+      Position		      [1565, 250, 1625, 280]
       ZOrder		      -7
       VariableName	      "P_mdl"
       MaxDataPoints	      "inf"
@@ -2580,7 +2610,7 @@ Model {
       Name		      "To Workspace5"
       SID		      "73"
       Ports		      [1]
-      Position		      [2045, 435, 2105, 465]
+      Position		      [2005, 473, 2085, 507]
       ZOrder		      -7
       VariableName	      "geschw_vt_vb"
       MaxDataPoints	      "inf"
@@ -2600,6 +2630,42 @@ Model {
       SaveFormat	      "Structure With Time"
     }
     Block {
+      BlockType		      ToWorkspace
+      Name		      "To Workspace7"
+      SID		      "151"
+      Ports		      [1]
+      Position		      [2020, 545, 2080, 575]
+      ZOrder		      -7
+      VariableName	      "V_bo"
+      MaxDataPoints	      "inf"
+      SampleTime	      "-1"
+      SaveFormat	      "Structure With Time"
+    }
+    Block {
+      BlockType		      ToWorkspace
+      Name		      "To Workspace8"
+      SID		      "150"
+      Ports		      [1]
+      Position		      [1680, 285, 1740, 315]
+      ZOrder		      -7
+      VariableName	      "P_40"
+      MaxDataPoints	      "inf"
+      SampleTime	      "-1"
+      SaveFormat	      "Structure With Time"
+    }
+    Block {
+      BlockType		      ToWorkspace
+      Name		      "To Workspace9"
+      SID		      "152"
+      Ports		      [1]
+      Position		      [1965, 320, 2025, 350]
+      ZOrder		      -7
+      VariableName	      "P_bo"
+      MaxDataPoints	      "inf"
+      SampleTime	      "-1"
+      SaveFormat	      "Structure With Time"
+    }
+    Block {
       BlockType		      SubSystem
       Name		      "Translationsmodell"
       SID		      "77"
@@ -2614,7 +2680,7 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"Translationsmodell"
-	Location		[1512, -338, 2792, 355]
+	Location		[11, 83, 1269, 724]
 	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -2683,7 +2749,7 @@ Model {
 	  LibraryVersion	  "1.260"
 	  SourceBlock		  "simulink/Sources/Band-Limited\nWhite Noise"
 	  SourceType		  "Band-Limited White Noise."
-	  Cov			  "[0.0001]"
+	  Cov			  "[0.00005]"
 	  Ts			  "0.025"
 	  seed			  "[23341]"
 	  VectorParams1D	  on
@@ -3217,30 +3283,63 @@ Model {
       }
     }
     Block {
+      BlockType		      Reference
+      Name		      "XY Graph"
+      SID		      "143"
+      Ports		      [2]
+      Position		      [2215, 250, 2245, 285]
+      ZOrder		      -8
+      LibraryVersion	      "1.260"
+      SourceBlock	      "simulink/Sinks/XY Graph"
+      SourceType	      "XY scope."
+      xmin		      "-2.5"
+      xmax		      "0.5"
+      ymin		      "-0.5"
+      ymax		      "2.5"
+      st		      "-1"
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "XY Graph1"
+      SID		      "147"
+      Ports		      [2]
+      Position		      [1900, 195, 1930, 230]
+      ZOrder		      -8
+      LibraryVersion	      "1.260"
+      SourceBlock	      "simulink/Sinks/XY Graph"
+      SourceType	      "XY scope."
+      xmin		      "-2.5"
+      xmax		      "0.5"
+      ymin		      "-0.5"
+      ymax		      "2.5"
+      st		      "-1"
+    }
+    Block {
       BlockType		      Step
       Name		      "x"
       SID		      "126"
-      Position		      [440, 335, 470, 365]
+      Position		      [425, 340, 455, 370]
       ZOrder		      -22
-      Time		      ".5"
+      Time		      "0.5"
+      After		      "-2"
       SampleTime	      "0"
     }
     Block {
       BlockType		      Step
       Name		      "y"
       SID		      "127"
-      Position		      [400, 365, 430, 395]
+      Position		      [425, 385, 455, 415]
       ZOrder		      -22
-      Time		      "2"
-      After		      "2"
+      Time		      "0.5"
       SampleTime	      "0"
     }
     Block {
       BlockType		      Step
       Name		      "z"
       SID		      "128"
-      Position		      [305, 395, 335, 425]
+      Position		      [425, 425, 455, 455]
       ZOrder		      -22
+      After		      "0"
       SampleTime	      "0"
     }
     Line {
@@ -3273,33 +3372,27 @@ Model {
       DstPort		      1
     }
     Line {
-      SrcBlock		      "Sine Wave"
-      SrcPort		      1
-      Points		      [45, 0]
-      Branch {
-	Points			[5, 0; 0, -15]
-	Branch {
-	  DstBlock		  "Inversion"
-	  DstPort		  2
-	}
-	Branch {
-	  Points		  [0, 10; 185, 0]
-	  DstBlock		  "Translationsmodell"
-	  DstPort		  4
-	}
-      }
-      Branch {
-	Points			[0, 45]
-	DstBlock		"To Workspace1"
-	DstPort			1
-      }
-    }
-    Line {
       SrcBlock		      "Translationsmodell"
       SrcPort		      2
-      Points		      [0, -20]
-      DstBlock		      "Beobachter"
-      DstPort		      1
+      Points		      [0, -5; 30, 0]
+      Branch {
+	Points			[0, -35; 565, 0; 0, 210]
+	DstBlock		"Scope2"
+	DstPort			1
+      }
+      Branch {
+	Points			[25, 0]
+	Branch {
+	  Points		  [15, 0]
+	  DstBlock		  "Beobachter"
+	  DstPort		  1
+	}
+	Branch {
+	  Points		  [0, -105]
+	  DstBlock		  "To Workspace8"
+	  DstPort		  1
+	}
+      }
     }
     Line {
       SrcBlock		      "Translationsmodell"
@@ -3317,13 +3410,22 @@ Model {
 	Branch {
 	  Points		  [25, 0; 0, 10; 5, 0]
 	  Branch {
-	    DstBlock		    "To Workspace5"
-	    DstPort		    1
-	  }
-	  Branch {
 	    Points		    [0, 260]
 	    DstBlock		    "Scope"
 	    DstPort		    2
+	  }
+	  Branch {
+	    Points		    [30, 0]
+	    Branch {
+	      Points		      [20, 0]
+	      DstBlock		      "To Workspace5"
+	      DstPort		      1
+	    }
+	    Branch {
+	      Points		      [0, 110]
+	      DstBlock		      "To Workspace7"
+	      DstPort		      1
+	    }
 	  }
 	}
 	Branch {
@@ -3341,7 +3443,6 @@ Model {
     Line {
       SrcBlock		      "Mux1"
       SrcPort		      1
-      Points		      [85, 0]
       DstBlock		      "Referenzmdl"
       DstPort		      1
     }
@@ -3369,14 +3470,21 @@ Model {
     Line {
       SrcBlock		      "Referenzmdl"
       SrcPort		      3
-      Points		      [0, -20]
-      DstBlock		      "Folgeregler"
-      DstPort		      4
+      Points		      [0, -20; 20, 0]
+      Branch {
+	DstBlock		"Folgeregler"
+	DstPort			4
+      }
+      Branch {
+	Points			[0, -225]
+	DstBlock		"Demux1"
+	DstPort			1
+      }
     }
     Line {
       SrcBlock		      "x"
       SrcPort		      1
-      Points		      [55, 0; 0, 5]
+      Points		      [70, 0; 0, 20]
       DstBlock		      "Mux1"
       DstPort		      1
     }
@@ -3389,26 +3497,21 @@ Model {
     Line {
       SrcBlock		      "z"
       SrcPort		      1
-      Points		      [120, 0; 0, -5]
+      Points		      [0, -15]
       DstBlock		      "Mux1"
       DstPort		      3
     }
     Line {
-      Points		      [2125, 525; 0, 55]
-      DstBlock		      "Scope2"
-      DstPort		      1
-    }
-    Line {
       SrcBlock		      "Translationsmodell"
       SrcPort		      1
-      Points		      [15, 0; 0, -55]
+      Points		      [15, 0; 0, -125]
       DstBlock		      "To Workspace3"
       DstPort		      1
     }
     Line {
       SrcBlock		      "Translationsmodell"
       SrcPort		      5
-      Points		      [0, 40; -20, 0; 0, -5; 10, 0; 0, 315]
+      Points		      [0, 350]
       DstBlock		      "Mux"
       DstPort		      2
     }
@@ -3421,16 +3524,80 @@ Model {
     Line {
       SrcBlock		      "Beobachter"
       SrcPort		      1
-      Points		      [0, 5; 30, 0; 0, 200]
+      Points		      [0, 5; 15, 0; 0, -10]
       Branch {
-	Points			[0, 105]
-	DstBlock		"Scope"
+	Points			[0, -120]
+	DstBlock		"Demux"
 	DstPort			1
       }
       Branch {
-	Points			[-960, 0]
-	DstBlock		"Folgeregler"
-	DstPort			5
+	Points			[10, 0]
+	Branch {
+	  Points		  [0, 10; 5, 0; 0, 200]
+	  Branch {
+	    Points		    [0, 105]
+	    DstBlock		    "Scope"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [-960, 0]
+	    DstBlock		    "Folgeregler"
+	    DstPort		    5
+	  }
+	}
+	Branch {
+	  Points		  [0, -50]
+	  DstBlock		  "To Workspace9"
+	  DstPort		  1
+	}
+      }
+    }
+    Line {
+      SrcBlock		      "Demux"
+      SrcPort		      2
+      Points		      [0, 30; 110, 0; 0, -20]
+      DstBlock		      "XY Graph"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Demux"
+      SrcPort		      1
+      Points		      [0, -15; 100, 0; 0, 20]
+      DstBlock		      "XY Graph"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      1
+      Points		      [35, 0; 0, -5]
+      DstBlock		      "XY Graph1"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      2
+      DstBlock		      "XY Graph1"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Constant"
+      SrcPort		      1
+      Points		      [5, 0; 0, -15]
+      Branch {
+	Points			[0, -60]
+	Branch {
+	  Points		  [0, -35]
+	  DstBlock		  "Inversion"
+	  DstPort		  2
+	}
+	Branch {
+	  DstBlock		  "Translationsmodell"
+	  DstPort		  4
+	}
+      }
+      Branch {
+	DstBlock		"To Workspace1"
+	DstPort			1
       }
     }
   }
@@ -3463,8 +3630,6 @@ Stateflow {
     viewObj		    2
     machine		    1
     toolbarMode		    LIBRARY_TOOLBAR
-    subviewS {
-    }
     ssIdHighWaterMark	    5
     decomposition	    CLUSTER_CHART
     type		    EML_CHART
@@ -3581,8 +3746,6 @@ Stateflow {
     viewObj		    9
     machine		    1
     toolbarMode		    LIBRARY_TOOLBAR
-    subviewS {
-    }
     ssIdHighWaterMark	    5
     decomposition	    CLUSTER_CHART
     type		    EML_CHART
@@ -3702,8 +3865,6 @@ Stateflow {
     viewObj		    16
     machine		    1
     toolbarMode		    LIBRARY_TOOLBAR
-    subviewS {
-    }
     ssIdHighWaterMark	    5
     decomposition	    CLUSTER_CHART
     type		    EML_CHART

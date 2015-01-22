@@ -90,8 +90,11 @@
 \deftranslation[to=German]{Acronyms}{Abkürzungsverzeichnis}
 \printglossary[type=\acronymtype,style=long]
 
+%Glossar ausgeben
+\printglossary[style=altlist,title=Glossar]
+
 %Symbole ausgeben
-\printglossary[type=symbolslist,style=long]
+%\printglossary[type=symbolslist,style=long]
 
 \clearpage %%% ggf. \cleardoublepage
 \phantomsection
@@ -112,7 +115,7 @@
 \input{content/5-Positionsregelung}
 %\input{content/diff}
 
-\printglossary[style=altlist,title=Glossar]
+
 
 % Anhang (Bibliographie darf im deutschen nicht in den Anhang!)
 \bibliography{bib/BibtexDatabase}
