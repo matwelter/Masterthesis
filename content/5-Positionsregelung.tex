@@ -919,16 +919,58 @@ Anhand dieses Polynom sind Koeffizienten der Beobachtermatrix $ L $ nach Kapitel
  \label{sec:sim_posreg}
 In den vorangegangen Unterkapiteln \ref{sec:exkt.zstdlin} bis \ref{sec:Zustandsbestimmung} wurden die einzelnen Komponenten der Positionsregelung durchleuchtet. Deren Herleitung aufgezeigt und ihr Richtigkeit mittels eines Simulationsbeispiels dargelegt. Aufgabe dieses Kapitels ist es die Funktionsfähigkeit des Gesamtsystems mittels einer Simulation zu beweisen.
 
-Der Simulationsaufbau basiert dabei auf dem in Kapitel \ref{sec:Modelbildung} eingeführten Bewegungsmodell. Um die Simulation möglichst realistisch zu gestalten sind die Ausgangsgrößen denen der Realität angenähert. So sind die Beschleunigungswerte als auch die Positionsdaten mit einem weißen Rauschen überlagert. Darüber hinaus wird die Postion nur in einem diskreten Zeitintervall von $ T_l = 25~ms $ aktualisiert. Die Eingangsgrößen des Modells bestehen  aus der Schubvorgabe sowie den Winkeln zur Beschreibung der Orientierung  ($ u = \begin{bmatrix}T &\phi &\theta &\psi \end{bmatrix}^T $). Daran angeschlossen befindet sich die Inversion, welche das System zustandslinearisiert, so dass als neue Eingangsgrößen die Beschleunigungsgrößen in Richtung der n-frame Koordinatensysteme vorgegeben werden.
+Der Simulationsaufbau basiert dabei auf dem in Kapitel \ref{sec:Modelbildung} eingeführten Bewegungsmodell des Quadrocopters. Um die Simulation möglichst realistisch zu gestalten sind die Ausgangsgrößen denen der Realität angenähert. So sind die Beschleunigungswerte als auch die Positionsdaten mit einem weißen Rauschen überlagert. Darüber hinaus wird die Postion nur in einem diskreten Zeitintervall von $ T_l = 25~ms $ aktualisiert. Aus diesen Ausgangswerten interpoliert das Fusionsfilter die Positionsdaten und bestimmt den Zustand der Geschwindigkeit. Parametriert ist der Beobachter (Gleichung (\ref{eq:ewmodelbeo})) mit $ L= \begin{bmatrix} 18 & 46 & 3.75 \end{bmatrix}^T $. Die Eingangsgrößen des Bewegungsmodells bestehen aus der Schubvorgabe sowie den Winkeln zur Beschreibung der Orientierung  ($ u = \begin{bmatrix}T &\phi &\theta &\psi \end{bmatrix}^T $). Daran angeschlossen befindet sich die Inversion (Kapitel \ref{sec:exkt.zstdlin}), welche das System zustandslinearisiert, so dass als neue Eingangsgrößen die Beschleunigungsgrößen in Richtung der n-frame Koordinatensysteme vorgegeben werden. Die Vorgabe eines Beschleunigungsverlaufs zur Überführung des Modells in eine neue Position ist Aufgabe der Kapitel \ref{sec:referenzmodell} beschriebene Vorsteuerung. Diese ist in Form eines Referenzmodell realisiert und liefert zusätzlich Referenzwerte zum Pfad und des Geschwindigkeitsverlaufs. Die Dynamik (Gleichung (\ref{eq:ref_mdl})) mit der die Überführung statt findet, ist für die Simulation mit $ \omega =1.5  $ und  $ D = 1 $ festgelegt. Weichen Zustände des Bewegungsmodelles, ermittelt durch den Beobachter, von der vorgegeben Trajektorie des Referenzmodells ab, greift der lineare Folgeregler ein. Dieser sorgt dafür, das der simulierte Bewegungspfad des Quadrocopter mit dem des Referenzmodells konvergiert. Somit bekämpft er Modellunsicherheiten beim Entwurf der Positionsregelung sowie externe Störungen. Die Koeffizienten der mit einem I-Anteil ausgeführten Regelung (Gleichung (\ref{eq:folgreg_stelgeI})) sind mit $ \tilde{c}_1 = 4 $, $ \tilde{c}_0 = 5 $ und $ \tilde{c}_1 = 0.01 $ festgelegt.
+ \begin{figure}
+ 	\centering
+ 	\includegraphics[width = .75 \textwidth]{images/gessim_xy}
+ 	\caption[Simulierte Positionsverschiebung des Quadrocopters]{Simulierte Positionsverschiebung des Quadrocopters} %
+ 	\label{fig:gessim_xy}
+ \end{figure}
+ 
+Simuliert wird eine Positionsverschiebung des Quadrocopters in der horizontalen Ebene des n-frames. Dabei wird das Modell vom Ursprung des Koordinatensystem, in den Punkt $ x = - 2~m $ und $ y = 1~m $ überführt. In Abbildung \ref{fig:gessim_xy} ist das dazugehörige Simulationsergebnis dargestellt. Dort ist zu sehen wie das Bewegungsmodell entlang des vorgegebenen Pfades in die neuen Koordinate überführt wird. Zu erkennen ist dort auch, das trotz der filternden Wirkung des Beobachters der Einfluss des Rauschen als auch der niederfrequenten Abtastung nicht vollständig eliminiert wird. Der Zeitliche Verlauf der Zustände dieses simulierten Anflugs der neuen Koordinate ist in Abbildung \ref{fig:gessim} separat für die x- und y-Achse dargelegt. Da die Simulation auf eine Variation des $ \psi $ Winkels verzichtet und damit die Orientierung des o-frames mit der des n-frames über den Simulationszeitraum übereinstimmt, können die Neigungswinkel des Quadrocopters einer Achsebewegung des n-frames zugeordnet werden. So ist der eingestellten Nickwinkel $ \theta $ (Abbildung \ref{fig:gessim_theta}) die für die Bewegung auf der x-Achse, bzw. der Rollwinkel $ phi $ (Abbildung \ref{fig:gessim_phi}) die für die Bewegung auf der y-Achse ausschlaggebende Größe. Dabei ist in beide Verläufe (Abbildung \ref{fig:gessim_phi} und \ref{fig:gessim_theta}) ist zu erkennen, das zum Zeitpunkt der Übergabe des neuen Positionswert sprunghaft Änderung der Winkel mit sich zieht. Das liegt daran, das sich die Winkel mittels der Inversion aus den Beschleunigungsvorgaben bestimmt werden. Aufgrund der Stetigkeitsbedingung mit der die Vorsteuerung entworfen ist, müssen die Beschleunigungsvorgaben nur Stückweise existieren, das bedeutet diese können sich sprungartig Ändern. Da zudem in der Simulation die Zeitkonstanten der Lageregelung vernachlässigt sind, 
+weshalb das Bewegungsmodell der Vorgabe eins zu eins folgt.
+
+Allen in allem zeigen die Simulationsergebnisse, das die Regelung in der Theorie die an sie gestellten Ansprüche erfüllt. Um die Positionsregelung jedoch abschließend verifizieren zu können, ist deren Funktionsfähigkeit auf dem realen Quadrocopter zu untersuchen. 
+
+ 
+ 
+ 
+  
  
  
  
  
- 
- 
- 
- 
- 
+  \begin{figure}
+  	
+  	\centering{
+  		\subfloat[Position x-Achse]{
+  			\includegraphics[width=0.5\textwidth]{images/gessim_pos_x}
+  			\label{fig:gessim_pos_x}
+  		}
+  		\subfloat[Position y-Achse]{
+  			\includegraphics[width=0.5\textwidth]{images/gessim_pos_y}
+  			\label{fig:gessim_pos_y}
+  		}\\
+  		\subfloat[Geschwindigkeit x-Achse]{
+  			\includegraphics[width=0.5\textwidth]{images/gessim_vel_x}
+  			\label{fig:gessim_vel_x}
+  		}
+  		\subfloat[Geschwindigkeit y-Achse]{
+  			\includegraphics[width=0.5\textwidth]{images/gessim_vel_y}
+  			\label{fig:gessim_vel_y}
+  		}\\
+  		\subfloat[Nickwinkel]{
+  			\includegraphics[width=0.5\textwidth]{images/gessim_theta}
+  			\label{fig:gessim_theta}
+  		}
+  		\subfloat[Rollwinkel]{
+  			\includegraphics[width=0.5\textwidth]{images/gessim_phi}
+  			\label{fig:gessim_phi}
+  		}
+  	}	
+  	\caption[Simulation Gesamtmodell]{Simulationsergebnisse des Gesamtmodells}
+  	\label{fig:gessim}
+  \end{figure}
  
  
  

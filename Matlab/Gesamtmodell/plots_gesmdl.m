@@ -80,6 +80,12 @@ figure('Name','ref_vor_id');
             ylabel('rad');
             legend('theta');            
             
+  %% xy 
+  % xy ref
+  P_ref.time,P_ref.signals.values(:,1),'g'
             
-            
-            
+               figure('Name','xy Positionen');
+    plot(P_ref.signals.values(:,1),P_ref.signals.values(:,2),'g',P_bo.signals.values(:,1),P_bo.signals.values(:,2),'r',P_ref.signals.values(1,1),P_ref.signals.values(1,2),'o',P_ref.signals.values(end,1),P_ref.signals.values(end,2),'x');
+            xlabel('x in m');
+            ylabel('y in m');
+            legend('p_{ref}','p_beob','p_{start}','p_{ende}');        
