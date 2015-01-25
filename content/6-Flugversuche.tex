@@ -65,6 +65,30 @@ Um die Messergebnisse mit denn der Simulation in Kapitel \ref{sec:sim_posreg} ve
 
 \section{Geschwindigkeitsregelung }
 \label{sec:geschwReg}
+In der ursprünglichen Ausschreibung zu dieser Masterthesis ist die Implementierung einer Geschwindigkeitsregelung als Ziel der Arbeit ausgegeben. Deshalb wird abschließenden in diesem Kapitel die Anwendbarkeit der Positionsregelung als Geschwindigkeitsregelung mittels eines Testergebnisses offengelegt.  
+
+Die Vorgabe der Geschwindigkeiten erfolgt im o-frame, das heißt es wird bestimmt mit welcher Geschwindigkeit sich der Quadrocopter vorwärts, rückwärts oder seitlich fortzubewegen hat. Da die Positionsregelung allerdings auf den Koordinaten des Navigationskoordinatensystem aufbaut, ist die gewünschte Geschwindigkeit zunächst ins n-frame zu transformieren. Dort sind diese wie im Kapitel \ref{sec:referenzmodell} beschrieben aufzuintegrieren. So erfolgt für Geschwindigkeiten ungleich null eine stetig Verschiebung der anzufliegenden Sollposition. Die Größe der Positionsveschiebung ist dabei Proportional zu den geforderten Geschwindigkeiten. Da der Quadrocopter mittels der Positionsregelung der Sollposition folgt (Abbildung \ref{fig:velpos}), spricht man auch von einer pseudo Geschwindigkeitsregelung.
+ \begin{figure}
+ 	
+ 	\centering{
+ 		\subfloat[Position auf der x-Achse des n-frames]{
+ 			\includegraphics[width=0.5\textwidth]{images/vel_x}
+ 			\label{fig:vel_x}
+ 		}
+ 		\subfloat[Position auf der x-Achse des n-frames]{
+ 			\includegraphics[width=0.5\textwidth]{images/vel_y}
+ 			\label{fig:vel_y}
+ 		}
+ 	}	
+ 	\caption[Positionsverlauf Versuch Geschwindigkeitsregler]{Positionsverlauf Versuch Geschwindigkeitsregler}
+ 	\label{fig:velpos}
+ \end{figure}
+ 
+Abbildung \ref{fig:velof} beleuchtet den zur Positionsschiebung führenden Geschwindigkeitsverlauf im o-frame. Die Vorgabe der Geschwindigkeit erfolgte dabei über den Bedienhebel der Fernsteuerung, der bei manueller Steuerung zur Vorgabe der Neigungswinkel dient. Bei aktiver Geschwindigkeitsregelung werden die Rohdaten dieses Bedienhebel jedoch Geschwindigkeitsvorgaben im o-frame zugeordnet. Der Umrechnungsfaktor kann dabei beliebig festgelegt werden, solange der Quadrocopter der maximal einforderbaren Geschwindigkeit folgen kann. So Betrug der Faktor bei der Durchführung der Messung $ 0.0004 $, das bedeutet ein Rohwert von $ 1000 $ entspricht einer geforderten Geschwindigkeit von $ 0.4 \frac{m}{s} $.
+
+Um überprüfen zu können, ob sich für den Stellwertverlauf über die Fernbedienung (Abbildung \ref{fig:vel_nickheb} und Abbildung \ref{fig:vel_nickheb}) die geforderten Geschwindigkeiten aus der Sicht des Quadrocopters einstellen, sind die vom Referenzmodell generierte Sollgeschwindigkeit, als auch die vom Beobachter geschätzte Geschwindigkeit ins o-frame transformiert worden (Abbildung \ref{fig:vel_vxof} und Abbildung \ref{fig:vel_vyof}). Auf den ersten Blick fällt auf, das der qualitative Verlauf der Vorgaben mit der sich tatsächlich einstellenden Geschwindigkeit übereinstimmt. Zu sehen ist jedoch auch, das sich Geschwindigkeitsvorgaben des Bedienhebels gedämpft und Phasenverschoben auf den Sollwertverlauf des Referenzmodells auswirken, deutlicher sieht man dies auch in Abbildung \ref{fig:velpos}. Zu erklären ist dies durch die Zeitkonstanten des Referenzmodells, die für diese Flugversuch über die Eigenfrequenz $ \omega_0 = 1.5 $ und die Dämpfung $ D = 1 $ festgelegt sind. Ist gewollt, das sich Vorgaben über den die Fernsteuerung schneller einstellen, ist deshalb die Eigenfrequenz $ \omega_0$ des Referenzmodells zu erhöhen. Dies wird auch empfohlen um ein besseres Feedback über geforderte Geschwindigkeiten zu erlangen.  
+
+Abschließend bewertet zeigt die Messdaten dieses Flugversuches (Abbildung \ref{fig:velof} ), dass die sich auf dem \gls{hlp} befindliche Positionsregelung auch den bei Ausschreibung formulierten Wunsch nach einer Geschwindigkeitsregelung erfüllt. Womit die Arbeit ihren Abschluss findet.
 
  \begin{figure}
  	
@@ -89,6 +113,38 @@ Um die Messergebnisse mit denn der Simulation in Kapitel \ref{sec:sim_posreg} ve
  	\caption[Messergebnisse Geschwindigkeitsregelung]{Messergebnisse Geschwindigkeitsregelung}
  	\label{fig:velof}
  \end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
