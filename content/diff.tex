@@ -1,60 +1,60 @@
 \chapter[Flugversuche]{Verifizierung der Positionsregelung am realen System}
 \label{chap:Flugversuche}
-Nach dem die Funktionsfähigkeit der von \gls{asctec} und ETH-Zürich entworfenen Positionsregelung mittels Herleitung der einzelnen Komponenten sowie einer abschließenden Simulation des Gesamtsystems (Kapitel \ref{sec:sim_posreg}) in der Theorie bewiesen ist, fokussiert sich \DIFdelbegin \DIFdel{diese }\DIFdelend \DIFaddbegin \DIFadd{dieses }\DIFaddend Kapitel \ref{chap:Flugversuche} auf die Verifizierung der Regelung am realen System. So gilt es zu darauf zu achten\DIFaddbegin \DIFadd{, }\DIFaddend ob die Zeitkonstante der Lagerregelung, die in der Modellbildung vernachlässigt worden ist, eine Auswirkung auf die Positionsregelung hat. Ausweisen wird sich\DIFaddbegin \DIFadd{, }\DIFaddend ob die Positionsbestimmung mittels eines Lasers anhand der in Kapitel \ref{chap:2Dpositionsbestimmung} beschrieben orthogonalen Projektion sowie das scanmatching-Verfahren anwendbar ist. 
+Nach dem die Funktionsfähigkeit der von \gls{asctec} und ETH-Zürich entworfenen Positionsregelung mittels Herleitung der einzelnen Komponenten sowie einer abschließenden Simulation des Gesamtsystems (Kapitel \ref{sec:sim_posreg}) in der Theorie bewiesen ist, fokussiert sich dieses Kapitel \ref{chap:Flugversuche} auf die Verifizierung der Regelung am realen System. So gilt es zu darauf zu achten, ob die Zeitkonstante der Lagerregelung, die in der Modellbildung vernachlässigt worden ist, eine Auswirkung auf die Positionsregelung hat. Ausweisen wird sich, ob die Positionsbestimmung mittels eines Lasers anhand der in Kapitel \ref{chap:2Dpositionsbestimmung} beschrieben orthogonalen Projektion sowie das scanmatching-Verfahren anwendbar ist. 
 
-Dafür wird in Kapitel \ref{sec:anflugKoor} eine Messung untersucht, bei der der Positionsregelung eine neue Koordinate übergeben wird, in die der Quadrocopter überführt werden \DIFdelbegin \DIFdel{soll. Im anschließend }\DIFdelend \DIFaddbegin \DIFadd{kann. Im anschließenden }\DIFaddend Kapitel \ref{sec:geschwReg} wird bezugnehmend auf das ursprüngliche Thema der Arbeit, der Geschwindigkeitsregelung des Quadrocopter, die Funktionsfähigkeit der Positionsregelung als eben diese Geschwindigkeitsregelung dargelegt.
+Dafür wird in Kapitel \ref{sec:anflugKoor} eine Messung untersucht, bei der der Positionsregelung eine neue Koordinate übergeben wird, in die der Quadrocopter überführt werden soll. Im anschließenden Kapitel \ref{sec:geschwReg} wird bezugnehmend auf das ursprüngliche Thema der Arbeit, der Geschwindigkeitsregelung des Quadrocopter, die Funktionsfähigkeit der Positionsregelung als eben diese Geschwindigkeitsregelung dargelegt.
 
 
 
 \section{Anflug einer Koordinate im Raum}
-Um die Messergebnisse mit \DIFdelbegin \DIFdel{denn }\DIFdelend \DIFaddbegin \DIFadd{denen }\DIFaddend der Simulation in Kapitel \ref{sec:sim_posreg} vergleichbar zu gestalten, entspricht die Ausgangskoordinate ($ x = 0$, $y = 0 $) als auch die Zielkoordinate ($ x = -2$, $y = 1 $) denen des Simulationsbeispieles. Des Weiteren stimmen die Parameter \DIFdelbegin \DIFdel{es Beobachter }\DIFdelend \DIFaddbegin \DIFadd{des Beobachters }\DIFaddend ($ L= \begin{bmatrix} 18 & 46 & 3.75 \end{bmatrix}^T $) sowie die der Positionsregelung ($ \tilde{c}_1 = 4 $, $ \tilde{c}_0 = 5 $, $ \tilde{c}_1 = 0.01 $) mit der in der Simulation verwendeten Parametrierung überein. Zusätzlich erfolgte auch hier die Ausrichtung des Quadrocopters so, dass die Orientierung des o-frames über den Zeitraum der Messung mit dem n-frame übereinstimmt ($ \psi = 0 $). Damit ist hier ebenfalls die Achsenbewegung einem bestimmten Neigungswinkel zuzuordnen.   
+Um die Messergebnisse mit denen der Simulation in Kapitel \ref{sec:sim_posreg} vergleichbar zu gestalten, entspricht die Ausgangskoordinate ($ x = 0$, $y = 0 $) als auch die Zielkoordinate ($ x = -2$, $y = 1 $) denen des Simulationsbeispieles. Des Weiteren stimmen die Parameter des Beobachters ($ L= \begin{bmatrix} 18 & 46 & 3.75 \end{bmatrix}^T $) sowie die der Positionsregelung ($ \tilde{c}_1 = 4 $, $ \tilde{c}_0 = 5 $, $ \tilde{c}_1 = 0.01 $) mit der in der Simulation verwendeten Parametrierung überein. Zusätzlich erfolgte auch hier die Ausrichtung des Quadrocopters so, dass die Orientierung des o-frames über den Zeitraum der Messung mit dem n-frame übereinstimmt ($ \psi = 0 $). Damit ist hier ebenfalls die Achsenbewegung einem bestimmten Neigungswinkel zuzuordnen.   
 \label{sec:anflugKoor}
- \begin{figure}
- 	\centering
- 	\includegraphics[width = .75 \textwidth]{images/real_xy}
- 	\caption[Positionsverschiebung des Quadrocopters]{Positionsverschiebung des Quadrocopters} %
- 	\label{fig:real_xy}
- \end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width = .75 \textwidth]{images/real_xy}
+	\caption[Positionsverschiebung des Quadrocopters]{Positionsverschiebung des Quadrocopters} %
+	\label{fig:real_xy}
+\end{figure}
 
- Betrachtet man zunächst den Verlauf des Referenzpfades in Abbildung \ref{fig:real_xy} und vergleicht diesen mit dem in der Abbildung \ref{fig:gessim_xy} dargestellten der Simulation, fällt auf, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend diese nicht den gleichen Verlauf aufzeigen. \DIFdelbegin \DIFdel{Erklären lässt sich das damit, das es }\DIFdelend \DIFaddbegin \DIFadd{Erklärung ist, dass es sich }\DIFaddend bei dem auf dem \gls{hlp} realisierte Referenzmodell nicht eins zu eins um \DIFdelbegin \DIFdel{den }\DIFdelend die in Paper \cite{Achtelik11} als auch in Kapitel \ref{sec:referenzmodell} vorgestellte Vorsteuerung handelt. Präziser ausgedrückt\DIFaddbegin \DIFadd{, }\DIFaddend deutet das Messergebnis darauf hin, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend die Vorsteuerung eine Trajektorie mit einer höheren Stetigkeitsbedingung generiert \cite{mzr13}. Das bedeutet\DIFaddbegin \DIFadd{, }\DIFaddend der vorgegebene Pfad ist zweimal stetig differenzierbar und nicht nur einmal\DIFdelbegin \DIFdel{sowie }\DIFdelend \DIFaddbegin \DIFadd{, wie }\DIFaddend in Kapitel \ref{sec:referenzmodell} beschrieben. Zur Folge hat dies, dass der gewünschte Beschleunigungsverlauf und \DIFaddbegin \DIFadd{die }\DIFaddend damit verbunden Vorgabe der Neigunswinkel stetig ist, d.h. keine spunghaften Änderungen gefordert werden. Bestätigt wird diese Annahme, wenn man den Verlauf der vorgegeben Neigungswinkel in Abbildung \ref{fig:real} mit den Winkel der Simulation (Abbildung \ref{fig:gessim}) vergleicht. 
+Betrachtet man zunächst den Verlauf des Referenzpfades in Abbildung \ref{fig:real_xy} und vergleicht diesen mit dem in der Abbildung \ref{fig:gessim_xy} dargestellten der Simulation, fällt auf, dass diese nicht den gleichen Verlauf aufzeigen. Die Erklärung ist, dass es sich bei dem auf dem \gls{hlp} realisierte Referenzmodell nicht eins zu eins um die in Paper \cite{Achtelik11} als auch in Kapitel \ref{sec:referenzmodell} vorgestellte Vorsteuerung handelt. Präziser ausgedrückt, deutet das Messergebnis darauf hin, dass die Vorsteuerung eine Trajektorie mit einer höheren Stetigkeitsbedingung generiert \cite{mzr13}. Das bedeutet, der vorgegebene Pfad ist zweimal stetig differenzierbar und nicht nur einmal, wie in Kapitel \ref{sec:referenzmodell} beschrieben. Zur Folge hat dies, dass der gewünschte Beschleunigungsverlauf und die damit verbunden Vorgabe der Neigunswinkel stetig ist, d.h. keine spunghaften Änderungen gefordert werden. Bestätigt wird diese Annahme, wenn man den Verlauf der vorgegeben Neigungswinkel in Abbildung \ref{fig:real} mit den Winkel der Simulation (Abbildung \ref{fig:gessim}) vergleicht. 
 
- Untersucht wird jetzt die Flugbahn des Quadrocopter anhand der vom Beobachter geschätzten Positionsdaten in Abbildung \ref{fig:real_xy}. \DIFdelbegin \DIFdel{Zu erkennen }\DIFdelend \DIFaddbegin \DIFadd{Erkennbar }\DIFaddend ist, dass die Position des Quadrocopter ausgehend von einer inkonsistente Anfangsbedingung dank des Folgereglers zu \DIFdelbegin \DIFdel{Beginn }\DIFdelend \DIFaddbegin \DIFadd{beginn }\DIFaddend mit der Referenztrajektorie konvergiert. Ab der Koordinate $ x = -1 $ und $ y = 0.75 $ entfernt sich \DIFdelbegin \DIFdel{jedoch }\DIFdelend \DIFaddbegin \DIFadd{allerdings }\DIFaddend der Quadrocopter von dem vorgegebenen Pfad\DIFdelbegin \DIFdel{bevor er }\DIFdelend \DIFaddbegin \DIFadd{, bevor er sich }\DIFaddend schließlich über der Zielposition einschwingt. Um zu ergründen warum die Position des Flugsystems plötzlich vom Referenzpfad divergiert\DIFaddbegin \DIFadd{, }\DIFaddend ist der zeitliche Verlauf der Zustände für jede Achse zu untersuchen (\ref{fig:real}). Dabei lässt sich anhand Abbildung \ref{fig:real_x} und Abbildung \ref{fig:real_y} erkennen, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend kurz bevor der Quadrocopter den Referenzpfad schneidet, für circa eine Sekunde keine \DIFdelbegin \DIFdel{Positionspdates vom Laser zu }\DIFdelend \DIFaddbegin \DIFadd{Positionsupdates vom Laser zur }\DIFaddend Verfügung stehen. Dies hat zur Folge\DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{, dass }\DIFaddend der Schätzwert des Beobachters auf der letzten bekannten Position \DIFdelbegin \DIFdel{verharrt, ob wohl sich in Wirklichkeit }\DIFdelend \DIFaddbegin \DIFadd{verweilt, obwohl in Wirklichkeit sich }\DIFaddend der Quadrocopter weiter bewegt. Die Folge, die Differenz zwischen \DIFdelbegin \DIFdel{ist und soll Position steigt, obwohl dies }\DIFdelend \DIFaddbegin \DIFadd{Ist- und Soll-Position steigt, obgleich das }\DIFaddend nicht der Realität entspricht. Gleichzeitig sinkt auch der Betrag \DIFdelbegin \DIFdel{die geschätzte }\DIFdelend \DIFaddbegin \DIFadd{der geschätzten }\DIFaddend Geschwindigkeit, zu sehen in Abbildung \ref{fig:gessim_vel_x}, bzw. für die y-Achse in Abbildung \ref{fig:gessim_vel_y}. Das Ergebnis der Zustandsfolgeregler sorgt dafür, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend der Betrag der Neigungswinkel erhöht wird und somit der Quadrocopter fälschlicher Weise weiter beschleunigt und sich dessen Geschwindigkeit erhöht. Der Grund warum der Quadrocopter plötzlich  vom Referenzpfad divergiert (Abbildung \ref{fig:gessim_xy}). Nach dieser \DIFaddbegin \DIFadd{circa }\DIFaddend einen Sekunde ohne Positionsupdate wird die Position \DIFdelbegin \DIFdel{wieder }\DIFdelend \DIFaddbegin \DIFadd{erneut }\DIFaddend zuverlässig über den Laser bestimmt. Der Beobachter schätzt \DIFdelbegin \DIFdel{nun }\DIFdelend die zu hohe Geschwindigkeit mit der sich der Quadrocopter tatsächlich bewegt (Abbildung \ref{fig:gessim_vel_x} und Abbildung \ref{fig:gessim_vel_y}). Da jetzt Position und Geschwindigkeit deutlich von den Vorgaben des Referenzmodells abweichen, fordert der Folgeregeler in Verbindung mit der Inversion entgegengesetzte Neigungswinkel\DIFaddbegin \DIFadd{, }\DIFaddend um den Quadrocopter abzubremsen und zurück auf die gewünschte Flugbahn zu führen. In Abbildung \ref{fig:real_theta} und Abbildung \ref{fig:real_phi} ist zu erkennen, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend der Betrag dieser Winkel deutlich über den zuvor geforderten liegt.  Da die Lageregelung die vorgegebenen Winkel nahezu ohne Zeitverzögerung einstellt, erfolgt \DIFdelbegin \DIFdel{somit }\DIFdelend die Bremsung bzw. die Richtungsänderung hin zur Referenztrajektorie sehr abrupt. Klar zu erkennen ist die zackige Bewegung in Abbildung \ref{fig:real_xy} kurz vor \DIFdelbegin \DIFdel{erreichen }\DIFdelend \DIFaddbegin \DIFadd{Erreichen }\DIFaddend der Zielkoordinate. Der Quadrocopter überfliegt dabei \DIFdelbegin \DIFdel{zwar nochmal }\DIFdelend \DIFaddbegin \DIFadd{nochmals }\DIFaddend den Referenzpfad, schwingt \DIFdelbegin \DIFdel{allerdings aufgrund de }\DIFdelend \DIFaddbegin \DIFadd{sich allerdings aufgrund der }\DIFaddend stabilisierenden Auslegung des Folgereglers und den \DIFdelbegin \DIFdel{nun }\DIFdelend kontinuierlich vorhanden Positionsdaten in einer Umgebung $ \pm 10~cm $ um die Endposition ein. Womit bewiesen ist, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend die Positionsregelung mittels eines Lasersanners \DIFdelbegin \DIFdel{möglich }\DIFdelend \DIFaddbegin \DIFadd{ausführbar }\DIFaddend ist.
- \begin{figure}
+Untersucht wird jetzt die Flugbahn des Quadrocopter anhand der vom Beobachter geschätzten Positionsdaten in Abbildung \ref{fig:real_xy}. Erkennbar ist, dass die Position des Quadrocopter ausgehend von einer inkonsistente Anfangsbedingung dank des Folgereglers zu beginn mit der Referenztrajektorie konvergiert. Ab der Koordinate $ x = -1 $ und $ y = 0.75 $ entfernt sich allerdings der Quadrocopter von dem vorgegebenen Pfad, bevor er sich schließlich über der Zielposition einschwingt. Um zu ergründen warum die Position des Flugsystems plötzlich vom Referenzpfad divergiert, ist der zeitliche Verlauf der Zustände für jede Achse zu untersuchen (\ref{fig:real}). Dabei lässt sich anhand Abbildung \ref{fig:real_x} und Abbildung \ref{fig:real_y} erkennen, dass kurz bevor der Quadrocopter den Referenzpfad schneidet, für circa eine Sekunde keine Positionsupdates vom Laser zur Verfügung stehen. Dies hat zur Folge, dass der Schätzwert des Beobachters auf der letzten bekannten Position verweilt, obwohl in Wirklichkeit sich der Quadrocopter weiter bewegt. Die Folge, die Differenz zwischen Ist- und Soll-Position steigt, obgleich das nicht der Realität entspricht. Gleichzeitig sinkt auch der Betrag der geschätzten Geschwindigkeit, zu sehen in Abbildung \ref{fig:gessim_vel_x}, bzw. für die y-Achse in Abbildung \ref{fig:gessim_vel_y}. Das Ergebnis der Zustandsfolgeregler sorgt dafür, dass der Betrag der Neigungswinkel erhöht wird und somit der Quadrocopter fälschlicher Weise weiter beschleunigt und sich dessen Geschwindigkeit erhöht. Der Grund warum der Quadrocopter plötzlich  vom Referenzpfad divergiert (Abbildung \ref{fig:gessim_xy}). Nach dieser circa einen Sekunde ohne Positionsupdate wird die Position erneut zuverlässig über den Laser bestimmt. Der Beobachter schätzt die zu hohe Geschwindigkeit mit der sich der Quadrocopter tatsächlich bewegt (Abbildung \ref{fig:gessim_vel_x} und Abbildung \ref{fig:gessim_vel_y}). Da jetzt Position und Geschwindigkeit deutlich von den Vorgaben des Referenzmodells abweichen, fordert der Folgeregeler in Verbindung mit der Inversion entgegengesetzte Neigungswinkel, um den Quadrocopter abzubremsen und zurück auf die gewünschte Flugbahn zu führen. In Abbildung \ref{fig:real_theta} und Abbildung \ref{fig:real_phi} ist zu erkennen, dass der Betrag dieser Winkel deutlich über den zuvor geforderten liegt.  Da die Lageregelung die vorgegebenen Winkel nahezu ohne Zeitverzögerung einstellt, erfolgt die Bremsung bzw. die Richtungsänderung hin zur Referenztrajektorie sehr abrupt. Klar zu erkennen ist die zackige Bewegung in Abbildung \ref{fig:real_xy} kurz vor Erreichen der Zielkoordinate. Der Quadrocopter überfliegt dabei nochmals den Referenzpfad, schwingt sich allerdings aufgrund der stabilisierenden Auslegung des Folgereglers und den kontinuierlich vorhanden Positionsdaten in einer Umgebung $ \pm 10~cm $ um die Endposition ein. Womit bewiesen ist, dass die Positionsregelung mittels eines Lasersanners ausführbar ist.
+\begin{figure}
 
- 	\centering{
- 		\subfloat[Position x-Achse]{
- 			\includegraphics[width=0.5\textwidth]{images/real_x}
- 			\label{fig:real_x}
- 		}
- 		\subfloat[Position y-Achse]{
- 			\includegraphics[width=0.5\textwidth]{images/real_y}
- 			\label{fig:real_y}
- 		}\\
- 		\subfloat[Geschwindigkeit x-Achse]{
- 			\includegraphics[width=0.5\textwidth]{images/real_vx}
- 			\label{fig:real_vx}
- 		}
- 		\subfloat[Geschwindigkeit y-Achse]{
- 			\includegraphics[width=0.5\textwidth]{images/real_vy}
- 			\label{fig:real_vy}
- 		}\\
- 		\subfloat[Nickwinkel]{
- 			\includegraphics[width=0.5\textwidth]{images/real_theta}
- 			\label{fig:real_theta}
- 		}
- 		\subfloat[Rollwinkel]{
- 			\includegraphics[width=0.5\textwidth]{images/real_phi}
- 			\label{fig:real_phi}
- 		}
- 	}	
- 	\caption[Messergebnisse Flug]{Messergebnisse Flug}
- 	\label{fig:real}
- \end{figure}
+	\centering{
+		\subfloat[Position x-Achse]{
+			\includegraphics[width=0.5\textwidth]{images/real_x}
+			\label{fig:real_x}
+		}
+		\subfloat[Position y-Achse]{
+			\includegraphics[width=0.5\textwidth]{images/real_y}
+			\label{fig:real_y}
+		}\\
+		\subfloat[Geschwindigkeit x-Achse]{
+			\includegraphics[width=0.5\textwidth]{images/real_vx}
+			\label{fig:real_vx}
+		}
+		\subfloat[Geschwindigkeit y-Achse]{
+			\includegraphics[width=0.5\textwidth]{images/real_vy}
+			\label{fig:real_vy}
+		}\\
+		\subfloat[Nickwinkel]{
+			\includegraphics[width=0.5\textwidth]{images/real_theta}
+			\label{fig:real_theta}
+		}
+		\subfloat[Rollwinkel]{
+			\includegraphics[width=0.5\textwidth]{images/real_phi}
+			\label{fig:real_phi}
+		}
+	}	
+	\caption[Messergebnisse Flug]{Messergebnisse Flug}
+	\label{fig:real}
+\end{figure}
 
- Rein \DIFdelbegin \DIFdel{Optisch }\DIFdelend \DIFaddbegin \DIFadd{optisch visuell }\DIFaddend wirkte das Regelverhalten dieser Messung von außen \DIFaddbegin \DIFadd{betrachtet }\DIFaddend sehr nervös, da ohne Kenntnis der Messdaten kein ersichtlicher Grund für die großen Stellwinkel zu erkennen war. Des Weiteren treten solche Definitionslücken bei der Lokalisierung nur sporadisch auf, so dass der Quadrocopter in den meisten Fällen in einer \DIFdelbegin \DIFdel{flüssigen }\DIFdelend \DIFaddbegin \DIFadd{kontinuierlichen }\DIFaddend Bewegung in die \DIFdelbegin \DIFdel{neun }\DIFdelend \DIFaddbegin \DIFadd{neue }\DIFaddend Position überführt wird. Nichtsdestotrotz gilt es den Einfluss der Lücken in der Positionsbestimmung zu minimieren, da vor allem bei längeren Flügen die Wahrscheinlichkeit\DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{, dass }\DIFaddend ein solcher Fehler auftritt\DIFaddbegin \DIFadd{, }\DIFaddend steigt. So gilt es im Anschluss dieser Masterthesis zu untersuchen, welche Umstände \DIFdelbegin \DIFdel{eine }\DIFdelend \DIFaddbegin \DIFadd{zu einer }\DIFaddend lückenhaften Lokalisierung mittels Laser führen. \DIFdelbegin \DIFdel{Möglich }\DIFdelend \DIFaddbegin \DIFadd{Vorstellbar }\DIFaddend ist, dass das von \gls{ros} verwendete IP-Protokoll zeitweise zu viele Umgebungsscans in einem Datenpaket zusammenfasst\DIFaddbegin \DIFadd{, }\DIFaddend womit die physische Abtastrate reduziert wird. \DIFdelbegin \DIFdel{Alternative }\DIFdelend \DIFaddbegin \DIFadd{Alternativ }\DIFaddend könnte \DIFdelbegin \DIFdel{die }\DIFdelend \DIFaddbegin \DIFadd{eine weitere }\DIFaddend Ursache darin liegen, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend der Laser für zu große Neigungswinkel den Boden bzw. die Decke erfasst, somit der ICP-Algorithmus (Kapitel \ref{sec:laser_scan_matching}) die aufeinanderfolgenden Scans nicht übereinander legen kann und \DIFdelbegin \DIFdel{damit zu keinen }\DIFdelend \DIFaddbegin \DIFadd{zu keinem }\DIFaddend Positionsergebnis kommt. \DIFdelbegin \DIFdel{Wäre dem so , bestände }\DIFdelend \DIFaddbegin \DIFadd{Wenn dem so ist, existierte }\DIFaddend die Möglichkeit die maximalen Stellwinkel zu begrenzen. Dies würde \DIFdelbegin \DIFdel{jedoch }\DIFdelend \DIFaddbegin \DIFadd{allerdings }\DIFaddend zu einer Beschränkung der Dynamik führen. Deshalb \DIFdelbegin \DIFdel{wäre in dem Fall zu untersuchen}\DIFdelend \DIFaddbegin \DIFadd{sollte in diesem Fall untersucht werden}\DIFaddend , ob ein 3D-SLAM-Algorithmus \DIFdelbegin \DIFdel{, }\DIFdelend zur Positionsbestimmung nicht die besser Alternative darstellt. \DIFdelbegin \DIFdel{Vorraussetzung }\DIFdelend \DIFaddbegin \DIFadd{Voraussetzung }\DIFaddend dafür ist jedoch eine genaue Höhenbestimmung des Quadrocopters. Diese wurde zwar von Jan Kallwies \cite{JanKal13} entwickelt\DIFdelbegin \DIFdel{wurde}\DIFdelend , steht momentan allerdings nicht auf dem Quadrocopter zur Verfügung. \DIFdelbegin \DIFdel{So wäre eine }\DIFdelend \DIFaddbegin \DIFadd{Eine }\DIFaddend kurzfristige Lösung zur Bekämpfung des Einfluss von Lokalisierungslücken \DIFdelbegin \DIFdel{, }\DIFdelend \DIFaddbegin \DIFadd{ist }\DIFaddend die Implementierung eines Algorithmus\DIFaddbegin \DIFadd{, }\DIFaddend der ausbleibende Positionsdaten zuverlässig erkennt. Schlägt dieser Algorithmus an, \DIFdelbegin \DIFdel{könnte die zu lässigen }\DIFdelend \DIFaddbegin \DIFadd{könnten die zulässigen }\DIFaddend Neigungswinkel auf ein Minimum \DIFdelbegin \DIFdel{reduzieren }\DIFdelend \DIFaddbegin \DIFadd{reduziert }\DIFaddend werden, sodass der Quadrocopter nicht weiter beschleunigt. Nach \DIFdelbegin \DIFdel{erhalten }\DIFdelend \DIFaddbegin \DIFadd{Erhalten }\DIFaddend neuer Positionsdaten ist diese Limitierung aufzuheben.  
+Rein optisch wirkte das Regelverhalten dieser Messung von außen betrachtet sehr nervös, da ohne Kenntnis der Messdaten kein ersichtlicher Grund für die großen Stellwinkel zu erkennen war. Des Weiteren treten solche Definitionslücken bei der Lokalisierung nur sporadisch auf, so dass der Quadrocopter in den meisten Fällen in einer flüssigen Bewegung in die neue Position überführt wird. Nichtsdestotrotz gilt es den Einfluss der Lücken in der Positionsbestimmung zu minimieren, da vor allem bei längeren Flügen die Wahrscheinlichkeit, dass ein solcher Fehler auftritt, steigt. So gilt es im Anschluss dieser Masterthesis zu untersuchen, welche Umstände zu einer lückenhaften Lokalisierung mittels Laser führen. Vorstellbar ist, dass das von \gls{ros} verwendete IP-Protokoll zeitweise zu viele Umgebungsscans in einem Datenpaket zusammenfasst, womit die physische Abtastrate reduziert wird. Alternativ könnte eine weitere Ursache darin liegen, dass der Laser für zu große Neigungswinkel den Boden bzw. die Decke erfasst, somit der ICP-Algorithmus (Kapitel \ref{sec:laser_scan_matching}) die aufeinanderfolgenden Scans nicht übereinander legen kann und so zu keinem Positionsergebnis kommt. Wenn dem so ist, existierte die Möglichkeit die maximalen Stellwinkel zu begrenzen. Dies würde allerdings zu einer Beschränkung der Dynamik führen. Deshalb sollte in diesem Fall untersucht werden, ob ein 3D-SLAM-Algorithmus zur Positionsbestimmung nicht die besser Alternative darstellt. Voraussetzung dafür ist jedoch eine genaue Höhenbestimmung des Quadrocopters. Diese wurde zwar von Jan Kallwies \cite{JanKal13} entwickelt, steht momentan allerdings nicht auf dem Quadrocopter zur Verfügung. Eine kurzfristige Lösung zur Bekämpfung des Einfluss von Lokalisierungslücken ist die Implementierung eines Algorithmus, der ausbleibende Positionsdaten zuverlässig erkennt. Schlägt dieser Algorithmus an, könnten die zulässigen Neigungswinkel auf ein Minimum reduziert werden, sodass der Quadrocopter nicht weiter beschleunigt. Nach Erhalten neuer Positionsdaten ist diese Limitierung aufzuheben.  
 
- 
- Schlussendlich ist\DIFaddbegin \DIFadd{, }\DIFaddend auch ohne diese \DIFaddbegin \DIFadd{weiteren Ideen/}\DIFaddend Maßnahmen\DIFaddbegin \DIFadd{, }\DIFaddend die Funktionsfähigkeit der von AscTec in Verbindung mit der ETH-Zürich entwickelten Positionsregelung bewiesen. Zum Abschluss gilt es \DIFdelbegin \DIFdel{noch }\DIFdelend \DIFaddbegin \DIFadd{nach wie vor }\DIFaddend die Anwendbarkeit der Positionsregelung als Geschwindigkeitsregler, mittels Fernsteuerung aufzuzeigen.      
+
+Schlussendlich ist, auch ohne diese weiteren Ideen/Maßnahmen, die Funktionsfähigkeit der von AscTec in Verbindung mit der ETH-Zürich entwickelten Positionsregelung bewiesen. Zum Abschluss gilt es nach wie vor die Anwendbarkeit der Positionsregelung als Geschwindigkeitsregler, mittels Fernsteuerung aufzuzeigen.      
 
 
 
@@ -65,45 +65,30 @@ Um die Messergebnisse mit \DIFdelbegin \DIFdel{denn }\DIFdelend \DIFaddbegin \DI
 
 \section{Geschwindigkeitsregelung }
 \label{sec:geschwReg}
-\DIFdelbegin \DIFdel{In der ursprünglichen Ausschreibung zu dieser Masterthesis ist die Implementierung einer Geschwindigkeitsregelung als Ziel der Arbeit ausgegeben. Deshalb wird abschließenden in diesem Kapitel die Anwendbarkeit der Positionsregelung als Geschwindigkeitsregelung mittels eines Testergebnisses offengelegt.  
-}%DIFDELCMD < 
+In der ursprünglichen Ausschreibung zu dieser Masterthesis ist die Implementierung einer Geschwindigkeitsregelung als Schwerpunkt der Arbeit ausgegeben. \DIFdelbegin \DIFdel{Deshalb wird abschließenden }\DIFdelend \DIFaddbegin \DIFadd{In Folge dessen wird }\DIFaddend in diesem Kapitel \DIFaddbegin \DIFadd{abschließend  }\DIFaddend die Anwendbarkeit der Positionsregelung als Geschwindigkeitsregelung mittels eines Testergebnisses offengelegt.  
 
-%DIFDELCMD < %%%
-\DIFdel{Die Vorgabe der Geschwindigkeiten erfolgt im o-frame, das heißt es wird bestimmt mit welcher Geschwindigkeit sich der Quadrocopter vorwärts, rückwärts oder seitlich fortzubewegen hat. Da die Positionsregelung allerdings auf den Koordinaten des Navigationskoordinatensystem aufbaut, ist die gewünschte Geschwindigkeit zunächst ins n-frame zu transformieren. Dort sind diese wie im Kapitel \ref{sec:referenzmodell} beschrieben aufzuintegrieren. So erfolgt für Geschwindigkeiten ungleich null eine stetig Verschiebung der anzufliegenden Sollposition. Die Größe der Positionsveschiebung ist dabei Proportional zu den geforderten Geschwindigkeiten. Da der Quadrocopter mittels der Positionsregelung der Sollposition folgt (Abbildung \ref{fig:velpos}), spricht man auch von einer pseudo Geschwindigkeitsregelung.
- }%DIFDELCMD < \begin{figure}
-%DIFDELCMD <  	
+Die Vorgabe der Geschwindigkeiten erfolgt im o-frame, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend heißt es wird bestimmt mit welcher Geschwindigkeit sich der Quadrocopter vorwärts, rückwärts oder seitlich fortzubewegen hat. \DIFdelbegin \DIFdel{Da die Positionsregelung allerdings }\DIFdelend \DIFaddbegin \DIFadd{Nachdem die Positionsregelung gleichwohl }\DIFaddend auf den Koordinaten des \DIFdelbegin \DIFdel{Navigationskoordinatensystem }\DIFdelend \DIFaddbegin \DIFadd{Navigationskoordinatensystems }\DIFaddend aufbaut, ist die gewünschte Geschwindigkeit zunächst ins n-frame zu transformieren. Dort sind diese\DIFaddbegin \DIFadd{, }\DIFaddend wie im Kapitel \ref{sec:referenzmodell} beschrieben\DIFdelbegin \DIFdel{aufzuintegrieren. So }\DIFdelend \DIFaddbegin \DIFadd{, zu integrieren. Auf diese Weise }\DIFaddend erfolgt für Geschwindigkeiten ungleich \DIFdelbegin \DIFdel{null eine stetig }\DIFdelend \DIFaddbegin \DIFadd{Null eine stetige }\DIFaddend Verschiebung der anzufliegenden Sollposition. Die Größe der Positionsveschiebung ist dabei \DIFdelbegin \DIFdel{Proportional }\DIFdelend \DIFaddbegin \DIFadd{proportional }\DIFaddend zu den geforderten Geschwindigkeiten. Da der Quadrocopter mittels der Positionsregelung der Sollposition folgt (Abbildung \ref{fig:velpos}), spricht man auch von einer \DIFdelbegin \DIFdel{pseudo Geschwindigkeitsregelung}\DIFdelend \DIFaddbegin \DIFadd{Pseudo-Geschwindigkeitsregelung}\DIFaddend .
+ \begin{figure}
 
-%DIFDELCMD <  	\centering{
-%DIFDELCMD <  		\subfloat[Position auf der x-Achse des n-frames]{
-%DIFDELCMD <  			\includegraphics[width=0.5\textwidth]{images/vel_x}
-%DIFDELCMD <  			\label{fig:vel_x}
-%DIFDELCMD <  		}
-%DIFDELCMD <  		\subfloat[Position auf der x-Achse des n-frames]{
-%DIFDELCMD <  			\includegraphics[width=0.5\textwidth]{images/vel_y}
-%DIFDELCMD <  			\label{fig:vel_y}
-%DIFDELCMD <  		}
-%DIFDELCMD <  	}	
-%DIFDELCMD <  	%%%
-%DIFDELCMD < \caption[Positionsverlauf Versuch Geschwindigkeitsregler]{%
-{%DIFAUXCMD
-\DIFdelFL{Positionsverlauf Versuch Geschwindigkeitsregler}}
- 	%DIFAUXCMD
-%DIFDELCMD < \label{fig:velpos}
-%DIFDELCMD <  \end{figure}
-%DIFDELCMD <  
+ 	\centering{
+ 		\subfloat[Position auf der x-Achse des n-frames]{
+ 			\includegraphics[width=0.5\textwidth]{images/vel_x}
+ 			\label{fig:vel_x}
+ 		}
+ 		\subfloat[Position auf der x-Achse des n-frames]{
+ 			\includegraphics[width=0.5\textwidth]{images/vel_y}
+ 			\label{fig:vel_y}
+ 		}
+ 	}	
+ 	\caption[Positionsverlauf Versuch Geschwindigkeitsregler]{Positionsverlauf Versuch Geschwindigkeitsregler}
+ 	\label{fig:velpos}
+ \end{figure}
 
-%DIFDELCMD < %%%
-\DIFdel{Abbildung \ref{fig:velof} beleuchtet den zur Positionsschiebung führenden Geschwindigkeitsverlauf im o-frame. Die Vorgabe der Geschwindigkeit erfolgte dabei über den Bedienhebel der Fernsteuerung, der bei manueller Steuerung zur Vorgabe der Neigungswinkel dient. Bei aktiver Geschwindigkeitsregelung werden die Rohdaten dieses Bedienhebel jedoch Geschwindigkeitsvorgaben im o-frame zugeordnet. Der Umrechnungsfaktor kann dabei beliebig festgelegt werden, solange der Quadrocopter der maximal einforderbaren Geschwindigkeit folgen kann. So Betrug der Faktor bei der Durchführung der Messung $ 0.0004 $, das bedeutet ein Rohwert von $ 1000 $ entspricht einer geforderten Geschwindigkeit von $ 0.4 \frac{m}{s} $.
-}%DIFDELCMD < 
+Abbildung \ref{fig:velof} beleuchtet den zur \DIFdelbegin \DIFdel{Positionsschiebung }\DIFdelend \DIFaddbegin \DIFadd{Positionsverschiebung }\DIFaddend führenden Geschwindigkeitsverlauf im o-frame. Die Vorgabe der Geschwindigkeit erfolgte dabei über den Bedienhebel der Fernsteuerung, der bei manueller Steuerung zur Vorgabe der Neigungswinkel dient. Bei aktiver Geschwindigkeitsregelung werden die Rohdaten dieses Bedienhebel jedoch Geschwindigkeitsvorgaben im o-frame zugeordnet. Der Umrechnungsfaktor kann \DIFdelbegin \DIFdel{dabei }\DIFdelend beliebig festgelegt werden, solange der Quadrocopter der maximal einforderbaren Geschwindigkeit folgen kann. \DIFdelbegin \DIFdel{So Betrug }\DIFdelend \DIFaddbegin \DIFadd{In diesem Fall betrug }\DIFaddend der Faktor bei der Durchführung der Messung $ 0.0004 $, das \DIFdelbegin \DIFdel{bedeutet ein }\DIFdelend \DIFaddbegin \DIFadd{entspricht einem }\DIFaddend Rohwert von $ 1000 $ \DIFdelbegin \DIFdel{entspricht }\DIFdelend \DIFaddbegin \DIFadd{und }\DIFaddend einer geforderten Geschwindigkeit von $ 0.4 \frac{m}{s} $.
 
-%DIFDELCMD < %%%
-\DIFdel{Um überprüfen zu können, ob sich für den Stellwertverlauf über die Fernbedienung (Abbildung \ref{fig:vel_nickheb} und Abbildung \ref{fig:vel_nickheb}) die geforderten Geschwindigkeiten aus der Sicht des Quadrocopters einstellen, sind die vom Referenzmodell generierte Sollgeschwindigkeit, als auch die vom Beobachter geschätzte Geschwindigkeit ins o-frame transformiert worden (Abbildung \ref{fig:vel_vxof} und Abbildung \ref{fig:vel_vyof}). Auf den ersten Blick fällt auf, das der qualitative Verlauf der Vorgaben mit der sich tatsächlich einstellenden Geschwindigkeit übereinstimmt. Zu sehen ist jedoch auch, das sich Geschwindigkeitsvorgaben des Bedienhebels gedämpft und Phasenverschoben auf den Sollwertverlauf des Referenzmodells auswirken, deutlicher sieht man dies auch in Abbildung \ref{fig:velpos}. Zu erklären ist dies durch die Zeitkonstanten des Referenzmodells, die für diese Flugversuch über die Eigenfrequenz $ \omega_0 = 1.5 $ und die Dämpfung $ D = 1 $ festgelegt sind. Ist gewollt, das sich Vorgaben über den die Fernsteuerung schneller einstellen, ist deshalb die Eigenfrequenz $ \omega_0$ des Referenzmodells zu erhöhen. Dies wird auch empfohlen um ein besseres Feedback über geforderte Geschwindigkeiten zu erlangen.  
-}%DIFDELCMD < 
+Um \DIFdelbegin \DIFdel{überprüfen zu können}\DIFdelend \DIFaddbegin \DIFadd{zu prüfen}\DIFaddend , ob sich für den Stellwertverlauf über die Fernbedienung (Abbildung \ref{fig:vel_nickheb} und Abbildung \ref{fig:vel_nickheb}) die geforderten Geschwindigkeiten aus der Sicht des Quadrocopters einstellen, sind die vom Referenzmodell generierte Sollgeschwindigkeit, als auch die vom Beobachter geschätzte Geschwindigkeit ins o-frame transformiert worden (Abbildung \ref{fig:vel_vxof} und Abbildung \ref{fig:vel_vyof}). Auf den ersten Blick fällt auf, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend der qualitative Verlauf der Vorgaben mit der sich tatsächlich einstellenden Geschwindigkeit übereinstimmt. \DIFdelbegin \DIFdel{Zu sehen ist jedoch auch, das }\DIFdelend \DIFaddbegin \DIFadd{Weiterhin ist zu beobachten, dass }\DIFaddend sich Geschwindigkeitsvorgaben des Bedienhebels gedämpft und \DIFdelbegin \DIFdel{Phasenverschoben }\DIFdelend \DIFaddbegin \DIFadd{phasenverschoben }\DIFaddend auf den Sollwertverlauf des Referenzmodells auswirken, \DIFdelbegin \DIFdel{deutlicher sieht man dies auch }\DIFdelend \DIFaddbegin \DIFadd{deutlich erkennbar }\DIFaddend in Abbildung \ref{fig:velpos}. Zu erklären ist \DIFdelbegin \DIFdel{dies }\DIFdelend \DIFaddbegin \DIFadd{das }\DIFaddend durch die Zeitkonstanten des Referenzmodells, die für \DIFdelbegin \DIFdel{diese }\DIFdelend \DIFaddbegin \DIFadd{diesen }\DIFaddend Flugversuch über die Eigenfrequenz $ \omega_0 = 1.5 $ und die Dämpfung $ D = 1 $ festgelegt sind. Ist \DIFdelbegin \DIFdel{gewollt, das }\DIFdelend \DIFaddbegin \DIFadd{gewünscht, dass }\DIFaddend sich Vorgaben über \DIFdelbegin \DIFdel{den }\DIFdelend die Fernsteuerung schneller einstellen, ist \DIFdelbegin \DIFdel{deshalb }\DIFdelend \DIFaddbegin \DIFadd{daher }\DIFaddend die Eigenfrequenz $ \omega_0$ des Referenzmodells zu erhöhen. Dies wird auch empfohlen\DIFaddbegin \DIFadd{, }\DIFaddend um ein besseres Feedback über geforderte Geschwindigkeiten zu erlangen.  
 
-%DIFDELCMD < %%%
-\DIFdel{Abschließend bewertet zeigt die Messdaten dieses Flugversuches (Abbildung \ref{fig:velof} ), dass die sich auf dem }%DIFDELCMD < \gls{hlp} %%%
-\DIFdel{befindliche Positionsregelung auch den bei Ausschreibung formulierten Wunsch nach einer Geschwindigkeitsregelung erfüllt. Womit die Arbeit ihren Abschluss findet.
-}\DIFdelend 
+Abschließend bewertet\DIFdelbegin \DIFdel{zeigt }\DIFdelend \DIFaddbegin \DIFadd{, zeigen }\DIFaddend die Messdaten dieses Flugversuches (Abbildung \ref{fig:velof}), dass \DIFdelbegin \DIFdel{die sich }\DIFdelend \DIFaddbegin \DIFadd{sich die }\DIFaddend auf dem \gls{hlp} befindliche Positionsregelung auch \DIFdelbegin \DIFdel{den bei Ausschreibung formulierten Wunsch }\DIFdelend \DIFaddbegin \DIFadd{dem formulierten Wunsch der Ausschreibung  }\DIFaddend nach einer Geschwindigkeitsregelung erfüllt. Womit die Arbeit ihren Abschluss findet.
 
  \begin{figure}
 
@@ -128,6 +113,38 @@ Um die Messergebnisse mit \DIFdelbegin \DIFdel{denn }\DIFdelend \DIFaddbegin \DI
  	\caption[Messergebnisse Geschwindigkeitsregelung]{Messergebnisse Geschwindigkeitsregelung}
  	\label{fig:velof}
  \end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

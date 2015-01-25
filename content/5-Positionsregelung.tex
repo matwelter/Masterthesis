@@ -555,15 +555,14 @@ Dadurch können Tuning-Algorithmen verwendet werden, die für einen PID-Regler ent
 \dot{k}_d &= \dot{\tilde{c}}_1 = \gamma \cdot e\cdot \dot{e}
 \end{split}
 \end{equation} 
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/selftune}
+	\caption[Selftuning Folgeregler]{Folgeregler inklusive Selftuning} %
+	\label{fig:selftun}
+\end{figure}
 
-Dabei entspricht $ \gamma $ dem Anpassungskoeffizient. In \cite{selftun} wird $ \gamma = 10 $ empfohlen. Die Struktur, des sich daraus ergebenden Folgeregler mit Selbstoptimierung, ist in Abbildung dargestellt. 
-  \begin{figure}
-  	\centering
-  	\includegraphics[width = \textwidth]{images/Platzhalter}
-  	\caption[Selftuning Folgeregler]{Folgeregler inklusive Selftuning} %
-  	\label{fig:selftun00}
-  \end{figure}
-Anzumerken ist, dass die Qualität der Optimierung abhängig von den zu Beginn übergebenen Parametern ist. Die zuvor zum Beispiel über die Polvorgabe bestimmt werden. 
+Dabei entspricht $ \gamma $ dem Anpassungskoeffizient. In \cite{selftun} wird $ \gamma = 10 $ empfohlen. Die Struktur, des sich daraus ergebenden Folgeregler mit Selbstoptimierung, ist in Abbildung \ref{fig:selftun} dargestellt. Anzumerken ist, dass die Qualität der Optimierung abhängig von den zu Beginn übergebenen Parametern ist. Die zuvor zum Beispiel über die Polvorgabe bestimmt werden. 
 
 \section{Zustandsschätzung}
 \label{sec:Zustandsbestimmung}
