@@ -31,7 +31,7 @@ Der größte Vorzug von \gls{ros} ist die ständig wachsende Community. Hier stelle
 
 \section{Einführung in die Koordinatensysteme und Koordinatentransformationen}
 \label{sec:koordinatensysteme&transformationen}
-Anhand von Koordinatensystemen und Transformationen lassen sich die Lage von Punkten und  Objekten in einem Raum mathematisch beschreiben, die Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (siehe Kapitel HIER MUSS NOCH EINE REFERENZ HIN). Ferner ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters, und stellt die Grundlage zur Modellbildung sowie des Reglerentwurfs dar (siehe Kapitel so und so).  
+Anhand von Koordinatensystemen und Transformationen lassen sich die Lage von Punkten und  Objekten in einem Raum mathematisch beschreiben, die Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (Kapitel \ref{chap:2Dpositionsbestimmung}). Ferner ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters, und stellt die Grundlage zur Modellbildung sowie des Reglerentwurfs dar (Kapitel \ref{chap:Positionsregelung}).  
 
 \subsection{Koordinatensysteme}
 \label{subsec:koordinatensysteme}
@@ -71,7 +71,7 @@ Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen, sind vier xyz-Koord
 	\item \textbf{n-frame(Lokaler Navigationsframe):} Ist ein ortsfestes Koordinatensystem zur Beschreibung der Position im Raum. Da es in dieser Arbeit um die horizontale Positionsregelung geht, ist ausschließlich die xy-Ebene von Interesse. Der Ursprung des Koordinatensystem wird bei jedem Systemstart neu initialisiert. Zu beachten ist, dass dies beim vollautonomen Flug in Räumen erfolgt. Dabei beziehen sich die Sollpositionen nicht auf ein Raumkoordinatensystem mit festem Ursprung, sondern auf den beim Systemstart initialsierten Bezugspunkt. Keinen Einfluss hat diese Tatsache auf die Geschwindigkeitsregelung per Fernsteuerung, da an dieser Stelle die relative Bewegung von Interesse ist.
 	
 	Anbei der Hinweis, dass die Verwendung eines xyz Navigationsframes die Krümmung der Erdoberfläche vernachlässigt. Das ist legitim, da die Drohne in Gebäuden zum Einsatz kommt. Erfolgt eine weltweit Navigation wird ein
-	rotationsellipsische Koordinatensystem [THIELECKE LITVERWEIS] benötigt.
+	rotationsellipsische Koordinatensystem \cite{Thiel14} benötigt.
 
 	\item \textbf{b-frame(Bodyframe):} Das Koordinatensystem ist fest mit dem Rahmen des Quadrocopters verbunden. Es ist somit ein körperfestes Koordinatensystem. In diesem Fall befindet sich der Ursprung des Systems im Schwerpunkt. Die x-Achse zeigt in die als Vorne definierte Richtung. Die y- und z-Achse sind davon abhängig nach der \gls{enu} Konvention angeordnet. Informationen, die sich auf dieses Referenzsystem beziehen, sind unter anderen die \gls{imu}-Daten. Außerdem lässt sich mit diesem System die Lage des Quadrocoters im n-frame über die Position des Nullpunkts und Drehwinkel beschreiben. 
 	 	

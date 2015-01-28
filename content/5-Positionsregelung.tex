@@ -640,7 +640,7 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  \label{subsec:adaptwind}
  Wie in Kaptiel \ref{subsec:abpos} erläutert, nimmt die Varianz der Geschwindigkeitsschätzung ab, je weiter die Positionswerte auseinander liegen. Hierfür ist auf Grafik \ref{fig:VarPosVerschNierdrig} verwiesen. Der gleiche Effekt tritt auf, je mehr Abtastschritte $ n $ der für die Euler-Approximation verwendete Bezugspunkte $ P^n_{k-n} $ in der Vergangenheit liegen. 
  \begin{equation}
- \hat{v}^n_k = \frac{P^n_k-P^n_{k-n}}{nT_l}=
+ \hat{v}^n_k = \frac{P^n_k-P^n_{k-n}}{nT_l}=\frac{1}{n} \sum\limits_{j = 0}^{n-1} \hat{v}^n_{k-j} 
  \label{eq:v_eul_n}
  \end{equation}
  Dabei ist die Verwendung der Bezugsposition $ P^n_{k-n} $ gleichzusetzen mit der Mittlung der letzten $ n $ Geschwindigkeitsschätzungen ($ v^n_k,v^n_{k-1},\cdots,v^n_{k-1} $) mittels (\ref{eq:v_eul}). Deshalb spricht man auch von Fensterung beziehungsweise Windowing. Siehe zur Veranschaulichung Abbildung~\ref{fig:Fensterung}. Vergrößert man das Fenster, besitzt das eine äquivalente Wirkung wie die Reduzierung der Abtastrate.
@@ -714,14 +714,14 @@ Der Ablauf des Interations-Algorithmus sieht wie folgt aus.
 	Die maximale Fenstergröße $ n $ entspricht für Position $ p^n_{k} $  somit $ n = j-1 $ 
 \end{itemize} 
 
- Dieser Vorgang wird für jede Aktualisierung  $ k = k+1 $ des Positionswert $ p^n_{k} $ neu gestartet. Zur Veranschaulichung ist der Algorithmus noch einmal in einen Flussdiagramm (Abbildung \ref{fig:flussfoaw}) dargestellt.  
+ Dieser Vorgang wird für jede Aktualisierung  $ k = k+1 $ des Positionswert $ p^n_{k} $ neu gestartet. %Zur Veranschaulichung ist der Algorithmus noch einmal in einen Flussdiagramm (Abbildung \ref{fig:flussfoaw}) dargestellt.  
 
- \begin{figure}
- 	\centering
- 	\includegraphics[width = \textwidth]{images/Platzhalter}
- 	\caption[Flussdiagramm \gls{foaw}]{Flussdiagramm \gls{foaw}} %
- 	\label{fig:flussfoaw}
- \end{figure}
+ %\begin{figure}
+ %	\centering
+ %	\includegraphics[width = \textwidth]{images/Platzhalter}
+ %	\caption[Flussdiagramm \gls{foaw}]{Flussdiagramm \gls{foaw}} %
+ %	\label{fig:flussfoaw}
+% \end{figure}
  Die End-fit-\gls{foaw} verwendet für den Schätzvorgang die zwei Endpunkte des Fensters. In \cite{adaptWin} wird deshalb zur Verbesserung die Best-fit\gls{foaw} vorgestellt. Dabei wird die Steigung über die Methode, der des kleinsten quadratischen Fehler, bestimmt. Das bedeutet für die zeitnormierte Geradengleichung ist eine Steigung $ b_n $ gesucht, für die die Summe der Fehlerquadrat $ e^2 $ ein Minimum aufweist.  
  \begin{equation}
  e_{min}^2 = min \sum\limits_{i=0}^{n}(p^n_{k-i} - \hat{p}^n_{k-i})^2
