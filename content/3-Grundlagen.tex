@@ -15,9 +15,9 @@ Ziel dieses Unterkapitel ist es das Opensource Betriebssystem \gls{ros} mit sein
 \end{figure}
 
 
-Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung~\ref{fig:node_kommunikation}). Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und veröffentlicht (publication). Benötigt ein weiter Knoten den Inhalt eines Topics, kann er es abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert ist, wird sie in den abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt. Es können beliebig viele Topics beschrieben oder empfangen werden. Alternative zu dieser Art der asynchronen Datenübertragung bietet \gls{ros} die Möglichkeit einer synchronen Kommunikation zwischen zwei Nodes über Services. Auf diese Weise wird auf einem Knoten ein Service gestartet. Dieser dient als Server und agiert nach dem Anfrage-Antwort-Prinzip. Schickt ein anderer Knoten eine Anfrage, wird ihm die geforderte Nachricht zu gesendet. 
+Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung~\ref{fig:node_kommunikation}). Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und veröffentlicht (publication). Benötigt ein weiterer Knoten den Inhalt eines Topics, kann er es abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert ist, wird sie in den abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt. Es können beliebig viele Topics beschrieben oder empfangen werden. Alternativ zu dieser Art der asynchronen Datenübertragung bietet \gls{ros} die Möglichkeit einer synchronen Kommunikation zwischen zwei Nodes über Services. Auf diese Weise wird auf einem Knoten ein Service gestartet. Dieser dient als Server und agiert nach dem Anfrage-Antwort-Prinzip. Schickt ein anderer Knoten eine Anfrage, wird ihm die geforderte Nachricht zu gesendet. 
 
-Anzumerken ist, dass durch das verwendete \gls{ip}-Protokoll keine deterministische Versendung der Nachrichten gewährleistet ist. Es ist möglich, dass Nachrichten gleichen Typs in Paketen zusammengefasst werden. Bei der Programmierung empfiehlt sich, auf Topics mit einem Zeitstempel (engl. timestamp) zurückzugreifen. Die Echtzeitfähigkeit des \gls{ros} ist dadurch nicht gefährdet. 
+Anzumerken ist, dass durch das verwendete \gls{ip}-Protokoll keine deterministische Versendung der Nachrichten gewährleistet ist. Es ist möglich, dass Nachrichten gleichen Typs in Paketen zusammengefasst werden. Damit ist Echtzeit unter \gls{ros} nicht garantiert. Dies betrifft vor allem Knoten deren abonnierte Topics mit einer hohen Updaterate gepublished werden. Unkritisch dagegen sind Aktualisierungen in Takten kleiner $ 100~Hz $, hierbei sind Echtzeitanwendungen möglich. Bei der Programmierung empfiehlt sich dennoch, auf Topics mit einem Zeitstempel (engl. timestamp) zurückzugreifen. %Die Echtzeitfähigkeit des \gls{ros} ist dadurch nicht gefährdet. 
 
 \begin{figure}
 	\centering
@@ -27,15 +27,18 @@ Anzumerken ist, dass durch das verwendete \gls{ip}-Protokoll keine deterministis
 \end{figure}
 
 
-Der größte Vorzug von \gls{ros} ist die ständig wachsende Community. Hier stellen Forscher aus der ganze Welt ihre Algorithmen und Hardwareabstraktionen zur Verfügung. Folglich ist es möglich, bei der Erstellung einer Roboteranwendung auf Bausteine zurück zugreifen, die ohne diese Plattform selbst zu implementieren wären. Abgesehen davon, stellt ROS eine Vielzahl von Hilfsmitteln, wie zum Beispiel die Transferfunktion (/tf), bereit. An dieser Stelle lassen sich Koordinatensysteme definieren. Die Transformation der Daten wird automatisch von \gls{ros} durchgeführt.
+Der größte Vorzug von \gls{ros} ist die ständig wachsende Community. Hier stellen Forscher aus der ganzen Welt ihre Algorithmen und Hardwareabstraktionen zur Verfügung. Folglich ist es möglich, bei der Erstellung einer Roboteranwendung auf Bausteine zurückzugreifen, die ohne diese Plattform selbst zu implementieren wären. Abgesehen davon, stellt \gls{ros} eine Vielzahl von Hilfsmitteln bereit. Darunter fallen unter anderem Debug-Tools über die sich Topics sowohl auslesen als auch plotten lassen. Des Weiteren steht mit RViz ein Werkzeug bereit mit dem sich Messdaten in einer 3D-Umgebung visualisieren lassen. Aber auch für die Entwicklung von Anwendungen existieren Hilfsmittel. So gibt es zum Beispiel die Transferfunktion (/tf) über die Daten automatisch in jedes definierte Koordinatensystem transformieren.   
+
+%benötigten gibt \gls{ros} an die Hand
+%wie zum Beispiel die Transferfunktion (/tf), bereit. An dieser Stelle lassen sich Koordinatensysteme definieren. Die Transformation der Daten wird automatisch von \gls{ros} durchgeführt.
 
 \section{Einführung in die Koordinatensysteme und Koordinatentransformationen}
 \label{sec:koordinatensysteme&transformationen}
-Anhand von Koordinatensystemen und Transformationen lassen sich die Lage von Punkten und  Objekten in einem Raum mathematisch beschreiben, die Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (Kapitel \ref{chap:2Dpositionsbestimmung}). Ferner ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters, und stellt die Grundlage zur Modellbildung sowie des Reglerentwurfs dar (Kapitel \ref{chap:Positionsregelung}).  
+Anhand von Koordinatensystemen und Transformationen lässt sich die Lage von Punkten und Objekten in einem Raum mathematisch beschreiben, die Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (Kapitel \ref{chap:2Dpositionsbestimmung}). Ferner ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters, und stellt die Grundlage zur Modellbildung sowie des Reglerentwurfs dar (Kapitel \ref{chap:Positionsregelung}).  
 
 \subsection{Koordinatensysteme}
 \label{subsec:koordinatensysteme}
-Über ein Koordinatensystem lässt sich ein Vektor oder die Position eines Punktes bezogen auf den Koordinatenursprung in einer zweidimensionalen Ebene, bzw. in einem dreidimensionalen Raum beschreiben. Ziel diese Teilabschnittes ist die Beschreibung der in dieser Arbeit eingeführten Koordinatensysteme.\\
+Über ein Koordinatensystem lässt sich ein Vektor oder die Position eines Punktes bezogen auf den Koordinatenursprung in einer zweidimensionalen Ebene, bzw. in einem dreidimensionalen Raum beschreiben. Ziel dieses Teilabschnittes ist die Beschreibung der in dieser Arbeit eingeführten Koordinatensysteme.\\
 
 \begin{figure}
 	
@@ -44,12 +47,12 @@ Anhand von Koordinatensystemen und Transformationen lassen sich die Lage von Pun
 			\includegraphics[width=0.3\textwidth]{images/ENU-koordinatensystem}
 			\label{fig:enu}
 		}
-		\subfloat[NED-Koordimatemsystem]{
+		\subfloat[NED-Koordimatensystem]{
 			\includegraphics[width=0.3\textwidth]{images/ned-koordinatensystem}
 			\label{fig:ned}
 		}
 	}
-	\caption[Kovention ]{test}
+	\caption[Kovention von Koordinatensystemen]{Kovention von Koordinatensystemen}
 	\label{fig:konventionen}
 	
 \end{figure}
@@ -73,7 +76,7 @@ Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen, sind vier xyz-Koord
 	Anbei der Hinweis, dass die Verwendung eines xyz Navigationsframes die Krümmung der Erdoberfläche vernachlässigt. Das ist legitim, da die Drohne in Gebäuden zum Einsatz kommt. Erfolgt eine weltweit Navigation wird ein
 	rotationsellipsische Koordinatensystem \cite{Thiel14} benötigt.
 
-	\item \textbf{b-frame(Bodyframe):} Das Koordinatensystem ist fest mit dem Rahmen des Quadrocopters verbunden. Es ist somit ein körperfestes Koordinatensystem. In diesem Fall befindet sich der Ursprung des Systems im Schwerpunkt. Die x-Achse zeigt in die als Vorne definierte Richtung. Die y- und z-Achse sind davon abhängig nach der \gls{enu} Konvention angeordnet. Informationen, die sich auf dieses Referenzsystem beziehen, sind unter anderen die \gls{imu}-Daten. Außerdem lässt sich mit diesem System die Lage des Quadrocoters im n-frame über die Position des Nullpunkts und Drehwinkel beschreiben. 
+	\item \textbf{b-frame(Bodyframe):} Das Koordinatensystem ist fest mit dem Rahmen des Quadrocopters verbunden. Es ist somit ein körperfestes Koordinatensystem. In diesem Fall befindet sich der Ursprung des Systems im Schwerpunkt. Die x-Achse zeigt in die als Vorne definierte Richtung. Die y- und z-Achse sind davon abhängig nach der \gls{enu} Konvention angeordnet. Informationen, die sich auf dieses Referenzsystem beziehen, sind unter anderen die \gls{imu}-Daten. Außerdem lässt sich mit diesem System die Lage des Quadrocopters im n-frame über die Position des Nullpunkts und Drehwinkel beschreiben. 
 	 	
 	\item \textbf{l-frame(Laserframe):} Ist ebenfalls ein körperfestes Koordinatensystem, in dem die Entfernungsmessungen des Lasers aufgetragen werden. Der Bezugspunkt liegt folglich in der Sendequelle des Lasers. Die Ausrichtung der Achsen entspricht der des b-frames, mit Ausnahme eines Offsets in z-Richtung.
 	
@@ -95,7 +98,7 @@ Damit Daten eines Referenzsystem in einen anderes transformiert werden können, m
 	\label{fig:zyx_konvention}
 \end{figure}
 
-Das Koordinatensystem wird zu beginn um den Winkel $\psi$, d.h. um die z-Achse gedreht. Daraus ergibt sich das in Abbildung \ref{fig:zyx_konvention} grün eingezeichnet Koordinatensystem. Anschließend wird
+Das Koordinatensystem wird zu Beginn um den Winkel $\psi$, d.h. um die z-Achse gedreht. Daraus ergibt sich das in Abbildung \ref{fig:zyx_konvention} grün eingezeichnet Koordinatensystem. Anschließend wird
 dieses um die Achse y' rotiert, sprich den Winkel $\theta$. Zuletzt erfolgt eine Drehung mit dem Winkel $\phi$ um die x''-Achse. Das Ergebnis stellt das rote x'',y'',z''-Koordinatensystem dar. Hierbei ist zu beachten, dass die Reihenfolge der Winkel einzuhalten ist, da sonst die beschriebene von der tatsächlichen Lage abweicht. Ein veranschaulichendes Beispiel, wohin unterschiedliche Abfolgen bei der Rotation führen, ist in der Literatur [Literaturverzeichnis] von Herr Thielecke zu finden.  
 
 Nach Luftfahrtkonvention lässt sich eine Transformationsmatrix $M$ aufstellen, mit der sich Vektoren und Koordinaten vom xyz-Koordinatensystem (Bsp.: n-frame) in das x''y''z''-Koordinatensystem (Bsp.: b-frame) überführen lassen. Hierfür sind zunächst die drei Transformationsmatrizen notwendig, die jeweils eine Rotation um eine Koordinatenachse beschreiben \cite{Buch14}. Diese sind wie folgt definiert:
@@ -141,7 +144,7 @@ Aus diesen Rotationsmatrizen ergibt sich über Matrizenmultiplikation eine Gesamt
 	\end{split}
 	\end{equation}
 
-Mit Hilfe dieser Transformationmatrix kann ein Vektor zum Beispiel aus dem n-frame ins b-frame übertragen werden.
+Mit Hilfe dieser Transformationmatrix lassen sich nach \cite{Buch14} Vektorgrößen zum Beispiel aus dem n-frame ins b-frame übertragen.
 
 \begin{equation}
 \begin{bmatrix}
@@ -157,7 +160,7 @@ z^n\\
 \label{eq:transM} 
 \end{equation}
 
-Handelt es sich um eine Koordinate, ist zusätzlich der Abstand der Koordinatenursprünge zu addieren. Für die Rücktransformation wird die Gesamttransformationsmatrix transponiert. Demzufolge ergibt sich:
+Angemerkt sei, das wenn es sich bei dem Vektor um Koordinate handelt, zusätzlich der Abstand der Koordinatenursprünge zu addieren ist. Für die Rücktransformation wird die Gesamttransformationsmatrix transponiert. Demzufolge ergibt sich:
 
    \begin{equation}
    \begin{bmatrix}
@@ -178,7 +181,7 @@ Handelt es sich um eine Koordinate, ist zusätzlich der Abstand der Koordinatenur
    \label{eq:inverse_transM}
    \end{equation}
 
-Nunmehr lassen sich Vektoren in beide Richtungen in die verschiedenen Bezugssysteme überführen. Nachteil der Methode mit Eulerwinkel ist, dass diese auf Grund der trigonometrischen Funktionen nur für Winkel $\phi, \theta, \psi = \{x \in  \mathbb{R}| -\pi \le x \le \pi\}$ eindeutig durchführbar sind. Wird dieser Bereich überschritten, lässt sich die Lage über Quaternionen beschreiben. Durch die Beschreibung der dreidimensionalen Orientierung in einem vierdimensionalen Raum ist die Lage auch für Rotationen um eine vielfaches von $2\pi$ eindeutig charakterisiert. Die genaue Definition findet sich in der  Literatur \cite{Thiel14} und \cite{Buch14}. Da der Definitionsbereich der Eulerwinkel für diese Arbeit im betrachteten Bereich ausreicht, ist ausschließlich die Umrechnung der in Quaternion ($w_q$, $x_q$, $y_q$, $z_q$) angegebenen Orientierungsdaten der \gls{imu} in Eulerwinkel($\phi$, $\theta$, $\psi$)erforderlich. Zu beachten ist, dass die folgende Umwandlung nur für die $z,y',x''$-Konvention Gültigkeit besitzt. 
+Nunmehr lassen sich Vektoren in beide Richtungen in die verschiedenen Bezugssysteme überführen. Nachteil der Methode mit Eulerwinkel ist, dass diese auf Grund der trigonometrischen Funktionen nur für Winkel $\phi, \theta, \psi = \{x \in  \mathbb{R}| -\pi \le x \le \pi\}$ eindeutig durchführbar sind. Wird dieser Bereich überschritten, lässt sich die Lage über Quaternionen beschreiben. Durch die Beschreibung der dreidimensionalen Orientierung in einem vierdimensionalen Raum ist die Lage auch für Rotationen um ein vielfaches von $2\pi$ eindeutig charakterisiert. Die genaue Definition findet sich in der  Literatur \cite{Thiel14} und \cite{Buch14}. Da der Definitionsbereich der Eulerwinkel für diese Arbeit im betrachteten Bereich ausreicht, ist ausschließlich die Umrechnung der in Quaternion ($w_q$, $x_q$, $y_q$, $z_q$) angegebenen Orientierungsdaten der \gls{imu} in Eulerwinkel ($\phi$, $\theta$, $\psi$) erforderlich. Zu beachten ist, dass die folgende Umwandlung nur für die $z,y',x''$-Konvention Gültigkeit besitzt. 
   
    \begin{equation}
 	   \phi = \arctan(\frac{2(y_qz_q+w_qx_q)}{w_q^2-x_q^2-y_q^2+z_q^2})\\

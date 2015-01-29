@@ -1,0 +1,196 @@
+\chapter{Grundlagen}
+\label{chap:grundlagen}
+Das Kapitel Grundlagen behandelt die Themen, die in mehreren Abschnitten \DIFdelbegin \DIFdel{dieser }\DIFdelend \DIFaddbegin \DIFadd{für diese }\DIFaddend Arbeit relevant sind. Dabei handelt es sich um das Robot Operation System, die verwendeten Koordinatensysteme und die Transformation zwischen ihnen.
+
+\section{Das Robot Operation System \gls{ros}}
+\label{sec:ros}
+Ziel dieses Unterkapitel ist es das Opensource Betriebssystem \gls{ros} \DIFdelbegin \DIFdel{vorzustellen. Wie es aufgebaut ist und welche Vorzüge es besitzt.}\DIFdelend \DIFaddbegin \DIFadd{mit seinem Aufbau und seinen Vorzügen vorzustellen.}\DIFaddend \\
+
+\gls{ros} stellt dem Softwareentwickler Bibliotheken und Werkzeuge zur Verfügung, \DIFdelbegin \DIFdel{die Helfen }\DIFdelend \DIFaddbegin \DIFadd{um }\DIFaddend Roboteranwendungen zu erstellen. Das auf einem \gls{ip}-basierende  modulare Kommunikationsframework ermöglicht die Verknüpfung von Anwendungssoftware, Sensoren und Aktoren\DIFaddbegin \DIFadd{, }\DIFaddend sogar unter mehreren Robotern. Die Grundlage dafür ist die sogenannte Hardwareabstraktion. \DIFdelbegin \DIFdel{Dabei wird durch hardwarespezifische Module erreicht, das }\DIFdelend \DIFaddbegin \DIFadd{Durch hardwarespezifische Module wird erreicht, dass }\DIFaddend Komponenten unterschiedlicher Hersteller miteinander verbunden werden können. In \DIFdelbegin \DIFdel{unserem Fall }\DIFdelend \DIFaddbegin \DIFadd{der Anwendung den }\DIFaddend Hokuyo Lasersanner und \DIFaddbegin \DIFadd{den }\DIFaddend \gls{asctec} \gls{fcu}. \DIFdelbegin \DIFdel{Außerdem }\DIFdelend \DIFaddbegin \DIFadd{Des Weiteren }\DIFaddend ermöglicht es eine hardwareunabhängige Programmierung, die  in den Programmiersprachen C/C++ oder in Python erfolgen kann. Jede Hardwareabstraktion oder Anwendung wird als Node, bzw. Konten bezeichnet und läuft als eigener Prozess.
+\begin{figure}
+	\centering
+	\includegraphics[width = 0.75\textwidth]{images/TopicUndService}
+	\caption[Topic und Service]{Kommunikation von Nodes über Topics und Services}
+	\label{fig:node_kommunikation}
+\end{figure}
+
+
+Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung \ref{fig:node_kommunikation}]. Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und \DIFdelbegin \DIFdel{somit }\DIFdelend veröffentlicht (publication). Benötigt ein weiter Knoten den Inhalt dieses \DIFdelbegin \DIFdel{Topic }\DIFdelend \DIFaddbegin \DIFadd{Topics, }\DIFaddend kann er es abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert \DIFdelbegin \DIFdel{wurde}\DIFdelend \DIFaddbegin \DIFadd{ist}\DIFaddend , wird sie \DIFaddbegin \DIFadd{in }\DIFaddend den abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt\DIFdelbegin \DIFdel{, es }\DIFdelend \DIFaddbegin \DIFadd{. Es }\DIFaddend können beliebig viele Topics beschrieben oder empfangen werden. Alternative zu dieser Art der asynchronen Datenübertragung \DIFdelbegin \DIFdel{, biete }\DIFdelend \DIFaddbegin \DIFadd{bietet }\DIFaddend \gls{ros} die Möglichkeit einer \DIFdelbegin \DIFdel{Synchrone }\DIFdelend \DIFaddbegin \DIFadd{synchronen }\DIFaddend Kommunikation zwischen zwei Nodes über Services. \DIFdelbegin \DIFdel{Dabei }\DIFdelend \DIFaddbegin \DIFadd{Auf diese Weise }\DIFaddend wird auf einem Knoten ein Service gestartet. Dieser dient als Server und agiert nach dem Anfrage-Antwort-Prinzip. Schickt ein anderer Knoten eine Anfrage, wird ihm die geforderte Nachricht zu gesendet. 
+
+Anzumerken ist, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend durch das verwendete \gls{ip}-Protokoll keine deterministische Versendung der Nachrichten nicht gewährleistet ist\DIFdelbegin \DIFdel{, da es sein kann, das Nachrichten gleichen Types }\DIFdelend \DIFaddbegin \DIFadd{. Es ist möglich, dass Nachrichten gleichen Typs }\DIFaddend in Paketen zusammengefasst werden. Bei der Programmierung empfiehlt \DIFdelbegin \DIFdel{es sichdaher }\DIFdelend \DIFaddbegin \DIFadd{sich, }\DIFaddend auf Topics mit einem Zeitstempel (engl. timestamp) zurückzugreifen. Die Echtzeitfähigkeit des \gls{ros} ist \DIFdelbegin \DIFdel{durch allerdings }\DIFdelend \DIFaddbegin \DIFadd{dadurch }\DIFaddend nicht gefährdet. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/MasterAndNode}
+	\caption[Registrierung der Knoten]{Registrierung der Knoten}
+	\label{fig:node_master}
+\end{figure}
+
+
+Der \DIFdelbegin \DIFdel{wohl }\DIFdelend größte \DIFdelbegin \DIFdel{Vorteil }\DIFdelend \DIFaddbegin \DIFadd{Vorzug }\DIFaddend von \gls{ros} ist die ständig wachsende Community. \DIFdelbegin \DIFdel{So }\DIFdelend \DIFaddbegin \DIFadd{Hier }\DIFaddend stellen Forscher aus der ganze Welt ihre Algorithmen und Hardwareabstraktionen zur Verfügung. \DIFdelbegin \DIFdel{Dadurch ist es möglich }\DIFdelend \DIFaddbegin \DIFadd{Folglich ist es realisierbar, }\DIFaddend bei der Erstellung einer Roboteranwendung auf Bausteine zurück zugreifen, die ohne diese Plattform selbst zu implementieren wären. Abgesehen davon\DIFaddbegin \DIFadd{, }\DIFaddend stellt ROS eine Vielzahl von Hilfsmitteln\DIFaddbegin \DIFadd{, }\DIFaddend wie zum Beispiel die Transferfunktion (/tf)\DIFdelbegin \DIFdel{bereit. Hier }\DIFdelend \DIFaddbegin \DIFadd{, bereit. An dieser Stelle }\DIFaddend lassen sich Koordinatensysteme definieren. Die Transformation der Daten wird \DIFdelbegin \DIFdel{dann }\DIFdelend automatisch von \gls{ros} durchgeführt.
+
+\section{Einführung in die Koordinatensysteme und Koordinatentransformationen}
+\label{sec:koordinatensysteme&transformationen}
+Anhand von Koordinatensystemen und Transformationen \DIFdelbegin \DIFdel{lässt }\DIFdelend \DIFaddbegin \DIFadd{lassen }\DIFaddend sich die Lage von Punkten und  Objekten in \DIFdelbegin \DIFdel{einen }\DIFdelend \DIFaddbegin \DIFadd{einem }\DIFaddend Raum mathematisch beschreiben\DIFdelbegin \DIFdel{. Die }\DIFdelend \DIFaddbegin \DIFadd{, die }\DIFaddend Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (siehe Kapitel HIER MUSS NOCH EINE REFERENZ HIN). \DIFdelbegin \DIFdel{Außerdem }\DIFdelend \DIFaddbegin \DIFadd{Ferner }\DIFaddend ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters\DIFdelbegin \DIFdel{und stellt somit }\DIFdelend \DIFaddbegin \DIFadd{, und stellt }\DIFaddend die Grundlage zur Modellbildung \DIFdelbegin \DIFdel{und Reglerentwurf }\DIFdelend \DIFaddbegin \DIFadd{sowie des Reglerentwurfs dar }\DIFaddend (siehe Kapitel so und so).  
+
+\subsection{Koordinatensysteme}
+\label{subsec:koordinatensysteme}
+Über ein Koordinatensystem lässt sich ein Vektor oder die Position eines Punktes bezogen auf den Koordinatenursprung in einer zweidimensionalen Ebene, bzw\DIFaddbegin \DIFadd{. }\DIFaddend in einem dreidimensionalen Raum beschreiben. Ziel diese Teilabschnittes ist die \DIFdelbegin \DIFdel{Erläuterung }\DIFdelend \DIFaddbegin \DIFadd{Beschreibung }\DIFaddend der in dieser Arbeit eingeführten Koordinatensysteme.\\
+
+\begin{figure}
+
+	\centering{
+		\subfloat[ENU-Koordinatensystem]{
+			\includegraphics[width=0.3\textwidth]{images/ENU-koordinatensystem}
+			\label{fig:enu}
+		}
+		\subfloat[NED-Koordimatemsystem]{
+			\includegraphics[width=0.3\textwidth]{images/ned-koordinatensystem}
+			\label{fig:ned}
+		}
+	}
+	\caption[Kovention ]{test}
+	\label{fig:konventionen}
+
+\end{figure}
+
+Zu Beginn werden \DIFdelbegin \DIFdel{nun zwei Konventionen bezüglich }\DIFdelend \DIFaddbegin \DIFadd{zwei Konventionen hinsichtlich }\DIFaddend der Bezugssysteme vorgestellt. Nummer eins, die in Abbildung \ref{fig:enu} dargestellte \gls{enu} Konvention. Diese wird \DIFdelbegin \DIFdel{in vor allem bei }\DIFdelend \DIFaddbegin \DIFadd{vor allem in }\DIFaddend der Landnavigation eingesetzt. \DIFdelbegin \DIFdel{Hier }\DIFdelend \DIFaddbegin \DIFadd{In diesem Fall }\DIFaddend zeigt die z-Achse nach oben. Bei der zweiten Konvention, hauptsächlich \DIFaddbegin \DIFadd{eingesetzt }\DIFaddend in der Wasser-, Luft- und Raumfahrt\DIFdelbegin \DIFdel{eingesetzt}\DIFdelend , handelt es sich um das \gls{ned} Bezugssystem (Abbildung \ref{fig:ned}). Die z-Achse zeigt nach unten. Anzumerken ist, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend in dieser Arbeit die Ausrichtung der x- und y -Achse nicht wie in Abbildung \ref{fig:konventionen} \DIFdelbegin \DIFdel{und auch der Namensgebung entsprechend den Himmelsrichtungen entspricht}\DIFdelend \DIFaddbegin \DIFadd{sondern der Namensgebung analog den Himmelsrichtungen entsprechen}\DIFaddend . Die Begriffe \gls{enu} und \gls{ned} dienen \DIFdelbegin \DIFdel{hier }\DIFdelend \DIFaddbegin \DIFadd{dabei }\DIFaddend zur Beschreibung der Ausrichtung der Koordinatenachsen in Abhängigkeit der positiven z-Achse.
+
+Bei der \DIFdelbegin \DIFdel{nun }\DIFdelend folgenden Einführung der Koordinatensysteme (Abbildung \ref{fig:koordinatensysteme}) handelt es \DIFaddbegin \DIFadd{sich }\DIFaddend ausschließlich um kartesische, \DIFdelbegin \DIFdel{das heißt }\DIFdelend \DIFaddbegin \DIFadd{d.h. }\DIFaddend orthogonale Koordinatensysteme, die nach der \gls{enu} Konvention ausgerichtet sind. \DIFdelbegin \DIFdel{Dies steht erstmal }\DIFdelend \DIFaddbegin \DIFadd{Das steht erstmals }\DIFaddend im Widerspruch mit dem Abschnitt zuvor, dort ist das \gls{ned} als Koordinatensystem für Flugkörper eingeführt worden. \DIFdelbegin \DIFdel{Es ist allerdings so, dass }\DIFdelend \DIFaddbegin \DIFadd{Grundsätzlich basieren }\DIFaddend die \gls{ros} Koordinatensysteme auf \gls{enu} \DIFdelbegin \DIFdel{basieren. Deshalb }\DIFdelend \DIFaddbegin \DIFadd{Konvention. Daraus erfolgt }\DIFaddend die Wahl von Bezugssystemen mit positiver z-Achse nach oben.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/Koordinatensysteme}
+	\caption[Koordinatensysteme]{In der Arbeit angewandte Koordinatensysteme }
+	\label{fig:koordinatensysteme}
+\end{figure}
+
+Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen\DIFaddbegin \DIFadd{, }\DIFaddend sind vier xyz-Koordinatensysteme definiert. 
+
+\begin{itemize}
+	\item \textbf{n-frame(Lokaler Navigationsframe):} \DIFdelbegin \DIFdel{Ortsfestes }\DIFdelend \DIFaddbegin \DIFadd{Ist ein ortsfestes }\DIFaddend Koordinatensystem zur Beschreibung der Position im Raum. Da es in dieser Arbeit um die horizontale Positionsregelung geht, ist \DIFdelbegin \DIFdel{hier }\DIFdelend ausschließlich die xy-Ebene von Interesse. Der Ursprung des Koordinatensystem wird bei jedem Systemstart neu initialisiert. Zu beachten ist\DIFaddbegin \DIFadd{, dass }\DIFaddend dies beim vollautonomen Flug in Räumen \DIFdelbegin \DIFdel{, dabei }\DIFdelend \DIFaddbegin \DIFadd{erfolgt. Dabei }\DIFaddend beziehen sich die Sollpositionen nicht auf ein Raumkoordinatensystem mit festem Ursprung, sondern auf den beim Systemstart initialsierten Bezugspunkt. Keinen Einfluss hat diese Tatsache auf die Geschwindigkeitsregelung per Fernsteuerung, da \DIFdelbegin \DIFdel{hier }\DIFdelend \DIFaddbegin \DIFadd{an dieser Stelle }\DIFaddend die relative Bewegung von Interesse ist.
+
+	\DIFdelbegin \DIFdel{Es sei darauf hingewiesen}\DIFdelend \DIFaddbegin \DIFadd{Anbei der Hinweis}\DIFaddend , dass die Verwendung eines xyz Navigationsframes die Krümmung der Erdoberfläche vernachlässigt. \DIFdelbegin \DIFdel{Diese ist }\DIFdelend \DIFaddbegin \DIFadd{Das erscheint }\DIFaddend legitim, da die Drohne in Gebäuden zum Einsatz kommt. \DIFdelbegin \DIFdel{Möchte man jedoch Weltweit navigieren, benötigt man ein
+	rotationsellipsische Koordinatensysteme}\DIFdelend \DIFaddbegin \DIFadd{Erfolgt eine weltweit Navigation wird ein
+	rotationsellipsische Koordinatensystem }\DIFaddend [THIELECKE LITVERWEIS] \DIFaddbegin \DIFadd{benötigt.
+}\DIFaddend 
+
+	\item \textbf{b-frame(Bodyframe):} \DIFdelbegin \DIFdel{Dieses }\DIFdelend \DIFaddbegin \DIFadd{Das }\DIFaddend Koordinatensystem ist fest mit dem Rahmen des Quadrocopters verbunden. \DIFdelbegin \DIFdel{Man spricht dabei von einen }\DIFdelend \DIFaddbegin \DIFadd{Es entspricht einem }\DIFaddend körperfesten Koordinatensystem. \DIFdelbegin \DIFdel{Dabei }\DIFdelend \DIFaddbegin \DIFadd{In diesem Fall }\DIFaddend befindet sich der Ursprung des Systems im Schwerpunkt, die x-Achse zeigt in die als Vorne definierte Richtung. Die y- und z-Achse sind abhängig \DIFdelbegin \DIFdel{davon nach }\DIFdelend \DIFaddbegin \DIFadd{von }\DIFaddend der \gls{enu} Konvention angeordnet. Informationen\DIFaddbegin \DIFadd{, }\DIFaddend die sich auf dieses Referenzsystem beziehen\DIFaddbegin \DIFadd{, }\DIFaddend sind unter anderen die \gls{imu}-Daten. Außerdem lässt sich mit diesem System die Lage des Quadrocoters im n-frame über die Position des Nullpunkts und Drehwinkel beschreiben. 
+
+	\item \textbf{l-frame(laserframe):} \DIFdelbegin \DIFdel{Ebenfalls }\DIFdelend \DIFaddbegin \DIFadd{Ist ebenfalls }\DIFaddend ein körperfestes Koordinatensystem\DIFdelbegin \DIFdel{. In die dem }\DIFdelend \DIFaddbegin \DIFadd{, in dem die }\DIFaddend Entfernungsmessungen des Lasers aufgetragen werden. Der Bezugspunkt liegt \DIFdelbegin \DIFdel{dabei }\DIFdelend \DIFaddbegin \DIFadd{folglich }\DIFaddend in der Sendequelle des Lasers. Die Ausrichtung der Achsen entspricht der des b-frames, mit Ausnahme eines Offsets in z-Richtung.
+
+	\item \textbf{o-frame(Orthogonalframe):} \DIFdelbegin \DIFdel{Hierbei handelt es }\DIFdelend \DIFaddbegin \DIFadd{Es handelt }\DIFaddend sich um ein objektbezogenes Bezugssystem, \DIFdelbegin \DIFdel{dessen Orientierung um seine }\DIFdelend \DIFaddbegin \DIFadd{welches mit dem b-fame verknüpft ist. Das o-frame beschreibt die Orientierung um die }\DIFaddend z-Achse \DIFdelbegin \DIFdel{und }\DIFdelend \DIFaddbegin \DIFadd{sowie }\DIFaddend die Position des \DIFdelbegin \DIFdel{Ursprungs im n-frame abhängig von dem Orthogonal über der Ebene befindlichen b-frame ist. Dadurch }\DIFdelend \DIFaddbegin \DIFadd{Quadrocopters in der horizontalen Ebene des n-frames. Hiermit }\DIFaddend wird der Quadrocopter in der zu \DIFdelbegin \DIFdel{Navigierenden }\DIFdelend \DIFaddbegin \DIFadd{navigierenden }\DIFaddend xy-Ebene abgebildet.    
+
+	 \end{itemize}
+
+\DIFdelbegin \DIFdel{Da sich Messwerte }\DIFdelend \DIFaddbegin \DIFadd{Nachdem sich die Messwerte, }\DIFaddend wie zum Beispiel die \gls{imu}-Daten oder die Laserdaten\DIFdelbegin \DIFdel{auf unterschiedlichen }\DIFdelend \DIFaddbegin \DIFadd{, auf unterschiedliche }\DIFaddend Koordinatensysteme beziehen, \DIFdelbegin \DIFdel{benötigt man }\DIFdelend \DIFaddbegin \DIFadd{wird eine }\DIFaddend Koordinatentransformation(Kapitel \ref{subsec:koordinatentransformation}) \DIFdelbegin \DIFdel{. Mit Hilfe derer }\DIFdelend \DIFaddbegin \DIFadd{erforderlich. Mit dieser Unterstützung }\DIFaddend lassen sich die Vektoren und Koordinaten in die verschiedenen Bezugssysteme übertragen.
+
+ 
+\subsection{Koordinatentransformationen}
+\label{subsec:koordinatentransformation}
+Damit Daten eines Referenzsystem in einen anderes \DIFdelbegin \DIFdel{Transformiert }\DIFdelend \DIFaddbegin \DIFadd{transformiert }\DIFaddend werden können, muss deren Orientierung zueinander beschreibbar sein. Nach  [Buchholz Flugregelung] ist dies über die Rotationswinkel $\phi$ (Rollwinkel/engl. roll), Rotation um die x-Achse sowie der Winkel $\theta$ (Nickwinkel/engl. pitch) und $\psi$ (Gierwinkel/engl. yaw) für die y- und z-Achse \DIFdelbegin \DIFdel{möglich}\DIFdelend \DIFaddbegin \DIFadd{erreichbar}\DIFaddend . Die Reihenfolge\DIFaddbegin \DIFadd{, }\DIFaddend um die die Achsen gedreht werden, ist dabei nicht beliebig. Sie ist in verschiedenen Konventionen festgelegt. In dieser Arbeit wird die in der Luftfahrt- und Fahrzeugtechnik gebräuchliche z,y',x''- Konvention (Abbildung \ref{fig:zyx_konvention}) angewendet.   
+
+\begin{figure}
+	\centering
+	\includegraphics[width = .75\textwidth]{images/zyx_konvention}
+	\caption[z,y',x''-Konvention]{z,y',x''-Konvention}
+	\label{fig:zyx_konvention}
+\end{figure}
+
+Das Koordinatensystem wird zu beginn um den Winkel $\psi$, d.h. um die z-Achse gedreht. Daraus ergibt sich das in Abbildung \ref{fig:zyx_konvention} grün eingezeichnet Koordinatensystem. Dieses rotiert \DIFdelbegin \DIFdel{man anschließend }\DIFdelend um die Achse y', sprich den Winkel $\theta$. Zuletzt erfolgt eine Drehung mit dem Winkel $\phi$ um die x''-Achse. Das Ergebnis \DIFdelbegin \DIFdel{ist }\DIFdelend \DIFaddbegin \DIFadd{stellt }\DIFaddend das rote x'',y'',z''-Koordinatensystem \DIFdelbegin \DIFdel{. Es sein nochmal darauf hinzuweisen, das }\DIFdelend \DIFaddbegin \DIFadd{dar. Hierbei ist zu beachten, dass }\DIFaddend die Reihenfolge der Winkel einzuhalten ist, da sonst die beschriebene von der tatsächlichen Lage abweicht. Ein veranschaulichendes Beispiel\DIFdelbegin \DIFdel{worin }\DIFdelend \DIFaddbegin \DIFadd{, wohin }\DIFaddend unterschiedliche Abfolgen bei der Rotation führen\DIFaddbegin \DIFadd{, }\DIFaddend ist in der Literatur [Literaturverzeichnis] von Herr Thielecke zu finden.  
+
+Nach Luftfahrtkonvention lässt sich eine Transformationsmatrix $M$ aufstellen, mit der \DIFaddbegin \DIFadd{sich }\DIFaddend Vektoren und Koordinaten vom xyz-Koordinatensystem (Bsp.: n-frame) in das x''y''z''-Koordinatensystem (Bsp.: b-frame) überführen lassen. \DIFdelbegin \DIFdel{Dafür benötigt man }\DIFdelend \DIFaddbegin \DIFadd{Hierfür sind }\DIFaddend zunächst die drei Transformationsmatrizen \DIFaddbegin \DIFadd{notwendig}\DIFaddend , die jeweils eine Rotation um eine Koordinatenachse beschreiben[Literaturverzeichnis]. Diese sind wie folgt definiert:
+
+\begin{itemize}
+	\item Drehung um die z-Achse mit dem Winkel $\psi$
+	\begin{equation}
+		M_z = \begin{bmatrix}
+		\cos\psi 	& \sin\psi	& 0\\
+		-\sin\psi	& \cos\psi	& 0\\
+		0			& 0 		& 1\\
+		\end{bmatrix}
+		\label{eq:Mz}
+	\end{equation}
+	\item Drehung um die y-Achse mit dem Winkel $\theta$
+	\begin{equation}
+	M_y = \begin{bmatrix}
+	\cos\theta  & 0	& -\sin\theta\\
+	0			& 1	& 0\\
+	\sin\theta	& 0 & \cos\theta\\
+	\end{bmatrix}
+	\end{equation}
+	\item Drehung um die x-Achse mit dem Winkel $\phi$
+	\begin{equation}
+	M_x = \begin{bmatrix}
+	1	& 0			& 0\\
+	0	& \cos\phi	& \sin\phi\\
+	0	& -\sin\phi 	& \cos\phi\\
+	\end{bmatrix}
+	\end{equation}
+\end{itemize}
+
+Aus diesen Rotationsmatrizen \DIFdelbegin \DIFdel{lässt }\DIFdelend \DIFaddbegin \DIFadd{erstellt }\DIFaddend sich über Matrizenmultiplikation eine Gesamttransformationsmatrix\DIFdelbegin \DIFdel{aufstellen}\DIFdelend . Die Reihenfolge der Multiplikation entspricht der in der Konvention festgelegten Drehfolge, \DIFaddbegin \DIFadd{die }\DIFaddend von rechts nach links gelesen \DIFdelbegin \DIFdel{. Somit }\DIFdelend \DIFaddbegin \DIFadd{wird. Demzufolge }\DIFaddend er gibt sich:
+
+	\begin{equation}
+	\begin{split}
+	M_{bn} &	= M_x \cdot M_y \cdot M_z \\
+	&= \begin{bmatrix}
+	\cos\theta\cos\psi	& \cos\theta\sin\psi	& -sin\theta\\
+	\sin\phi\sin\theta\cos\psi-\cos\phi\sin\psi	& \sin\phi\sin\theta\sin\psi+\cos\phi\cos\psi	& \sin\phi\cos\theta\\
+	\cos\phi\sin\theta\cos\psi+\sin\phi\sin\psi	& \cos\phi\sin\theta\sin\psi-\sin\phi\cos\psi 	& \cos\phi\cos\theta\\
+	\end{bmatrix}
+	\end{split}
+	\end{equation}
+
+Mit Hilfe dieser Transformationmatrix \DIFdelbegin \DIFdel{lässt }\DIFdelend \DIFaddbegin \DIFadd{überträgt }\DIFaddend sich jetzt ein Vektor zum Beispiel aus dem n-frame ins b-frame\DIFdelbegin \DIFdel{übertragen}\DIFdelend .
+
+\begin{equation}
+\begin{bmatrix}
+x^b\\
+y^b\\
+z^b\\	
+\end{bmatrix} = M_{bn} \cdot 
+\begin{bmatrix}
+x^n\\
+y^n\\
+z^n\\	
+\end{bmatrix}
+\label{eq:transM} 
+\end{equation}
+
+Handelt es sich \DIFdelbegin \DIFdel{bei }\DIFdelend um eine Koordinate, ist zusätzlich \DIFdelbegin \DIFdel{noch }\DIFdelend der Abstand der Koordinatenursprünge zu addieren. Für die Rücktransformation \DIFdelbegin \DIFdel{muss }\DIFdelend \DIFaddbegin \DIFadd{wird }\DIFaddend die Gesamttransformationsmatrix transponiert\DIFdelbegin \DIFdel{werden}\DIFdelend . Daraus folgt\DIFdelbegin \DIFdel{,
+}\DIFdelend \DIFaddbegin \DIFadd{:
+}\DIFaddend 
+
+   \begin{equation}
+   \begin{bmatrix}
+   x^n\\
+   y^n\\
+   z^n\\	
+   \end{bmatrix} = M_{bn}^T \cdot 
+   \begin{bmatrix}
+   x^b\\
+   y^b\\
+   z^b\\	
+   \end{bmatrix} = M_{nb} \cdot 
+   \begin{bmatrix}
+   x^b\\
+   y^b\\
+   z^b\\	
+   \end{bmatrix}
+   \label{eq:inverse_transM}
+   \end{equation}
+
+\DIFdelbegin \DIFdel{Nun }\DIFdelend \DIFaddbegin \DIFadd{Dabei }\DIFaddend lassen sich Vektoren in beide Richtungen in die verschiedenen Bezugssysteme überführen. Nachteil der Methode mit Eulerwinkel ist, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend diese auf Grund der trigonometrischen Funktionen nur für Winkel $\phi, \theta, \psi = \{x \in  \mathbb{R}| -\pi \le x \le \pi\}$ eindeutig durchführbar \DIFdelbegin \DIFdel{ist}\DIFdelend \DIFaddbegin \DIFadd{sind}\DIFaddend . Wird dieser Bereich überschritten, lässt sich die Lage über Quaternionen beschreiben. Durch die Beschreibung der dreidimensionalen Orientierung in einem vierdimensionalen Raum \DIFdelbegin \DIFdel{lassen, }\DIFdelend ist die Lage auch für Rotationen um eine vielfaches von $2\pi$ eindeutig charakterisiert. Die genaue Definition findet sich in der  Literatur \cite{Thiel14} und \cite{Buch14}. Da \DIFdelbegin \DIFdel{die }\DIFdelend \DIFaddbegin \DIFadd{der }\DIFaddend Definitionsbereich der Eulerwinkel für \DIFdelbegin \DIFdel{den in der Arbeit }\DIFdelend \DIFaddbegin \DIFadd{diese Arbeit im }\DIFaddend betrachteten Bereich ausreicht\DIFaddbegin \DIFadd{, }\DIFaddend ist ausschließlich die Umrechnung der in Quaternion ($w_q$, $x_q$, $y_q$, $z_q$) angegebenen Orientierungsdaten der \gls{imu} in Eulerwinkel($\phi$, $\theta$, $\psi$)\DIFaddbegin \DIFadd{erforderlich}\DIFaddend . Zu beachten ist, \DIFdelbegin \DIFdel{das die nun }\DIFdelend \DIFaddbegin \DIFadd{dass die }\DIFaddend folgende Umwandlung nur für die $z,y',x''$-Konvention Gültigkeit besitzt. 
+
+   \begin{equation}
+	   \phi = \arctan(\frac{2(y_qz_q+w_qx_q)}{w_q^2-x_q^2-y_q^2+z_q^2})\\
+	\end{equation}
+   \begin{equation}
+	  \theta =\arcsin(2(w_q y_q -x_q z_q))\\
+   \end{equation}
+   \begin{equation}
+     \psi = \arctan(\frac{2(x_q y_q + w_q z_q)}{w_q^2+x_q^2-y_q^2-z_q^2})
+   \end{equation}
+
+ Mit dieser letzten Umrechnung sind alle Grundlagen für die Arbeit gelegt. \DIFdelbegin \DIFdel{So }\DIFdelend \DIFaddbegin \DIFadd{Auf diese Weise }\DIFaddend bilden die Koordinatensystem und Transformationen die Basis für die nachkommende Positionsbestimmung. 

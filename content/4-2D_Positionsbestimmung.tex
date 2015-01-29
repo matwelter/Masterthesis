@@ -1,30 +1,32 @@
 \chapter[2D Positionsbestimmung]{Zweidimensionale Positionsbestimmung des Quadrocoters in xy-Ebene des Navigationsframes }
 \label{chap:2Dpositionsbestimmung}
-Sowie in der Aufgabenstellung beschrieben, erfolgt die Positionsbestimmung über den auf dem Quadrocopter montierten Lasersanner. Man spricht hierbei von einem Onboard-Lokalisierungssystem. Dabei erzeugt der Laser einen zweidimensionalen Scan der Umgebung. Die aufgenommen Entfernungen sind im l-frame definiert, d.h. sie beziehen sich auf Ursprung des Lasers. Damit enthalten diese Rohdaten keine Information über die Position und Orientierung des Quadrocopters in der xy-Ebene des Navigationskoordinatensystem (n-frame). Jedoch lässt sich aus Umgebungsscans mittels der    
+Wie in der Aufgabenstellung beschrieben, erfolgt die Positionsbestimmung über den auf dem Quadrocopter montierten Lasersanner. Es wird als ein Onboard-Lokalisierungssystem bezeichnet. Dabei erzeugt der Laser einen zweidimensionalen Scan der Umgebung. Die aufgenommen Entfernungen sind im l-frame definiert, d.h. sie beziehen sich immer auf den Ursprung des Lasers. Damit enthalten diese Rohdaten keine Information über die Position und Orientierung des Quadrocopters in der xy-Ebene des Navigationskoordinatensystem (n-frame). Allerdings lassen sich aus den Umgebungsscans mittels der    
 %Die aufgenommen Entfernungen sind dabei im l-frame definiert. Diese Rohdaten des Lasers enthalten keine Information über die Position des Quadrocopters im Navigationskoordinatensystem (n-frame). Jegendlich die Entfernung von umgebenden Objekten, bzw. Wänden ist in einem Laserscan enthalten. Anhand eines solchen Umgebungsscan lässt sich jedoch über die 
-Methode des \glqq scanmatching\grqq die Position in einer zweidimensionalen Ebenen bestimmen (Kapitel \ref{sec:laser_scan_matching}). Damit diese jedoch für die Bestimmung der Quadrocopterposition in der horizontalen Ebene eingesetzt werden kann, ist es von Nöten die Laserdaten in das o-frame zu projizieren (Kapitel \ref{sec:laser_ortho}). Erst dann lässt sich für das o-frame und somit dem Quadrocopter, Position und Orientierung in der xy-Ebene des n-frames bestimmen. 
+Methode des \glqq scanmatching\grqq  über relative Positionsverschiebungen die Position in einer zweidimensionalen Ebene bestimmen (Kapitel \ref{sec:laser_scan_matching}). Damit diese für die Bestimmung der Quadrocopterposition in der horizontalen Ebene eingesetzt werden können, ist es von Nöten, die Laserdaten in das o-frame zu projizieren (Kapitel \ref{sec:laser_ortho}). Als Folge lassen sich für das o-frame und damit für den Quadrocopter, Position und Orientierung in der xy-Ebene des n-frames bestimmen. 
 %Da diese Ebene der  des n-frames entsprechen soll, müssen die Laserdaten zunächst in das o-frame überführt werden (Kapitel \ref{sec:laser_ortho}). 
 \begin{figure}
 	\centering
 	\includegraphics[width = .95\textwidth]{images/ros_ortho_scan_node}
-	\caption[Verknüpfung der Scantools]{Verknüpfung des \glqq laser\_ortho\_projector \grqq - und des \glqq laser\_scan\_matcher\grqq -Knoten GRAFIK EVENTUELL ÜBERARBEITEN DA ASCTEC\_HL\_INTERFACE KNOTEN DER FÜR DIE KOMMUNIKATION VERANTWORTLICH IST FEHLT} %
+	\caption[Verknüpfung der Scantools]{Verknüpfung des \glqq laser\_ortho\_projector \grqq - und des \glqq laser\_scan\_matcher\grqq -Knoten} %
 	\label{fig:verkn_scantools}
 \end{figure}
 Beide Vorgänge sind bereits für \gls{ros} implementiert und sind Bestandteil der 
 %Realisiert sind diese Vorgänge in den von \gls{ros} zu Verfügung gestellte
- scan\_tools.  Genauer gesagt handelt es sich dabei um dem \glqq laser\_ortho\_projector \grqq - und dem  \glqq laser\_scan\_matcher\grqq -Knoten (Abbildung \ref{fig:verkn_scantools}). 
- Ziel der dieses Kapitel \ref{chap:2Dpositionsbestimmung} ist es die Mathematik dahinter zu erläutern, sodass man eine Verständnis der Funktionsweise der Knoten erhält.
+ scan\_tools.  Genauer gesagt, handelt es sich folglich um den \glqq laser\_ortho\_projector \grqq - und den  \glqq laser\_scan\_matcher\grqq -Knoten (Abbildung \ref{fig:verkn_scantools}). 
+ Ziel dieses Kapitel \ref{chap:2Dpositionsbestimmung} ist es, die Mathematik dahinter zu erläutern, sodass ein Verständnis über die Funktionsweise der Knoten entsteht.
 
 
 
 \section[Orthogonale Laserprojektion]{Projektion der Laserdaten in das o-frame auf der xy-Ebene des n-frames (\glqq laser\_ortho\_projector\grqq) }
 \label{sec:laser_ortho}
-Die Projektion der Laserdaten ins o-frame erfolgt orthogonal zur xy-Ebene des n-frames. In allgemeiner Form ist dies in Abbildung \ref{fig:laser_proj_allg} dargestellt. 
+Die Projektion der Laserdaten ins o-frame erfolgt orthogonal zur xy-Ebene des n-frames. 
+
+In allgemeiner Form ist dies in Abbildung \ref{fig:laser_proj_allg} dargestellt. 
 %Bei der Laserprojektion werden die Laserdaten des l-frame orthogonal zur xy-Ebene des n-frames in die das o-frame transformiert. In allgemeiner Form ist dies in Abbildung \ref{fig:laser_proj_allg} dargestellt. Das o-frame definiert später in Kapitel \ref{sec:laser_scan_matching} die Position und Orientierung des Quadrocopters in der zweidimensionalen Ebene des n-frame. 
 \begin{figure}
 	
 	\centering{
-		\subfloat[Allgemeine Projektion der Laserdaten]{
+		\subfloat[Allgemeine Projektion der Laserdaten \cite{Morris2010} ]{
 			\includegraphics[width=0.5\textwidth]{images/laser_scan_project}
 			\label{fig:laser_proj_allg}
 		}
@@ -33,16 +35,16 @@ Die Projektion der Laserdaten ins o-frame erfolgt orthogonal zur xy-Ebene des n-
 			\label{fig:laser_proj_pi}
 		}
 	}	
-	\caption[Laserprojektion]{Projektion der Laserdaten}
+	\caption[Projektion der Laserdaten]{Projektion der Laserdaten}
 	\label{fig:laser_proj}
 	
 \end{figure}
-Grundlage für die orthogonalen Projektion ist die Annahme, das es sich bei den erfassten Objekten um senkrechte Gegenstände handelt. Das heißt ihre Form variiert nicht mit der Höhe in der sie erfasst werden.
+Grundlage für die orthogonalen Projektion ist die Annahme, dass es sich bei den erfassten Objekten hauptsächlich um senkrechte Gegenstände handelt. Das heißt, ihre Form variiert nicht mit der Höhe in der sie erfasst werden.
 %Das bedeutet sie weisen unabhängig der Höhe in der sie erfasst werden die gleich Formen auf. 
-Für geschlossen Räumen ist diese Annahme zutreffend, da es sich bei den Objekten hauptsächlich um senkrechte Wände handelt. Durch Erfüllung dieser Voraussetzungen kann die Flughöhe des Quadrocopters vernachlässigt werden. Dies kann man aus Abbildung \ref{fig:laser_proj_pi} entnehmen. Eine Verschiebung des Koordinaten Ursprungs des b-frames auf der z-Achse des o-frames hat demzufolge keinen Einfluss auf die Projektion. Folglich kann für beide Koordinatensystem der identischen Ursprung angenommen werden. Unter Beachtung dieser Annahmen kann der Einfluss des Roll-($\phi$) und Nickwinkels ($\theta$) auf die Entfernungsmessung eliminiert werden. Die Winkelgrößen liefert die \gls{imu}. Der mathematische Ablauf der orthogonalen Transformation wird basierend auf Literatur \cite{Morris2010}  im Folgenden dargelegt.\\
+In geschlossenen Räumen ist diese Annahme zutreffend, da es sich bei den Objekten hauptsächlich um senkrechte Wände handelt. Durch Erfüllung dieser Voraussetzungen sowie der Annahme kleiner Neigungswinkel des Quadrocopters kann die Flughöhe vernachlässigt werden. Das ist aus der Abbildung \ref{fig:laser_proj_pi} entnehmbar. Eine Verschiebung des Koordinaten Ursprungs des b-frames auf der z-Achse des o-frames hat demzufolge keinen Einfluss auf die Projektion. Folglich kann für beide Koordinatensystem der identische Ursprung angenommen werden. Unter Beachtung dieser Annahmen kann der Einfluss des Roll-($\phi$) und Nickwinkels ($\theta$) auf die Entfernungsmessung eliminiert werden. Die Winkelgrößen liefert die \gls{imu}. Der mathematische Ablauf der orthogonalen Transformation wird basierend auf Literatur \cite{Morris2010}  im Folgenden dargelegt.\\
 
 
-Entfernungsdaten eines Laserumlaufs besteht aus mehreren diskreten Abtastungen (Abbildung~\ref{fig:l-frame}). Übergeben werden sie in Form von Entfernung $r_i$ in einem Array (Topic \textbackslash laser Abbildung \ref{fig:verkn_scantools}). Mittels der Schrittweite von $0.25^\circ$ lässt sich anhand des Indizes $i$ für jeden Messpunkt einen Winkel $\gamma_i$ zuweisen. 
+Entfernungsdaten eines Laserumlaufs bestehen aus mehreren diskreten Abtastungen (Abbildung~\ref{fig:l-frame}). Übergeben werden sie in Form von Entfernungen $r_i$ in einem Array ((ROS)Topic: \textbackslash laser Abbildung \ref{fig:verkn_scantools}). Mittels der Schrittweite von $0.25^\circ$ lassen sich anhand des Indizes $i$ für jeden Messpunkt ein Winkel $\gamma_i$ zuweisen. 
 \begin{equation}
 \gamma_i = 135^\circ - 0.25^\circ \cdot i
 \end{equation}
@@ -50,11 +52,11 @@ Entfernungsdaten eines Laserumlaufs besteht aus mehreren diskreten Abtastungen (
 \begin{figure}
 	\centering
 	\includegraphics[width = .55\textwidth]{images/l_frame}
-	\caption[l-frame]{Draufsicht l-frame} %
+	\caption[l-frame]{Draufsicht l-frame (Datenblatt Anhang \ref{anh:datasheet})} %
 	\label{fig:l-frame}
 \end{figure}
 
-Die Entfernung eines Punktes $p_i$ ist somit über $\{r_i, \gamma_i\}$ definiert. Zur weiteren Verwendung ist es notwendig die Messungen im kartesischen Koordinatensystem des l-frame zu übertragen.
+Die Position eines Punktes $p_i$ ist somit über $\{r_i, \gamma_i\}$ definiert. Zur weiteren Verwendung ist es notwendig, die Messungen in das kartesische Koordinatensystem des l-frame zu übertragen.
 
   \begin{equation}
   p_i^l = 
@@ -63,7 +65,7 @@ Die Entfernung eines Punktes $p_i$ ist somit über $\{r_i, \gamma_i\}$ definiert.
   \end{bmatrix}^T
   \end{equation}
   
-Da der Bezugspunkt des o-frames im Schwerpunkt des Quadrocoptes liegen soll, in dem auch der b-frame seinen Ursprung hat, ist es von nöten die Laserdaten vom l-frame ins b-frame zu transformieren. Wie schon in Kapitel \ref{sec:koordinatensysteme&transformationen} erwähnt handelt es sich dabei um eine konstante Transformation. Genauer gesagt um einen Offset von $10cm$ auf der $z^b$-Achse, da der Laser oberhalb des Quadrocopterschwerpunktes montiert ist.
+Da der Bezugspunkt des o-frames im Schwerpunkt des Quadrocoptes liegen soll, in dem auch der b-frame seinen Ursprung hat, ist es erforderlich die Laserdaten vom l-frame ins b-frame zu transformieren. Wie schon in Kapitel \ref{sec:koordinatensysteme&transformationen} erwähnt, handelt es sich um eine konstante Transformation. Genauer gesagt, um einen Offset von $10cm$ auf der $z^b$-Achse, denn der Laser ist oberhalb des Quadrocopterschwerpunktes montiert.
 
 \begin{equation}
 p_i^b = 
@@ -72,7 +74,7 @@ p_i^b =
 \end{bmatrix}^T
 \end{equation}
 
-Nun da die Laserpunkte im b-frame definiert sind, kann die Transformation der Umgebungsdaten in die xy-Ebene des o-frames erfolgen. Angesichts der Tatsache, das die Winkel $\phi$ und $\theta$ als Verdrehung um die Achsen des o-frames definiert sind, benötigt man zur Umrechnung der Laserdaten die in Kapitel \ref{sec:koordinatensysteme&transformationen} eingeführte Gleichung \ref{eq:inverse_transM} zur inversen Koordinatentransformation. Dabei wird der Yaw-Winkel zu Null gesetzt. Grund hierfür ist, das Ausrichtung der Flugrichtung in der zweidimensionalen Ebene mit der des b-frames übereinstimmen sollen. Daraus ergibt sich für die Transformationsmatrix   
+Nachdem die Laserpunkte im b-frame definiert sind, kann die Transformation der Umgebungsdaten in die xy-Ebene des o-frames erfolgen. Angesichts der Tatsache, dass die Winkel $\phi$ und $\theta$ als Verdrehung um die Achsen des o-frames definiert sind, erfordert zur Umrechnung der Laserdaten die in Kapitel \ref{sec:koordinatensysteme&transformationen} eingeführte Gleichung \ref{eq:inverse_transM} zur inversen Koordinatentransformation. Dabei wird der Yaw-Winkel zu Null gesetzt. Grund hierfür ist, dass die Ausrichtung der Flugrichtung in der zweidimensionalen Ebene mit der des b-frames übereinstimmen sollen. Daraus ergibt sich für die Transformationsmatrix,   
 
 \begin{equation}
 M_{ob} = 
@@ -88,7 +90,7 @@ M_{ob} =
 p_i^o = M_{ob} \cdot P_i^b
 \end{equation}
 
-Erneut kann unter der Annahme von rechtwinkligen Objekten die Höhe des Punktes in $z^o$-Achse zu Null gesetzt werden. Somit sind die Punkte $p_i^l$ auf der xy-Ebene des o-frame folgendermaßen abgebildet.
+Wiederum kann unter der Annahme von rechtwinkligen Objekten die Höhe des Punktes in $z^o$-Achse zu Null gesetzt werden. Demzufolge sind die Punkte $p_i^l$ auf der xy-Ebene des o-frame folgendermaßen abgebildet.
 
 \begin{equation}
 p_i^o =  
@@ -99,18 +101,18 @@ p_i^o =
 \end{bmatrix}
 \end{equation}
 
-Alle Punkte $p^o_i$ eines Umlaufs einen Scan $S$.
+Alle Punkte $p^o_i$ eines Umlaufs eines Scans $S$.
  
  \begin{equation}
  S^o = [p^o_i | i=1..1080]  
  \end{equation}
  
-Diese Beschreibung $S$ der Laserscans im o-frame ist die Basis für die im anschließende Kapitel \ref{sec:laser_scan_matching} behandelte Positionsbestimmung in der zweidimensionalen Ebene des n-frames. 
+Die Beschreibung $S$ der Laserscans im o-frame ist die Basis für die im anschließende Kapitel \ref{sec:laser_scan_matching} behandelte Positionsbestimmung in der zweidimensionalen Ebene des n-frames. 
 
 
 \section[Positonsbestimmung über Scanmatching]{Positionsbestimmung anhand der ins o-frame überführten Laserdaten über scanmatching}
 \label{sec:laser_scan_matching}  
-Aufbauend auf den im Kapitel \ref{sec:laser_ortho} vorgestellten Laser\_ortho\_projektor, ist es Aufgabe des Folgenden Teilkapitels zu erläutern wie anhand eines Referenzscans $S_{ref}$ und einem weiteren Scan $S_{neu}$ die Position in der euklidischen xy-Ebene des n-frames bestimmt werden kann. Zur Anwendung kommt hier die Methode des Scanmatching. Dabei gilt die Annahme, das für jeden Scan $ S_{neu} $ und dessen dazugehörigen Position $ P_{neu} $ eine Rotation $ M^o_z $ um $ \psi^o $, inklusive Translation $ T $ existiert,  so dass die beiden Datenwolken $ S_{neu} $ und $ S_{ref} $ übereinander liegen (Abbildung \ref{fig:prinzip_scanmatching}). Definiert ist $ S_{ref} $ dabei an der Stelle $ P_{ref} $.\\
+Aufbauend auf den im Kapitel \ref{sec:laser_ortho} vorgestellten Laser\_ortho\_projektor, ist es Aufgabe des folgenden Teilkapitels zu erläutern, wie anhand eines Referenzscans $S_{ref}$ und einem weiteren Scan $S_{neu}$ die Position in der euklidischen xy-Ebene des n-frames bestimmt werden kann. Zur Anwendung kommt hier die Methode des Scanmatching. Dabei gilt die Annahme, dass für jeden Scan $ S_{neu} $ und dessen dazugehörigen Position $ P_{neu} $ eine Rotation $ M^o_z $ um $ \psi^o $, inklusive Translation $ T $ existiert, sodass die beiden Punktwolken $ S_{neu} $ und $ S_{ref} $ übereinander liegen (Abbildung \ref{fig:prinzip_scanmatching}). Definiert ist $ S_{ref} $ dabei an der Stelle $ P_{ref} $.\\
 \begin{figure}
 	\centering{
 		\subfloat[$S_{ref}$ und $S_{neu}$ im o-frame]{
@@ -118,7 +120,7 @@ Aufbauend auf den im Kapitel \ref{sec:laser_ortho} vorgestellten Laser\_ortho\_p
 			\label{fig:scans_oframe}
 		}
 		\hspace{0.1\textwidth}
-		\subfloat[Positon über Matching von $S_{neu}$ auf $S_{ref}$]{
+		\subfloat[Neue Positon über Matching von $S_{neu}$ auf $S_{ref}$]{
 			\includegraphics[width=0.4\textwidth]{images/scan_pose2d_b}
 			\label{fig:scan_match}
 		}
@@ -127,7 +129,7 @@ Aufbauend auf den im Kapitel \ref{sec:laser_ortho} vorgestellten Laser\_ortho\_p
 	\label{fig:prinzip_scanmatching}
 	
 \end{figure}
-Ausgangspunkt sind zwei im o-frame definierte Datenwolken. 
+Ausgangspunkt sind zwei im o-frame definierte Punktwolken. 
  \begin{equation}
  S_{ref} =[p_{ref_i} | i=1..n_{ref}]\\
  \end{equation}
@@ -137,30 +139,30 @@ Ausgangspunkt sind zwei im o-frame definierte Datenwolken.
 
 Dargestellt in Abbildung \ref{fig:scans_oframe}. 
 
-Zur Bestimmung des Matchings bzw. der Rotation $ M^o_z $ und der Translation $ T $ wurde im Jahr 1992 unter anderem von Paul Besl der \gls{icp}-Algorithmus entwickelt. Dabei handelt es sich um einen iterativen Algorithmus. Abgebildet sind die einzelnen Integrationsschritte in einem Flussdiagramm in Abbildung \ref{fig:icp_algorithmus}. Daran orientierend wird im folgenden jeder einzelne Vorgang erläutert.
+Zur Bestimmung des Matchings bzw. der Rotation $ M^o_z $ und der Translation $ T $ wurde im Jahr 1992 unter anderem von Paul Besl der \gls{icp}-Algorithmus entwickelt. Dabei handelt es sich um einen iterativen Algorithmus, dessen Ablauf im Folgenden schrittweise erläutert ist.
 
 \begin{itemize}
 	\item{
 \textbf{Schritt 1,} Punktekorrespondenz.
 
- Hierbei bekommt jeder Punkt des $ S_{neu} $ einen korrespondierenden Punkt aus der Datenwolke $ S_{ref} $ zugewiesen. Man spricht hierbei von der Point-to-Point Arithmetik. Als Startwert werden als Korrespondenzpunkte die am nächsten liegenden Nachbar übergeben. Die Suche der entsprechenden Werte erfolgt über die Methode der erschöpfenden Suche (Brute-Force-Methode), d.h. jeden Punkt werden alle Punktastände ermittelt und der Punkt mit der geringsten Entfernung zugewiesen.  Das Ergebnis ist eine Datenmenge $ S'_{ref} $, deren Anzahl an Werten denen von $ S_{neu} $ entspricht.
+ Hierbei bekommt jeder Punkt des $ S_{neu} $ einen korrespondierenden Punkt aus der Punktwolke $ S_{ref} $ zugewiesen. Man spricht hierbei von der Point-to-Point Arithmetik. Als Korrespondenzpunkt $ p'_{ref_i} $ des  Scanpunktes $ p_{neu_i} $ wird der nächstliegende Punkt des Referenzscans $ S_ref $ zugewiesen. Dabei kann ein Punkt $ p_ref  $ die Bedinung des Closest-Point für mehre Punkte des neuen Scans $ S_{neu} $ erfüllen.
+ \begin{equation}
+ S'_{ref} =[p'_{ref_i} | i=1..(n'= n_{neu})]\\
+ \end{equation}
+  Die Suche der entsprechenden Werte erfolgt über die Methode der erschöpfenden Suche (Brute-Force-Methode), d.h. für jeden Punkt werden alle Punktabstände ermittelt und der Punkt mit der geringsten Entfernung zugewiesen. Für die 1080 Messpunkte eines Umlaufes müssen so pro Scan  $ 1166400 $ Kombinationen untersucht werden. Das Ergebnis ist eine Datenmenge $ S'_{ref} $, deren Anzahl an Werten denen von $ S_{neu} $ entspricht.
 
-\begin{equation}
-S'_{ref} =[p'_{ref_i} | i=1..(n'= n_{neu})]\\
-\end{equation}
+Dieser Schritt benötigt auf Grund des nicht optimierten Suchalgorithmus die höchste Rechenleistung. Laut \cite{aut4} stellt dies für die Verarbeitung von 2D-Laserscans kein Problem dar.}
 
-Dieser Schritt stellt auf Grund des nicht optimierten Suchalgorithmus den rechenaufwendigsten Teil dar. Laut [LITERATUR AUT4] stellt dies für die Verarbeitung von 2D-Laserscans kein Problem dar.}
+\item \textbf{Schritt 2,} Bestimmung des Rotationswinkels $\Delta\psi^o$ und der Translation $T$
 
-\item \textbf{Schritt 2,} Bestimmung des Rotationswinkel $\Delta\psi^o$ und der Translation $T$
-
-Wie schon zu beginn angeklungen, soll eine rotatorische und translatorische Transformation zur Überlappung von $S_{neu}$ mit $S_{ref}$ führen. Idealität und eine sehr kleine Änderung vorausgesetzt könnte jeder Punkt von $ S_{neu} $ in den entsprechenden Punkt $ S_{ref}$ umgerechnet werden.
+Wie zu beginn angemerkt, soll eine rotatorische und translatorische Transformation zur Überlappung von $S_{neu}$ mit $S_{ref}$ führen. Idealität und eine sehr kleine Änderung vorausgesetzt, kann jeder Punkt $ p_{neu_i} $ von $ S_{neu} $ in den entsprechenden Punkt $ p_{ref_i} $ von $ S_{ref}$ über (\ref{eq:ideal_trans}) umgerechnet werden.
 
 \begin{equation}
 p_{ref_i} (M^o_z(\psi^o),T)) =  M^o_z(\psi^o) \cdot p_{neu_i}  + P_{ref} + T 
 \label{eq:ideal_trans}
 \end{equation}
 
-Die Zweidimensionale Roationsmatrix $ M^o_z $ entspricht dabei der in Kapitel \ref{subsec:koordinatentransformation} eingeführten Koordinatentransformationsmatrix (\ref{eq:Mz}) reduziert auf die x und y Anteile. 
+Die zweidimensionale Roationsmatrix $ M^o_z $ entspricht dabei der in Kapitel \ref{subsec:koordinatentransformation} eingeführten Koordinatentransformationsmatrix (\ref{eq:Mz}) reduziert auf die x und y Anteile. 
 
 	\begin{equation}
 M^o_z(\psi^o) = \begin{bmatrix}
@@ -173,14 +175,14 @@ M^o_z(\psi^o) = \begin{bmatrix}
 
 
 
-In der Praxis ist die Umgebung nicht ideal und aufgrund der hohen Dynamik können die Änderungen zwischen zwei Messwerten größer Ausfallen. Dadurch sind nicht alle Werte von $ S_{ref} $ und $ S_{neu} $ Indize für Indize vergleichbar. Der Grund warum in Vorgang~1 zu zum Scan $ S_{neu} $ ein korrespondier Scan $ S'_{ref} $ eingeführt wurde. Der im Folgenden Anwendung findet. Ein einsetzen von $ S'_{ref} $ in Gleichung (\ref{eq:ideal_trans}) ist jedoch nicht die Lösung des Problems, da es zu keiner eindeutigen Ergebnis führt. Laut \cite{Lu94} kann aus dieser Formel (\ref{eq:ideal_trans}) als Fehlergleichung herangezogen werden. Mit dieser lässt sich über die least-squar Methode die kleinste Summe der quadratischen Abweichungen ermitteln.
+In der Praxis ist die Umgebung nicht ideal und aufgrund der hohen Dynamik können die Änderungen zwischen zwei Messwerten unbestimmt größer ausfallen. Dadurch sind nicht alle Werte von $ S_{ref} $ und $ S_{neu} $ Index über Index vergleichbar. Der Grund weshalb in Schritt~1 zum neuen Scan $ S_{neu} $ ein korrespondier Scan $ S'_{ref} $ eingeführt wird. Dieser findet im folgenden Anwendung. Ein Einsetzen der Punkte $ p'{_ref_i} $ von $ S'_{ref} $ in die Gleichung (\ref{eq:ideal_trans}) ist nicht die Lösung. Da Aufgrund von möglichen Mehrfachkorrespondenzen die Gleichung nicht eindeutig gelöst werden kann. Laut \cite{Lu94} kann jedoch diese Formel (\ref{eq:ideal_trans}) als Fehlergleichung herangezogen werden. Mit Hilfe der least-square Methode kann darüber die Transformation bestimmt werden, für sich die kleinste Summe der quadratischen Abweichungen ergibt.
 
 \begin{equation}
 E(M^o_z(\Delta\psi^o),T) = \frac{1}{n'}\sum_{i=1}^{n'} ||p'_{ref_i}-( M^o_z(\Delta\psi^o)\cdot p_{neu_i} +T)||^2
- \label{eq:leastsquare}
+ \label{eq:leastsquare_}
 \end{equation}
 
-Um das Minimum  von abhängig $E(M^o_z(\Delta\psi^o),T)$ bestimmen zu können wird nach \cite{aut4} der Schwerpunkt ($c_{ref}$, $c_{neu}$) der korrespondierenden Punkte ermittelt.
+Um das Minimum abhängig von $E(M^o_z(\Delta\psi^o),T)$ bestimmen zu können, wird nach \cite{aut4} der Schwerpunkt ($c_{ref}$, $c_{neu}$) der korrespondierenden Punkte ermittelt.
 
 \begin{equation}
 c_{ref} = \frac{1}{n'}\sum_{i=1}^{n'} p'_{ref_i}
@@ -189,7 +191,7 @@ c_{ref} = \frac{1}{n'}\sum_{i=1}^{n'} p'_{ref_i}
 c_{neu} = \frac{1}{n'}\sum_{i=1}^{n'} p_{neu_i}
 \end{equation}
 
-Damit ergibt sich die Datenwolken folgendermaßen beschreiben.
+Damit beschreiben sich die Punktwolken folgendermaßen:
 
 \begin{equation}
 \tilde{S'}_{ref} = [\tilde{p'}_{pref_i} = p'_{pref_i} - c_{ref} |i=1..n']
@@ -200,7 +202,7 @@ Damit ergibt sich die Datenwolken folgendermaßen beschreiben.
 \label{eq:Sneu_tilde}
 \end{equation}
 
-Setzt man \ref{eq:Sref_tilde} und \ref{eq:Sneu_tilde} in die Fehlergleichung \ref{eq:leastsquare} resultiert.
+Setzt man \ref{eq:Sref_tilde} und \ref{eq:Sneu_tilde} in die Fehlergleichung \ref{eq:leastsquare_} ein, resultiert:
 \begin{equation}
 \begin{split}
  E(M^o_z(\Delta\psi^o),T) &= \frac{1}{n'}\sum_{i=1}^{n'} ||\tilde{p}_{ref_i}- M^o_z(\Delta\psi^o)\cdot \tilde{p}_{neu_i}-(T-c_{ref}+M^o_z(\Delta\psi^o)\cdot c_{neu} )||^2 \\
@@ -208,14 +210,14 @@ Setzt man \ref{eq:Sref_tilde} und \ref{eq:Sneu_tilde} in die Fehlergleichung \re
 \end{split}
 \end{equation}
 
-Über $\tilde{T}$ ist die Abweichung der Schwerpunkte translatorisch als auch rotatorisch beschrieben. Damit beide Schwerpunkte genau über einander liegen ist $\tilde{T} = 0$ zusetzen. Daraus ergibt sich.
+Über $\tilde{T}$ ist die Abweichung der Schwerpunkte translatorisch als auch rotatorisch beschrieben. Damit beide Schwerpunkte genau über einander liegen ist $\tilde{T} = 0$ zusetzen. Daraus ergibt sich:
 
 \begin{equation}
 0 = T-c_{ref}+M^o_z(\Delta\psi^o)\cdot c_{neu}
 \label{eq:Ttilde0}
 \end{equation}
     
-und eine Fehlergleichung die nun mehr nur noch von der Rotation abhängig ist und dessen Betrag sich wie folgt darstellen lässt. 
+Sowie eine Fehlergleichung, die nun ausschließlich von der Rotation abhängig ist und dessen Betrag sich wie folgt darstellt: 
 
 \begin{equation}
 	\begin{split}
@@ -224,7 +226,7 @@ und eine Fehlergleichung die nun mehr nur noch von der Rotation abhängig ist und
 	\end{split}	
 \end{equation}
 
-Weiterhin auf die Literatur \cite{aut4} beziehend ist es zur Minimierung von $E(M^o_z(\Delta\psi^o))$ ausreichend den gemischten Term zu $\tilde{E}(M^o_z(\Delta\psi^o))$ maximieren. 
+Weiterhin auf die Literatur \cite{aut4} beziehend, ist es zur Minimierung von $E(M^o_z(\Delta\psi^o))$ ausreichend den gemischten Term zu $\tilde{E}(M^o_z(\Delta\psi^o))$ maximieren. 
 
 \begin{equation}
 \tilde{E}(M^o_z(\Delta\psi^o))_{max} = \underset{M^o_z(\Delta\psi^o)}{argmax} \hspace{.2cm} \sum_{i=1}^{n'} (2\tilde{p}_{ref_i}^T\cdot M^o_z(\Delta\psi^o)\cdot\tilde{p}_{neu_i})
@@ -238,7 +240,7 @@ Beziehungsweise abhängig von $ \Delta\psi^o $.
 \end{split}
 \end{equation}
 
-Aufgrund der trigonometrischen Addition besitzt der Summand eine Maximum für $ \Delta\psi^o $ wenn
+Aufgrund der trigonometrischen Addition besitzt der Summand ein Maximum für $ \Delta\psi^o $, wenn
 
 \begin{equation}
 \frac{\delta \tilde{E}(\Delta\psi^o)_{max} }{\delta (\Delta\psi^o) } = 0
@@ -250,8 +252,7 @@ Aufgrund der trigonometrischen Addition besitzt der Summand eine Maximum für $ \
  \end{split}
 \end{equation}
 
-
-draus folgt für $\Delta\psi^o $
+Draus folgt für $\Delta\psi^o $
 
 \begin{equation}
 \Delta\psi^o = \arctan(\frac{\sum_{i=1}^{n'}(\tilde{y}_{ref}\cdot\tilde{x}_{neu}+\tilde{x}_{ref}\cdot\tilde{y}_{neu})}{\sum_{i=1}^{n'}(\tilde{x}_{ref}\cdot\tilde{x}_{neu}+\tilde{y}_{ref}\cdot\tilde{y}_{neu})})
@@ -264,25 +265,26 @@ T=c_{ref}-M^o_z(\Delta\psi^o)\cdot c_{neu}
 \label{eq:T}
 \end{equation}
 
-Somit sind Translation und Rotation bestimmt.
+Somit sind Translation und Rotation für die Summe der kleinsten Quadrate bestimmt.
  
-\item \textbf{Schritt 3,} Ermittlung der Summe der quadratischen Fehler $E(M^o_z(\Delta\psi^o),T)$ 
+%\item \textbf{Schritt 3,} Ermittlung der Summe der quadratischen Fehler $E(M^o_z(\Delta\psi^o),T)$ 
+%
+%Die aus der Formel \ref{eq:psio} stammende Rotation und die mit Hilfe der Gleichung \ref{eq:T} berechneten Translation werden in die Formel \label{eq:leastsquare} des quadratischen Fehlers eingesetzt.
 
-Die aus der Formel \ref{eq:psio} stammende Rotation und die mit Hilfe der Gleichung \ref{eq:T} berechneten Translation werden in die Formel \label{eq:leastsquare} des quadratischen Fehlers eingesetzt.
-
-\item \textbf{Schritt 4,} Vergleich von $E(M^o_z(\Delta\psi^o),T)$ mit Schwellwert $ E_{max} $ 
-
-Der in Vorgang 4 berechnete quadratische Fehler wird mit dem Schwellwert des Maximal zulässigen Fehlers $ E_{max} $ verglichen. Wird unterschritten ist das Abbruchkriterium erfüllt,handelt es bei Rotation $ \Delta\psi^o $ und Translation $ T $ Werte die Transformation bzw. die neue Position $ P_{neu} $ mit einer ausreichenden Genauigkeit beschreiben. Ist das Kriterium beginnt der \gls{icp}-Algorithmus bei Vorgang 1 und bestimmt neue Korrespondenzen. 
+\item \textbf{Schritt 3,} Vergleich von $E(M^o_z(\Delta\psi^o),T)$ mit Schwellwert $ E_{max} $ 
+Die kleinste Summe der quadratischen Fehler für die ermittelte Transformation wird mit
+%Der in Vorgang 4 berechnete quadratische Fehler wird mit 
+dem Schwellwert des Maximal zulässigen Fehlers $ E_{max} $ verglichen. Bei Unterschreitung ist das Abbruchkriterium erfüllt. Es handelt sich bei der Rotation $ \Delta\psi^o $ und der Translation $ T $ um die Transformation, welche die neue Position $ P_{neu} $ mit einer ausreichenden Genauigkeit beschreibt. Ist das Kriterium nicht erfüllt, werden die Transformationswerte auf den Scan angewendet und der  \gls{icp}-Algorithmus beginnt iterative bei Schritt 1 von Neuem.
 \end{itemize}
 
-\begin{figure}
-	\centering
-	\includegraphics[width = .55\textwidth]{images/Flussdiagramm_scanmatching}
-	\caption[l-frame]{Flussdiagram \gls{icp}-Algorithmus} %
-	\label{fig:icp_algorithmus}
-\end{figure}
+%\begin{figure}
+%	\centering
+%	\includegraphics[width = .55\textwidth]{images/Flussdiagramm_scanmatching}
+%	\caption[l-frame]{Flussdiagram \gls{icp}-Algorithmus} %
+%	\label{fig:icp_algorithmus}
+%\end{figure}
 
-Für die Positionsbestimmung im n-frame wird mit der ersten Position $ P_{ref} $ der Bezugspunkt des Navigationskoordinatensystems gesetzt. Darauf aufbauend wird die weiteren Translationen bzw. Rotationen addiert. 
+Für die Positionsbestimmung im n-frame wird mit der ersten Position $ P_{ref} $ der Bezugspunkt des Navigationskoordinatensystems gesetzt. Darauf aufbauend, werden die weiteren Translationen bzw. Rotationen addiert. 
 
 \begin{equation}
 	P_{neu}= P_{ref}+T
@@ -292,11 +294,11 @@ Für die Positionsbestimmung im n-frame wird mit der ersten Position $ P_{ref} $ 
 \end{equation}
 
 
-Anzumerken sei hier das $ P_{ref} $ nicht im Ursprung verweilt, sondern sich auf den Refernzscan $ S_{ref} $ bezieht. Dieser kann der vorige Umlauf des aktuellen Scans $ S_{neu} $ darstellen. Oder einen in der nahen Vergangenheit liegenden Scan, bei dem die Summe der quadratischen Fehler sehr gering war.
+Anzumerken ist hier, dass $ P_{ref} $ nicht im Ursprung verweilt, sondern sich auf den Refernzscan $ S_{ref} $ bezieht. Somit ist die absolute Position im Raum über relative Positionsverschiebungen bestimmt. Dies hat aufgrund des Maximal zulässigen Schätzfehler $ E_{max} $ zur Folge, das über einen längeren Zeitraum die geschätzte absolute Position von der realen abweicht. Um diesen Drift auf eine Minimum zu reduzieren, ist es Sinnvoll nicht immer auf den vorherigen Umlauf des aktuellen Scans $ S_{neu} $ als Referenz $ S_{ref} $ zurückzugreifen, sondern auf einen in der nahen Vergangenheit liegenden Scan, bei dem die Summe der quadratischen Fehler sehr gering war.
 
-Der vorgestellt \gls{icp}-Algorithmus kann weiterhin verbessert werden. So kann anstelle der Point-to-Point Arithmetik in Vorgang 1 eine Point-to-Line Arthmetik zur Ermittlung der Konvergenzpunkte angewendet werden. Mit diesem Thema beschäftigt sich das Paper \cite{censi08plicp}. Außerdem ist möglich über die Inertialsenorik ausgehend von $ P_{ref} $ eine neue Position $ P_{imu} $ zu bestimmen. In $ P_{imu} $  wird der neue $ S_{neu} $ gelegt. So muss lediglich der Fehler der \gls{imu}-Positionsschätzung über den \gls{icp}-Algorithmus eliminiert werden. Dies ist besonders nützlich wenn zwei Scans weit auseinander liegen, wie zum Beispiel in Abbildung \ref{fig:scan_match}. Es vereinfacht Vorgang 1. Behandelt wird dies unter anderem in \cite{Morris2010}.\\
+Der vorgestellte \gls{icp}-Algorithmus kann weiterhin verbessert werden. Anstelle der Point-to-Point Arithmetik in Schritt 1 kann eine Point-to-Line Arthmetik zur Ermittlung der Konvergenzpunkte angewendet werden. Mit diesem Thema beschäftigt sich das Paper \cite{censi08plicp}. Außerdem ist möglich, über die Inertialsenorik ausgehend von $ P_{ref} $ eine neue Position $ P_{imu} $ zu bestimmen. In $ P_{imu} $  wird der neue $ S_{neu} $ gelegt. So muss lediglich der Fehler der \gls{imu}-Positionsschätzung über den \gls{icp}-Algorithmus eliminiert werden. Dies ist von Vorteil, wenn zwei Scans weit auseinander liegen, wie zum Beispiel in Abbildung \ref{fig:scan_match}. Es vereinfacht Schritt 1. Behandelt wird dies unter anderem in \cite{Morris2010}.\\
 
-Mit der Beschreibung Scanmatchingverfahren ist der letzte Baustein zur Lokalisierung des Quadrocopters in der horizontalen Ebene eines geschlossen Raum mittels eines 2D Laser geliefert worden. Darauf aufbauend ist es möglich eine Positionsregelung zu implementieren.
+Mit der Beschreibung des Scanmatchingverfahren ist der letzte Baustein zur Lokalisierung des Quadrocopters in der horizontalen Ebene eines geschlossen Raumes mittels eines 2D-Laserscanners geliefert. Darauf aufbauend, ist es möglich eine Positionsregelung zu implementieren.
 
 %ANMERKUNG: DURCH VERWENDUNG DER IMU DATEN LÄSST SICH EINE ERSTE POSITION SCHÄTZEN SODASS 
 %ES SEI DARAUF HINGEWIESEN DAS ES ALTERNATIVE ZUR PONIT ZU PONIT ARITHMETIK EINEN POINT TO LINE ARITHMETIK EXISTIERT

@@ -1,0 +1,128 @@
+\chapter{Systemarchitektur des Quadrocopters}
+\label{chap:Systemarchitektur}
+Zu Beginn wird in diesem Kapitel die \DIFdelbegin \DIFdel{Grundlegende }\DIFdelend \DIFaddbegin \DIFadd{grundlegende }\DIFaddend Funktionsweise des Quadrocopters erläutert. 
+Anschließend \DIFaddbegin \DIFadd{wird }\DIFaddend die bei dieser Arbeit zum Einsatz kommende Hardware \DIFdelbegin \DIFdel{dargelegt und wie die einzelne Komponenten miteinander verknüpft sind}\DIFdelend \DIFaddbegin \DIFadd{und die Verknüpfung der einzelnen Komponenten miteinander dargelegt}\DIFaddend .  Dabei geht \DIFdelbegin \DIFdel{darum aufzuzeigen, }\DIFdelend \DIFaddbegin \DIFadd{es darum, aufzuzeigen }\DIFaddend an welchen Stellen Software bereits fest implementiert ist und wo eigene Algorithmen integriert werden können.
+
+
+
+\section{Grundlegende Funktionsweise eines Quadrocopters}
+\label{sec:grundFkt}
+Ziel dieses Kapitel ist es\DIFaddbegin \DIFadd{, }\DIFaddend ein Verständnis dafür zu \DIFdelbegin \DIFdel{erlangen}\DIFdelend \DIFaddbegin \DIFadd{erhalten}\DIFaddend , wie über die gezielte Ansteuerungen der vier Rotoren eine Bewegung des Quadrocopters  hervorgerufen werden kann. Dabei wird auf die \DIFdelbegin \DIFdel{wirkende }\DIFdelend \DIFaddbegin \DIFadd{wirkenden }\DIFaddend Kräfte und Momente eingegangen, ohne tief in \DIFaddbegin \DIFadd{die }\DIFaddend Physik einzusteigen.
+\DIFdelbegin %DIFDELCMD < \\
+%DIFDELCMD < %%%
+\DIFdelend 
+
+\DIFaddbegin \DIFadd{Der Schub der Rotoren ist }\DIFaddend Anhand der Drehzahl $n_i$ der Rotorblätter \DIFdelbegin \DIFdel{lässt sich individuell der Schub der Rotoren einstellen}\DIFdelend \DIFaddbegin \DIFadd{individuell einstellbar}\DIFaddend . Somit lässt sich die Kraft $F_i$ jedes \DIFdelbegin \DIFdel{Quadrocopterarme }\DIFdelend \DIFaddbegin \DIFadd{Quadrocopterarmes }\DIFaddend vorgeben. Die Gesamtkraft aller Rotoren ergibt den Schubvektor $S^b$.
+
+
+\label{sec:grundlegenefunktionsweiseQuadrocopter }
+\begin{figure}
+	\centering
+	\includegraphics[width = 0.9\textwidth]{images/funktionsweise_quadrocopter}
+	\caption[Hardwareaufbau]{Momente und Kräfte an einem Quadrocopter}
+	\label{fig:funktionsprinzip}
+\end{figure}
+
+\begin{equation}
+S^b = \begin{bmatrix}
+S^{b}_x\\
+S^{b}_y\\
+S^{b}_z\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+0\\
+0\\
+F_1+F_2+F_3+F_4\\
+\end{bmatrix}
+\label{eq:Schubvektor}
+\end{equation}
+
+Damit der Qudrocopter eine Bewegung im Raum vollziehen kann\DIFaddbegin \DIFadd{, }\DIFaddend muss dieser Vektor aus der Vertikalen ausgelenkt werden. Dies wird durch eine Änderung der Lage realisiert. Reduziert man zum Beispiel die Drehzahl $n_1$ und erhöht gleichzeitig die Drehzahl $n_3$ \DIFdelbegin \DIFdel{, }\DIFdelend hat das resultierende Kräfteungleichgewicht ein positives Moment um die $y^b$-Achse zur Folge. Der Quadrocopter dreht sich um die $y^b$-Achse\DIFdelbegin \DIFdel{. Der }\DIFdelend \DIFaddbegin \DIFadd{, der }\DIFaddend Pitch-Winkel ändert sich. Der Quadrocopter erfährt in der horizontalen Ebene des Raums eine Beschleunigung. Das \DIFdelbegin \DIFdel{gleiches }\DIFdelend \DIFaddbegin \DIFadd{gleiche }\DIFaddend Prinzip gilt auch für den Roll-Winkel, sprich Rotation um die $x^b$-Achse. Hier ist allerdings der Drehzahlenunterschied zwischen $n_2$ und $n_4$ verantwortlich für die Rotation.
+
+Eine Änderung der Orientierung um die Hochachse z , sprich Änderung des Yaw-Winkels\DIFdelbegin \DIFdel{ist }\DIFdelend \DIFaddbegin \DIFadd{, }\DIFaddend lässt sich ebenfalls über Variation der Rotordrehzahlen hervorrufen. Dabei kommt der Effekt zum tragen, \DIFdelbegin \DIFdel{das }\DIFdelend \DIFaddbegin \DIFadd{dass }\DIFaddend die umgebende Luft entgegen der Drehrichtung der Motoren eine Kraft auf die Rotorblätter erzeugt und somit \DIFdelbegin \DIFdel{eine }\DIFdelend \DIFaddbegin \DIFadd{ein }\DIFaddend Moment auf den Quadrocopter.
+Diese Momente\DIFdelbegin \DIFdel{die an }\DIFdelend \DIFaddbegin \DIFadd{, die an den }\DIFaddend Armen des Quadrocopters angreifen\DIFaddbegin \DIFadd{, }\DIFaddend lassen sich zur Vereinfachung in den Schwerpunkt verschieben. Damit bei gleicher Drehzahl aller Rotorblätter \DIFdelbegin \DIFdel{, einen Momentengleichgewicht herrscht}\DIFdelend \DIFaddbegin \DIFadd{ein Momentengleichgewicht herrscht, }\DIFaddend drehen sich die Motoren eins und drei gegen, die Motoren zwei und vier mit dem Uhrzeigersinn. Um \DIFdelbegin \DIFdel{nun }\DIFdelend die gewünschte Rotation zu erzielen\DIFdelbegin \DIFdel{erhöht man }\DIFdelend \DIFaddbegin \DIFadd{, wird }\DIFaddend die Drehzahl $n_1$ und $n_3$ \DIFdelbegin \DIFdel{, reduziert dabei }\DIFdelend \DIFaddbegin \DIFadd{erhöht und }\DIFaddend gleichzeitig  $n_2$ und $n_4$  \DIFaddbegin \DIFadd{reduziert}\DIFaddend . Das Ergebnis \DIFdelbegin \DIFdel{wäre in diesem Fall }\DIFdelend \DIFaddbegin \DIFadd{ist }\DIFaddend eine Rotation in \DIFdelbegin \DIFdel{positiver }\DIFdelend \DIFaddbegin \DIFadd{positive }\DIFaddend Richtung.
+
+Zusammenfassen lassen sich die für die Rotation um die Quadrocopter-Achsen verantwortlichen Momente $M^{b}_{x,y,z}$ \DIFdelbegin \DIFdel{ein }\DIFdelend \DIFaddbegin \DIFadd{in }\DIFaddend einem Vektor $M^b$.  
+
+\begin{equation}
+M^b = \begin{bmatrix}
+M^{b}_x\\
+M^{b}_y\\
+M^{b}_z\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+l(F_3-F_1)\\
+l(F_2-F_4)\\
+M_1-M_2+M_3-M_4\\
+\end{bmatrix}
+\end{equation}
+
+Aufzuklären ist\DIFdelbegin \DIFdel{warum mir }\DIFdelend \DIFaddbegin \DIFadd{, warum mit }\DIFaddend einer Erhöhung der Drehzahl \DIFdelbegin \DIFdel{immer auch }\DIFdelend \DIFaddbegin \DIFadd{auch immer }\DIFaddend eine Reduzierung des Gegenparts verknüpft ist. Die Begründung \DIFdelbegin \DIFdel{ist, das }\DIFdelend \DIFaddbegin \DIFadd{lautet, dass }\DIFaddend der Schubvektor $S^b$ durch eine Rotation möglichst wenig beeinflusst werden soll\DIFdelbegin \DIFdel{. Damit er durch die Gesamtschubvorgabe ganze einfach bestimmt }\DIFdelend \DIFaddbegin \DIFadd{, um mit der Gesamtschubvorgabe ganz einfach bestimmt zu }\DIFaddend werden. 
+
+
+\section{Hardwareaufbau}
+\label{sec:Hardwareaufbau}
+Zum Einsatz kommt der AscTec Pelican der Firma \gls{asctec}. Dieser Quadrocopter ist \DIFdelbegin \DIFdel{speziell }\DIFdelend \DIFaddbegin \DIFadd{eine spezielle Entwicklung }\DIFaddend für die Forschung\DIFdelbegin \DIFdel{entworfen worden}\DIFdelend . Seine Turmstruktur ermöglicht eine einfache Integration zusätzlicher Sensoren und Nutzlasten. Durch \DIFdelbegin \DIFdel{diese }\DIFdelend \DIFaddbegin \DIFadd{die }\DIFaddend Flexibilität im Aufbau ist \DIFdelbegin \DIFdel{es Ziel dieses Teilkapitels }\DIFdelend \DIFaddbegin \DIFadd{das Ziel dieses Teilkapitel, }\DIFaddend einen Überblick \DIFdelbegin \DIFdel{zu geben, wo die einzelnen Komponenten positioniert sind}\DIFdelend \DIFaddbegin \DIFadd{zur Position der einzelnen Komponenten zu geben}\DIFaddend . Begleitend zum Text ist der Aufbau in Abbildung \ref{fig:hardwareaufbau} sowie etwas ausführlicher, mit den Daten der Komponenten, im Anhang dargestellt.\\
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 0.75\textwidth]{images/Hardwareaufbau}
+		\caption[Hardwareaufbau]{Hardwareaufbau des Quadrocopters...DIESE GRAFIK IST EIN PLATZHALTER GRAFIK NUR MIT NAMEN DER KOMPONENTEN}
+		\label{fig:hardwareaufbau}
+	\end{figure}
+
+Für \DIFdelbegin \DIFdel{jeder }\DIFdelend \DIFaddbegin \DIFadd{jeden }\DIFaddend der vier mit einem \DIFdelbegin \DIFdel{Propellor verbundenen Elektromotoren , ist ein }\DIFdelend \DIFaddbegin \DIFadd{Propeller verbundenen Elektromotoren sind }\DIFaddend separate Motorcontroller zuständig. Diese sorgen dafür, dass sich die von der \gls{fcu} angeforderten Drehzahlen einstellen.
+
+Die \gls{fcu} ist die zentrale Steuer- und Regeleinheit des Quadrocopters. Sie besitzt zwei ARM7 Prozessoren, einen \gls{llp} und einen \gls{hlp}\DIFdelbegin \DIFdel{. Außerdem }\DIFdelend \DIFaddbegin \DIFadd{, zudem }\DIFaddend verschiedene Kommunikationsschnittstellen (vgl. Kapitel \ref{fig:Kommunikationsstruktur}). Zusätzlich \DIFdelbegin \DIFdel{dient sie als }\DIFdelend \DIFaddbegin \DIFadd{besitzt }\gls{fcu} \DIFadd{eine }\DIFaddend inertiale Messeinheit (engl. \gls{imu}). Diese Einheit wird zur Bewegungsdetektion sowie zur Bestimmung der Lage und Ausrichtung benötigt. Sie ist nicht zur Positionsbestimmung in einem ortsfesten Koordinatensystem (Koordinatensysteme siehe Kapitel HIER MUSS EINE REF hin) geeignet. Bestandteile der IMU sind ein 3D-Beschleunigungssensor, drei Drehratensensoren(Gyros), einem Kompass sowie einem Drucksensor zur Ermittlung der Flughöhe anhand des Luftdrucks. Verbaut sind die Sensoren mit Ausnahme des Kompass direkt auf der Platine (siehe Abbildung \ref{fig:fcuplatien}).
+
+Da der Einsatzbereich im Indoorbereich liegt, ist \DIFdelbegin \DIFdel{Drucksensor ist }\DIFdelend \DIFaddbegin \DIFadd{der Drucksensor }\DIFaddend zur Höhenbestimmung in geschlossenen Räumen nicht \DIFdelbegin \DIFdel{eignet, da er }\DIFdelend \DIFaddbegin \DIFadd{geeignet. Er liefert }\DIFaddend erst ab einer Höhe von 5m zuverlässige Werte\DIFdelbegin \DIFdel{liefert}\DIFdelend . Daher wurde in einer vorangegangen Arbeit von Jan Kallwies (lITERAURVERWIES JAN) die Hardware um ein Modul zur Messung der Höhe im Indoorbereich erweitert. Auf diesem Modul befinden sich \DIFdelbegin \DIFdel{ein }\DIFdelend zwei Infrarotsensoren für den Nahbereich. Beide zusammen decken einen \DIFdelbegin \DIFdel{Messbereich von }\DIFdelend Bereich von 4 cm bis 142 \DIFaddbegin \DIFadd{cm }\DIFaddend ab. Erweitert wird der Messbereich durch einen Ultraschallsensor für Entfernungen von bis zu 5 m. Aus diesen drei Sensordaten wird über einen Extended-Kalman-Filter die Flughöhe bestimmt. Eine genaue Beschreibung dieses Fusionsfilters kann in der Arbeit von Jan Kallwies [LITERATURVERZEICHNIS] nachgelesen werden. Da in dieser Arbeit die Navigation in der horizontale Ebene den Schwerpunkt darstellt, wird dieses Modul \DIFaddbegin \DIFadd{in dieser Arbeit }\DIFaddend nicht weiter behandelt.
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 0.75\textwidth]{images/FCU_Platine}
+		\caption[fcuplatine]{Platine der \gls{fcu}}
+		\label{fig:fcuplatien}
+	\end{figure}
+
+Um \DIFdelbegin \DIFdel{allerdings }\DIFdelend in der Horizontalen \DIFdelbegin \DIFdel{navigieren zu können}\DIFdelend \DIFaddbegin \DIFadd{die Navigation zu gewährleisten}\DIFaddend , muss die Position des Flugkörpers in der x-y Ebene (VGL kOORDINATENSYSTEME) bekannt sein. Da dies, wie schon beschrieben, nicht mit der Inertialsenorik möglich ist, wurde in die Turmstruktur der Laserscanner UTM-30LX der Firma Hokuyo integriert. Dieser Scanner hat eine maximale Reichweite von 30 m und \DIFaddbegin \DIFadd{ein }\DIFaddend Abtastbereich von 270°. Die Umlaufdauer beträgt dabei 40 Hz, d.h. alle 25 ms steht ein neuer Umgebungssan zur Verfügung.    
+
+Damit zur Berechnung der Position sowie \DIFaddbegin \DIFadd{der }\DIFaddend Implementierung weiterer Algorithmen und Funktionen ausreichend Rechenleistung \DIFdelbegin \DIFdel{vorhanden ist}\DIFdelend \DIFaddbegin \DIFadd{zur Verfügung steht}\DIFaddend , befindet sich auf dem Quadrocopter ein zusätzlicher Odroid-X Mikrocomputer mit einem Quad Core Prozessor mit 1.4 Ghz und einen 1024MB LP-DDR2 Arbeitsspeicher. Außerdem besitzt diese Entwicklungsplattform sechs USB-Schnittstellen sowie ein 10/100Mbps Ethernet-Anschluss.\\
+
+
+\DIFdelbegin \DIFdel{Nun sollte man einen Überblick über die im Quadrocopter verbauten Komponenten besitzen. Wie die Einheiten untereinander vernetzt sind, darauf wird im folgenden Kapitel \ref{sec:Kommunikationsarchitekur} eingegangen.
+}\DIFdelend %DIF > Nach dem Überblick über die im Quadrocopter verbaute Hardware und deren Komponenten, geht das folgende Kapitel \ref{sec:Kommunikationsarchitekur} auf die Implementierung der Intelligenz über Software ein.
+
+%DIF > Nun sollte man einen Überblick über die im Quadrocopter verbauten Komponenten besitzen. Wie die Einheiten untereinander vernetzt sind, darauf wird im folgenden Kapitel \ref{sec:Kommunikationsarchitekur} eingegangen.
+\DIFaddbegin 
+
+     
+\DIFaddend \section{Softwarestruktur}
+\label{sec:Kommunikationsarchitekur}
+
+Nachdem im \DIFdelbegin \DIFdel{vorhergegangen }\DIFdelend \DIFaddbegin \DIFadd{vorhergegangenen }\DIFaddend Kapitel \ref{sec:Hardwareaufbau} die verbaute Hardware vorgestellt wurde, geht es in diesem Abschnitt um die Softwarestruktur(Abbildung \ref{fig:Kommunikationsstruktur}). Es wird aufgezeigt\DIFaddbegin \DIFadd{, }\DIFaddend welche Software bereits fest implementiert ist und wo adaptive Applikationen integriert werden können. Des \DIFdelbegin \DIFdel{weiteren }\DIFdelend \DIFaddbegin \DIFadd{Weiteren }\DIFaddend wird die Kommunikationsstruktur dargelegt, wie und über welche Protokolle die einzelnen Komponenten \DIFdelbegin \DIFdel{mit einander }\DIFdelend \DIFaddbegin \DIFadd{miteinander }\DIFaddend kommunizieren. \\
+\DIFdelbegin %DIFDELCMD < 
+
+%DIFDELCMD < %%%
+\DIFdelend \begin{figure}
+	\centering
+	\includegraphics[width = \textwidth]{images/Kommunikationsarchitektur}
+	\caption[Kommunikationsstruktur]{Kommunikationsstruktur des Quadrocopters   Kompass auf deutsch ROS auch Programmierbar Namen der UART Ports einfügen}
+	\label{fig:Kommunikationsstruktur}
+\end{figure}
+Beginnend mit der \gls{fcu}, deren beiden Prozessoren \gls{llp} und \gls{hlp} \DIFdelbegin \DIFdel{die }\DIFdelend mit einer Frequenz \DIFaddbegin \DIFadd{von }\DIFaddend 1kHz \DIFdelbegin \DIFdel{getakten }\DIFdelend \DIFaddbegin \DIFadd{getaktet werden }\DIFaddend und über einem \gls{spi} Bussystem verknüpft sind, wird zunächst der \gls{llp} betrachtet. Auf dem Low Level Prozessor \DIFdelbegin \DIFdel{befinden }\DIFdelend \DIFaddbegin \DIFadd{befindet }\DIFaddend sich die Sensordatenfusion der \gls{imu}-Sensorik zur Lagebestimmung des Quadrocopters. \DIFdelbegin \DIFdel{Aufbauend darauf stabilisiert die implementierte Lageregelungdas Flugverhalten}\DIFdelend \DIFaddbegin \DIFadd{Darauf basiert die Lageregelung, die das Flugverhalten stabilisiert}\DIFaddend . Dabei werden die geforderten Sollwinkel bzw. \DIFaddbegin \DIFadd{die }\DIFaddend Solllage, die dem \gls{llp} über die Fernbedienung oder den \gls{hlp} übergeben \DIFdelbegin \DIFdel{wird}\DIFdelend \DIFaddbegin \DIFadd{werden}\DIFaddend , eingestellt. Kombiniert mit der Schubvorgabe werden den Motorreglern die jeweiligen Solldrehzahlen der Rotoren über einen \gls{i2c}-Bus, \DIFaddbegin \DIFadd{ein }\DIFaddend serieller synchroner Zweidraht-Bus, übergeben. Diese Algorithmen sind fest eingepflegt \DIFaddbegin \DIFadd{und gewährleisten bei Experimentalflügen eine sichere Rückfallebene}\DIFaddend . \gls{asctec} stellt \DIFdelbegin \DIFdel{hier }\DIFdelend dem Benutzer eine Art White-Box zur Verfügung, d.h\DIFdelbegin \DIFdel{es ist bekanntwas integriert ist, allerdings nicht wie es umgesetzt ist}\DIFdelend \DIFaddbegin \DIFadd{. die Integration ist bekannt, jedoch nicht deren Umsetzung}\DIFaddend . Überwachen lässt sich der LLP über einen externen \gls{pc}, in Abbildung \ref{sec:Kommunikationsarchitekur} als Bodenstation bezeichnet. Zur Kommunikation \DIFdelbegin \DIFdel{benötige }\DIFdelend werden zwei XBee Funkmodule \DIFaddbegin \DIFadd{benötigt}\DIFaddend . Eines ist am \gls{uart} LL-Serial0 Port der \gls{fcu} angeschlossen, das andere am USB Port der Bodenstation. Mit der AutoPilot Software lassen sich \DIFdelbegin \DIFdel{so }\DIFdelend unter anderem der Akkustand, die \gls{imu}-Daten sowie die Stellgrößen der Fernsteuerung betrachten. Außerdem ist es möglich\DIFaddbegin \DIFadd{, }\DIFaddend Parameter der Sensorfusion und \DIFaddbegin \DIFadd{der }\DIFaddend Lageregelung auszulesen und zu verändern.
+
+
+Mit dem \gls{hlp} stellt \gls{asctec} eine Entwicklungsumgebung zur Implementierung eigener Algorithmen auf der \gls{fcu} zur Verfügung. Hier können erweiternde Programmteile integriert werden\DIFaddbegin \DIFadd{, }\DIFaddend die den Lageregler des \gls{llp} ansprechen oder die direkt den Motorcontroller \DIFaddbegin \DIFadd{über den }\gls{llp} \DIFaddend mit Solldrehzahlen speisen.
+\DIFdelbegin \DIFdel{Die zweite Möglichkeit ist der Grund warum keine Änderungen, abgesehen von den Parametern, am }%DIFDELCMD < \gls{llp}  %%%
+\DIFdel{vorgenommen werden können. So gibt es bei Experimentalflügen immer eine sichere Rückfallebene. Möglich ist dies, da der }\DIFdelend \DIFaddbegin 
+
+\DIFadd{Die experimentelle Software auf den }\DIFaddend \gls{hlp} \DIFaddbegin \DIFadd{kann }\DIFaddend über die \DIFdelbegin \DIFdel{Fernsteuerung }\DIFdelend \DIFaddbegin \DIFadd{Fernbedienung }\DIFaddend aktiviert und deaktiviert werden\DIFdelbegin \DIFdel{kann.
+}\DIFdelend \DIFaddbegin \DIFadd{. Eine fehlerhafte Programmierung des }\gls{hlp} \DIFadd{kann kritische Flugmanöver hervorrufen. Damit diese nicht zum Absturz führen, kann über die Fernbedienung die Experimentalsoftware deaktiviert und das Flugsystem über die ausgereifte Lageregelung auf dem }\gls{llp} \DIFadd{stabilisiert werden (Rückfallebene).
+}\DIFaddend 
+
+Wie schon in Kapitel \ref{sec:Hardwareaufbau} beschrieben, befindet sich auf dem Quadorcopter zur Erhöhung der Rechenleistung der Odroid-X. Anders wie bei den auf der \gls{fcu} befindlichen Prozessoren, besitzt das Odroid Bord ein Betriebssystem. \DIFdelbegin \DIFdel{Dabei diesem handelt es sich }\DIFdelend \DIFaddbegin \DIFadd{Es handelt sich dabei }\DIFaddend um das Opensource Betriebssystem Ubuntu 13.04. Dieses wurde ausgewählt, da es die Installation eines weiteren Opensource Betriebssystems ermöglicht, dem \gls{ros}\DIFdelbegin \DIFdel{. Einem }\DIFdelend \DIFaddbegin \DIFadd{, einem }\DIFaddend Software Framework für Roboteranwendungen (siehe Kapitel \ref{sec:ros}). Zum Einsatz kommt der Odroid-X bei der Implementierung der Positionsbestimmung (Kapitel VERWEIS). Verbunden ist es \DIFdelbegin \DIFdel{zum einen }\DIFdelend \DIFaddbegin \DIFadd{einerseits }\DIFaddend über einen USB-Port mit dem Lasersanner \DIFdelbegin \DIFdel{, zum anderen ist mit einen }\DIFdelend \DIFaddbegin \DIFadd{und verknüpft andererseits mittels einem }\DIFaddend weiteren USB-Anschluss  \DIFdelbegin \DIFdel{über }\DIFdelend den HL-Serial0 Port mit dem \gls{hlp}\DIFdelbegin \DIFdel{verknüpft}\DIFdelend . Von der Bodenstation kann über WLAN eine SSH Verbindung aufgebaut werden, \DIFdelbegin \DIFdel{und somit die Entwicklungsplatform bedient werden}\DIFdelend \DIFaddbegin \DIFadd{die in Folge die Entwicklungsplatform bedient}\DIFaddend .\\
+
+\DIFdelbegin \DIFdel{Nun ist bekannt}\DIFdelend \DIFaddbegin \DIFadd{Derzeit ist bekannt, }\DIFaddend wie die einzelnen Komponenten untereinander vernetzt sind. \DIFdelbegin \DIFdel{Somit lässt sich im }\DIFdelend \DIFaddbegin \DIFadd{Im }\DIFaddend weiteren Verlauf der Arbeit \DIFaddbegin \DIFadd{lässt sich }\DIFaddend nachvollziehen, an welchen Stellen die Anwendungen implementiert werden und über welche Verbindungen sie \DIFdelbegin \DIFdel{untereinander }\DIFdelend \DIFaddbegin \DIFadd{miteinander }\DIFaddend kommunizieren. 
+
