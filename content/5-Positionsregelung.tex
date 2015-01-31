@@ -423,17 +423,17 @@ Auch können äußere Kräfte, hervorgerufen durch z.B. Winde wirken, die den Quadro
  	\label{fig:RefaliasVor}
 \end{figure}
 %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-\section{Folgeregler}
+\section[Folgeregler]{Entwurf des Folgeregler}
 \label{sec:folgeregeler}
-Inkonsistente Anfangsbedingungen, externe Störungen sowie Modellunsicherheiten bewirken einen Ausgangsfolgefehler $e = P^n_{ref} - P^n $. Dieser pflanzt sich weiter fort, da es sich bei dem Stellsignal $  u_{f_{ref}} $ (\ref{eq:ref_mdl}) nicht um das Stellsignal $ u_f $ handelt, welches den Quadrocopter zurück auf die Trajektorie führt. Das gilt auch im Falle eines unzureichenden Stellsignalverlaufs in Folge von Modellunsicherheiten. Modellieren lässt sich die Fortpflanzung des Folgefehlers aufgrund des linearisierten Modells in Form einer doppelten Integriererkette. 
+Inkonsistente Anfangsbedingungen, externe Störungen sowie Modellunsicherheiten bewirken einen Ausgangsfolgefehler $e = P^n_{ref} - P^n $. Dieser pflanzt sich weiter fort, da es sich bei dem Stellsignal $  u_{f_{ref}} $ um eine Steuerung ohne Rückmeldung handelt. Der Quadrocopter folgt nicht der Trajektorie. Benötigt wird demzufolge ein Stellsignal $ u_f $, welches den Quadrocopter trotz Störeinfluss entlang der Trajektorie führt. Modellieren lässt sich die Fortpflanzung des Folgefehlers aufgrund des linearisierten Modells in Form einer doppelten Integriererkette. Ein solches System ist instabil \cite{lunze08}.
 %Dieser ergibt sich durch die Fortpflanzung des für das reale System nicht ausreichenden Stellsignals $\ddot{e} = u_{f_{ref}} - u_f$. Das bedeutet, die Fehlerdynamik kann ebenfalls über eine zweifache Integriererkette modelliert werden. 
-Zweifache Integriererkette ergo instabiles System. Damit später die Flugbahn des Quadrocopter mit der Solltrajektorie konvergiert, muss die Fehlerdynamik stabilisiert werden. 
+ Damit später die Flugbahn des Quadrocopter trotzdem mit der Solltrajektorie konvergiert, muss die Fehlerdynamik stabilisiert werden. 
 %Dafür ist es von nöten, die Dynamik der Folgefehler vorgeben zu können. 
-Zu diesem Zwecke werden die Zustandsgrößen des Ausgangsfolgefehlermodells zurückgeführt (Abbildung \ref{fig:rückfolgefeh}). Daraus ergibt sich für die Vorgabe, dass der Folgefehler $ e $ in einer endlichen Zeit gegen $ 0 $ strebt, folgende Differentialgleichung.
+Zu diesem Zwecke werden die Zustandsgrößen des Ausgangsfolgefehlermodells zurückgeführt (Abbildung \ref{fig:rückfolgefeh}). Daraus ergibt sich für die Vorgabe, dass der Folgefehler $ e $ in einer endlichen Zeit gegen $ 0 $ strebt, folgende Differentialgleichung:
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/fehlermdl}
-	\caption[]{Ausgangsfolgefehlermodell mit Zustandsrückführung} %
+	\caption[Ausgangsfolgefehlermodell mit Zustandsrückführung]{Ausgangsfolgefehlermodell mit Zustandsrückführung} %
 	\label{fig:rückfolgefeh}
 \end{figure}
 \begin{equation}
@@ -454,12 +454,12 @@ u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler}{\tilde{c}_1 \
 \end{equation}
 Das Annäherungsverhalten ist abhängig von den Koeffizienten $ \tilde{c}_0 $ und $ \tilde{c}_1 $. Anhand von (\ref{eq:fehlerdyn}) lassen sich für diese mittels der Polvorgabe (Kapitel \ref{subsec:polvor}) die Dynamik vorgegeben.
 
-Nicht bekämpft werden durch dieses Stellgesetz konstante Dauerstörungen. Hervorgerufen zum Beispiel durch Winde, die über einen längeren Zeitraum als konstant anzusehen sind. Mit einer konstanten Kraft wirken sie auf das Flugsystem. Beachtet man die von dieser Kraft hervorgerufenen Beschleunigungsbeitrag $ a_st $ in der Fehlerdifferenzialgleichung. 
+Nicht bekämpft werden durch dieses Stellgesetz konstante Dauerstörungen. Hervorgerufen zum Beispiel durch Winde, die über einen längeren Zeitraum als konstant anzusehen sind. Mit einer konstanten Kraft wirken sie auf das Flugsystem. Beachtet man die von dieser Kraft hervorgerufenen Beschleunigungsbeitrag $ a_st $ in der Fehlerdifferenzialgleichung, 
 \begin{equation}
 \ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e +a_{st}= 0
 \label{eq:fehlerdyn_st}
 \end{equation}
-Folgt im stationären Zustand, dass heißt alle Zeitableitungen gleich Null, ein dauerhafter Positionsfehler.
+folgt im stationären Zustand, d.h. alle Zeitableitungen gleich Null, ein dauerhafter Positionsfehler.
 \begin{equation}
 e = -\frac{a_{st}}{\tilde{c}_0}
 \end{equation} 
@@ -468,16 +468,16 @@ Lösung dieses Problems ist nach \cite{deutNL} die Erweiterung des Folgereglers m
 \ddot{e} + \tilde{c}_1 \cdot \dot{e}+ \tilde{c}_0\cdot e + \underset{I-Anteil}{\tilde{c}_{-1} \int e(\tau)d\tau} +a_{st}= 0
 \label{eq:integodif}
 \end{equation} 
-Der I-Anteil liefert ein Signalanteil zur Kompensation der Störung im stationären Zustand. Den Beweis dafür erhält man, wenn man die Integro-Differentialgleichung (\ref{eq:integodif}) nach der Zeit ableitet. Danach ergibt sich folgende Differentialgleichung. 
+Der I-Anteil liefert ein Signalanteil zur Kompensation der Störung im stationären Zustand. Den Beweis dafür erhält man, wenn man die Integro-Differentialgleichung (\ref{eq:integodif}) nach der Zeit ableitet. Daraus ergibt sich folgende Differentialgleichung. 
 \begin{equation}
 	\dddot{e} + \tilde{c}_1 \cdot \ddot{e}+ \tilde{c}_0\cdot \dot{e} + \tilde{c}_{-1} \cdot e = 0
 	\label{eq:ifehlerdyn}
 \end{equation}
-Im eingeschwungenen Zustand ergibt sich so für den Positionsfehler
+Im eingeschwungenen Zustand  ist somit der Positionsfehler eliminiert. 
 \begin{equation}
  e = 0
 \end{equation}
-Das Stellgesetz für einen Regler mit I-Anteil lässt sich unter Vernachlässigung der Dauerstörung $ a_{st} $ aus Gleichung (\ref{eq:integodif}) entwickeln (vgl. Abbildung \ref{fig:folgeregler}).
+Das Stellgesetz für einen Regler mit I-Anteil lässt sich unter Nichtbeachtung der Dauerstörung $ a_{st} $ aus Gleichung (\ref{eq:integodif}) entwickeln (vgl. Abbildung \ref{fig:folgeregler}).
 \begin{equation}
 u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-Anteil}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n) +\tilde{c}_0\cdot (P^n_{ref} - P^n)+\tilde{c}_{-1} \int e(\tau)d\tau}
 \label{eq:folgreg_stelgeI}
@@ -485,10 +485,10 @@ u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-
 \begin{figure}
 	\centering
 	\includegraphics[width = 0.75\textwidth]{images/folgreg}
-	\caption[Folgeregler]{Folgeregler} %
+	\caption[Strukturbild des Folgereglers]{Strukturbild des Folgereglers} %
 	\label{fig:folgeregler}
 \end{figure}
-Dieses Stellgesetz führt den Quadrocopter entlang der Referenztrajektorie. Zur erkennen ist dies auch in der Simulation (\ref{fig:folg_RefaliasVor}) mit Regler. So wird für inkonsistente Anfangsbedingungen (Abbildung \ref{fig:folg_inkonAzust}) das Fluggerät auf die Trajektorie geführt. Für Modellunsicherheiten (Abbildung \ref{fig:folg_unsichmdlpara}) passt der Folgeregler das Stellsignal so an, dass der Quadrocopter entlang des vorgegebenen Pfades fliegt. Vergleich hierzu reine Vorsteuerung (Abbildung \ref{fig:RefaliasVor}).
+Dieses Stellgesetz führt den Quadrocopter entlang der Referenztrajektorie. Zu erkennen ist dies in der Simulation (Abbildung \ref{fig:folg_RefaliasVor}) mit Regler. So wird für inkonsistente Anfangsbedingungen (Abbildung \ref{fig:folg_inkonAzust}) das Fluggerät auf die Trajektorie zurückgeführt. Für Modellunsicherheiten (Abbildung \ref{fig:folg_unsichmdlpara}) passt der Folgeregler das Stellsignal so an, dass der Quadrocopter entlang des vorgegebenen Pfades fliegt.
 
 Wie zuvor kann das Einschwingverhalten für den Folgeregler mit I-Anteil über die Polvorgabe festgelegt werden. Für diesen Fall ist die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden. 
  \begin{figure}
@@ -503,15 +503,15 @@ Wie zuvor kann das Einschwingverhalten für den Folgeregler mit I-Anteil über die
  			\label{fig:folg_unsichmdlpara}
  		}
  	}	
- 	\caption[Grafiken Folgeregler]{Auswirkung von Folgeregler ($\tilde{c}_1=4$, $\tilde{c}_0=4$, $\tilde{c}_{-1}=0.01 $) auf inkonsistente Anfangszustände und Modellunsicherheiten }
+ 	\caption[Simulationsergebnisse mit Folgeregler]{Auswirkung von Folgeregler ($\tilde{c}_1=4$, $\tilde{c}_0=4$, $\tilde{c}_{-1}=0.01 $) auf inkonsistente Anfangszustände und Modellunsicherheiten }
  	\label{fig:folg_RefaliasVor}
  \end{figure}
  
  
  %++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-\subsection{Einstellung der Dynamik mittels Polvorgabe}
+\subsection{Einstellung Dynamik mittels Polvorgabe}
 \label{subsec:polvor}
-Anhand der Lage der Polstellen einer Übertragungsfunktion, werden Rückschlüsse über die Stabilität und das Einschwingverhalten getroffen. Ziel einer Zustandsregelung, wie der Folgeregelung ist, die Pollagen der zu regelnden Strecke so zu verschieben, dass das Ein-/Ausgangsverhalten die gewünschte Dynamik aufweist.
+Anhand der Lage der Polstellen einer Übertragungsfunktion lassen sich Rückschlüsse über Stabilität und Einschwingverhalten treffen. Ziel einer Zustandsregelung, wie der Folgeregelung, ist die Pollagen der zu regelnden Strecke so zu verschieben, dass das Ein-/Ausgangsverhalten die gewünschte Dynamik aufweist.
 
 Zunächst ist zu klären, was die Polstellenlage in der komplexen Ebene über das Verhalten aussagt. Dabei entspricht die Anzahl der Pole $ \lambda_i $ der Ordnung $ n $ des Systems.
 \begin{figure}
@@ -522,35 +522,35 @@ Zunächst ist zu klären, was die Polstellenlage in der komplexen Ebene über das V
 \end{figure}
 \begin{itemize}
 	\item Befinden sich alle Pole $ \lambda_i $ links der Imaginärachse ($ Re(\lambda_i) < 0 $) ist das System asymptotisch stabil, ansonsten instabil (Abbildung \ref{fig:stabgeb}).
-	\item Komplexe Pole tauchen nur in Formen von Polpaaren auf. Ist ein komplexes Polpaar vorhanden, führt das System nach Anregung eine Schwingung aus. Befinden sich die Polpaare in der linken Halbebene des Imaginärteil, nimmt die Amplitude der Schwingung exponentiell ab.
+	\item Komplexe Pole tauchen nur in Form von Polpaaren auf. Ist ein komplexes Polpaar vorhanden, führt das System nach Anregung eine Schwingung aus. Befinden sich die Polpaare in der linken Halbebene des Imaginärteil, nimmt die Amplitude der Schwingung exponentiell ab.
 	\item Je weiter links sich die Pole auf der reellen Achse befinden, desto schneller ist das System. 
 	\item Bei mehreren Polstellen wird das Verhalten hauptsächlich über den Pol bzw. das Polpaar mit dem größten Realteil bestimmt. Sie werden deshalb als dominante Pole bezeichnet.
 \end{itemize}
-Betrachtet man eine beliebige Übertragungsfunktion im Bildbereich.
+Betrachtet man eine beliebige Übertragungsfunktion im Bildbereich,
 \begin{equation}
 G_e(s) = \frac{Z(s)}{N(s)}
 \label{eq:Ge}
 \end{equation}  
-Entsprechen die Polstellen $ \lambda_i $ des Systems den Nullstellen $ s_i $ des Nennerpolynom.
+entsprechen die Polstellen $ \lambda_i $ des Systems den Nullstellen $ s_i $ des Nennerpolynom.
 \begin{equation}
 N(s)=  s^n+c_{n-1} \cdot s^{n-1}+ \cdots + c_1 \cdot s+ c_0 = \prod\limits_{n}^{i=1} (s-\lambda_i)= 0
 \label{eq:N}
 \end{equation}
-Das dynamische Verhalten lässt sich anhand dieser Pollage analysieren. Im Umkehrschluss kann die Dynamik für frei wählbare Koeffizienten des Nennerpolynoms über die Vorgabe von Polstellen $ \lambda_{si} $, über einen Koeffizientenvergleich, erfolgen.
+Das dynamische Verhalten lässt sich anhand dieser Pollage analysieren. Im Umkehrschluss kann die Dynamik für frei wählbare Koeffizienten des Nennerpolynoms über die Vorgabe von Polstellen $ \lambda_{si} $ über einen Koeffizientenvergleich erfolgen.
 \begin{equation}
 N(s)=  s^n+c_{n-1} \cdot s^{n-1}+ \cdots + c_1 \cdot s+ c_0 =\prod\limits_{n}^{i=1} (s-\lambda_{si}) 
 \end{equation}
-Somit ist es möglich, über die Koeffizienten von (\ref{eq:fehlerdyn}) oder (\ref{eq:ifehlerdyn}) das Einschwingverhalten des Folgereglers mittels der Platzierung von Polen vorzugeben. Wie jedoch die Polstellen optimal bestimmt werden, dafür gibt es keine generelle Vorgehensweise. In der Regel werden sie empirisch über Simulationen festgelegt, anschließend am realen Modell getestet und gegebenenfalls optimiert. Diese Optimierung geschieht meist händisch. Hier gibt es Bemühungen, diese letzte Optimierung am realen System zu automatisieren. 
+Somit ist es möglich über die Koeffizienten von (\ref{eq:fehlerdyn}) oder (\ref{eq:ifehlerdyn}) das Einschwingverhalten des Folgereglers mittels der Platzierung von Polen vorzugeben. Wie jedoch die Polstellen optimal bestimmt werden, dafür gibt es keine generelle Vorgehensweise. In der Regel werden sie empirisch über Simulationen festgelegt, anschließend am realen Modell getestet und gegebenenfalls optimiert. Diese Optimierung geschieht meist händisch. Hier gibt es Bemühungen, diese letzte Optimierung am realen System zu automatisieren. 
   
 \subsection{Automatische Optimierung der Reglerparameter}
 \label{sec:selftun}
-In der Simulation ermittelte Parameter müssen häufig für das reale System leicht angepasst werden, mit dem Ziel die Abweichung von der Referenztrajektorie möglichst gering zu halten. Von Vorteil ist es deshalb, einen Algorithmus zu implementieren, der online und kontinuierlich die Einstellung optimiert. Die Bezeichnung dieses Vorgangs heißt selftuning. 
+In der Simulation ermittelte Parameter müssen häufig für das reale System leicht angepasst werden, mit dem Ziel die Abweichung von der Referenztrajektorie möglichst gering zu halten. Von Vorteil ist es deshalb, einen Algorithmus zu implementieren, der kontinuierlich die Einstellung optimiert. Die Bezeichnung dieses Vorgangs heißt selftuning. 
 
-Der implementierte Folgeregler inklusive I-Anteil setzt sich aus einem Proportionalverstärker $ P $, einem Differentiellen Anteil $ D $ sowie einem Integrationsanteil $ I $ zusammen.
+Der implementierte Folgeregler inklusive I-Anteil setzt sich aus einem Proportionalverstärker $ P $, einem differentiellen Anteil $ D $ sowie einem Integrationsanteil $ I $ zusammen.
 \begin{equation}
 u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{D-Anteil}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n)} +\underset{P-Anteil}{\tilde{c}_0\cdot (P^n_{ref} - P^n)}+\underset{I-Anteil}{\tilde{c}_{-1} \int e(\tau)d\tau}
 \end{equation}
-Dadurch können Tuning-Algorithmen verwendet werden, die für einen PID-Regler entwickelt worden sind. Somit kann der unter \cite{selftun} vorgestellte Algorithmus angewendet werden. Dieser optimiert die Regelparameter über eine adaptive Interaktion. Die Interaktion besteht dabei aus drei Differentialgleichungen zur Anpassung der Koeffizienten des Reglers.
+Dadurch können Optimierungs-Algorithmen verwendet werden, die für einen PID-Regler entwickelt sind. Somit kann der unter \cite{selftun} vorgestellte Algorithmus angewendet werden. Dieser optimiert die Regelparameter über eine adaptive Interaktion. Diese besteht aus drei  folgenden Differentialgleichungen zur Anpassung der Koeffizienten des Reglers.
 \begin{equation}
 \begin{split}
 \dot{k}_p &= \dot{\tilde{c}}_0 = \gamma \cdot e^2\\
@@ -561,43 +561,44 @@ Dadurch können Tuning-Algorithmen verwendet werden, die für einen PID-Regler ent
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/selftune}
-	\caption[Selftuning Folgeregler]{Folgeregler inklusive Selftuning} %
+	\caption[Folgeregler inklusive Selftuning]{Folgeregler inklusive Selftuning} %
 	\label{fig:selftun}
 \end{figure}
 
-Dabei entspricht $ \gamma $ dem Anpassungskoeffizient. In \cite{selftun} wird $ \gamma = 10 $ empfohlen. Die Struktur, des sich daraus ergebenden Folgeregler mit Selbstoptimierung, ist in Abbildung \ref{fig:selftun} dargestellt. Anzumerken ist, dass die Qualität der Optimierung abhängig von den zu Beginn übergebenen Parametern ist. Die zuvor zum Beispiel über die Polvorgabe bestimmt werden. 
+Dabei entspricht $ \gamma $ dem Anpassungskoeffizient. In \cite{selftun} wird $ \gamma = 10 $ empfohlen. Die Struktur des sich daraus ergebenden Folgeregler mit Selbstoptimierung ist in Abbildung \ref{fig:selftun} dargestellt. Anzumerken ist, dass die Qualität der Optimierung von zu Beginn übergebenen Parametern abhängt. Die zuvor mittels der Polvorgabe (Kapitel \ref{subsec:polvor}) bestimmt werden. 
 
-Im beschränkten Zeitraum der Arbeit konnte dieser Algorithmus nicht vollständig untersucht und umgesetzt werden. Die im beschreiben Paper \cite{selftun} veröffentlichen Ergebnis des Optimierungsalgorithmus legen jedoch eine weiterführende Untersuchung dieses Teilbereichs im Anschluss dieses Ausarbeitung nahe.
+Im beschränkten Zeitraum der Arbeit konnte dieser Algorithmus nicht ausreichend untersucht und umgesetzt werden. Die im beschreiben Paper \cite{selftun} veröffentlichen Ergebnis des Optimierungsalgorithmus legen jedoch eine weiterführende Untersuchung dieses Teilbereichs im Anschluss dieses Ausarbeitung nahe.
 
-\section{Zustandsschätzung}
+\section[Zustandsschätzung]{Ermittlung der Zustände}
 \label{sec:Zustandsbestimmung}
 
 Bei der Folgeregelung handelt es sich um einen Zustandsregler. 
 %Das bedeutet die Werte aller Zustände des realen Systems müssen bekannt sein. 
-Betrachtet man das Stellgesetz (\ref{eq:folgreg_stelgeI}) bedeutet dies, dass die Position $ P^n $ und die Geschwindigkeit $ v^n $ mit der sich der Quadrocopter im n-frame bewegt zur Verfügung stehen müssen. Bereits bekannt ist, dass die Position $ P^n $ mittels des Lasers (Kapitel \ref{sec:laser_scan_matching}) bestimmt wird. Die Updaterate beträgt dabei nur $ 40 Hz $.
+Unter Betrachtung des Stellgesetz (\ref{eq:folgreg_stelgeI}) für den Folgereglers geht hervor, dass die Position $ P^n $ als auch die Geschwindigkeit $ v^n $ mit der sich der Quadrocopter im n-frame bewegt zur Verfügung stehen müssen. Bereits bekannt ist, dass die Position $ P^n $ mittels des Lasers (Kapitel \ref{sec:laser_scan_matching}) bestimmt wird. Die Updaterate beträgt hier lediglich $ 40~Hz $.
 %Die Position $ P^n $ ist bereits über den Laser (Kapitel \ref{chap:2Dpositionsbestimmung}) bestimmt. 
 %Besitzt allerdings nur eine Updaterate von $ 40 Hz $.
- Daher ist es sinnvoll Zwischenwerte zu schätzen, sodass die Positionsdaten dem Folgeregler in einer höheren Taktrate zur Verfügung stehen. 
+ Daher ist es sinnvoll Zwischenwerte zu schätzen, so dass die Positionsdaten dem Folgeregler in einer höheren Taktrate bereitstehen. 
  
- Der Zustand der Geschwindigkeit $ v^n $ ist messtechnisch sehr schwer zu ermitteln. Eine Möglichkeit zur messtechnischen Erfassung ist die Integration eines Dopplerradars \cite{ras12} auf dem Quadrocopter, der auf dem Doppler-Effekt basiert. Dabei wird ein periodisches Signal ausgesendet und je nach Geschwindigkeit verkleinert sich die Periodendauer, bzw. vergrößert sich für negative Geschwindigkeiten. So kann anhand der Frequenzänderung des reflektierten Signals auf die Geschwindigkeit geschlossen werden. Diese Umsetzung bedeutet die Integration eines weiteren Sensor. Aus Gewichts- und Kostengründen sind deshalb Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit des Quadrocopters feststellen.
+ Der Zustand der Geschwindigkeit $ v^n $ ist messtechnisch sehr schwer ermittelbar. Eine Möglichkeit zur messtechnischen Erfassung ist die Integration eines Dopplerradars \cite{ras12} auf dem Quadrocopter, der auf dem Doppler-Effekt basiert. Dabei wird ein periodisches Signal ausgesendet und je nach Geschwindigkeit verkleinert sich die Periodendauer, bzw. vergrößert sich für negative Geschwindigkeiten. So kann anhand der Frequenzänderung des reflektierten Signals auf die Geschwindigkeit geschlossen werden. Diese Umsetzung bedeutet die Integration eines weiteren Sensor. Aus Gewichts- und Kostengründen sind deshalb Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit des Quadrocopters feststellen.
 
-\subsection{Geschwindigkeitsbestimmung über die Inertialsenorik}
+\subsection{Geschwindigkeitsbestimmung über Integration der Beschleunigungsdaten}
 \label{subsec:Vimu}
-Die \gls{imu} beinhaltet einen 3D-Bewegungssensor. Dieser nimmt die Beschleunigung in x, y und z- Achse des Quadrocopters auf und stellt die Messwerte mit einer Frequenz von $ 1~kHz $ ($ T_{imu}=1~ms $) zur Verfügung. Aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Integration der Beschleunigung bestimmen. Für den diskreten Fall lässt sich diese mittels des Euler-Verfahrens approximieren. Zuvor werden dafür die Beschleunigungsmesswerte ins n-frame transformiert (Gleichung (\ref{eq:inverse_transM})).  
+Die \gls{imu} beinhaltet einen 3D-Bewegungssensor. Dieser nimmt die Beschleunigung in $ x^b $, $ y^b $ und $ z^b $-Achse des Quadrocopters auf und stellt die Messwerte mit einer Frequenz von $ 1~kHz $ ($ T_{imu}=1~ms $) zur Verfügung. Aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Integration der Beschleunigung bestimmen. Für den diskreten Fall lässt sich diese mittels des Euler-Verfahrens (\ref{eq:eulva}) approximieren. Zuvor werden dafür die Beschleunigungsmesswerte ins n-frame transformiert (\ref{eq:inverse_transM}).  
 \begin{equation}
-v^n_{k+1} = v^n_k + T_{imu} \cdot (M_{nb}\cdot a^b_k) = v^n_k + T \cdot a^n_k 
+v^n_{k+1} = v^n_k + T_{imu} \cdot (M_{nb}\cdot a^b_k) = v^n_k + T_{imu}  \cdot a^n_k 
+\label{eq:eulva}
 \end{equation}
 Auf diese Weise ist die Geschwindigkeit bestimmt. In der Praxis führt diese Methode allerdings zu keinem guten Ergebnis. Grund dafür ist das Sensorrauschen $ r_{a_k} $ sowie der Bias b, der trotz Initialisierung nicht vollständig zu eliminieren ist. Damit entspricht der Messwert $ a^b_k $ nicht der tatsächlichen Beschleunigung $ a^b_{k_{tat}} $.
 \begin{equation}
 a^b_k = a^b_{k_{tat}} +  r_{a_k}+b
 \end{equation}  
-Das Problem ist, der Fehler wird mit integriert. Damit driften geschätzte und reale Geschwindigkeit auseinander. Dadurch ist eine Geschwindigkeitsbestimmung ausschließlich über die Inertialsensorik nicht möglich. 
+Das Problem ist, dass der Fehler mit integriert wird. Damit driften geschätzte und reale Geschwindigkeit auseinander. Dadurch ist eine verlässliche Geschwindigkeitsbestimmung ausschließlich über die Inertialsensorik nicht gewährleistet. 
 
-\subsection{Geschwindigkeit als Ableitung der Position}
+\subsection{Geschwindigkeitsbestimmung über die Ableitung der Positionsdaten}
 \label{subsec:abpos}
 Ebenfalls auf Basis des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) bestimmt sich die Geschwindigkeit über die Ableitung der Quadrocopterpositionen.
 %lässt sich die Geschwindigkeit aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) über Ableitung der Quadrocopterpositionen bestimmen. 
-Da es sich bei den Positionsdaten um diskrete Werte handelt, lässt sich die Ableitung  anhand des Euler-Verfahren s(\ref{eq:eul}) approximieren.
+Da es sich bei den Positionsdaten um diskrete Werte handelt, lässt sich die Ableitung  anhand des Euler-Verfahrens (\ref{eq:eul}) approximieren.
 \begin{equation}
 P^n_k=P^n_{k-1}+T_l \cdot v^n_k 
 \label{eq:eul}
@@ -607,7 +608,7 @@ Für die Geschwindigkeit ergibt sich
 v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l}
 \label{eq:v_eul}
 \end{equation}
-Die Abtastzeit $ T_l = 25~ms $ ($f_l = 40~Hz $). Sie entspricht der Updaterate  der Umgebungsscans des Lasers mit denen die Algorithmen zur Positionsbestimmung gespeist werden. Bei der Approximation der Geschwindigkeit ist zu beachten, dass das Positionssignal aufgrund von Sensorrauschen von Laser und Gyroskope sowie der Varianz des \gls{icp}-Algorithmus eine Abweichung vom tatsächlichen Positionswert $ P^n_{k_{tat}} $ aufweist. Diese Abweichung ist nicht konstant und ist als Positionsrauschen $ r_{P_k} $ darzustellen. 
+Die Abtastzeit $ T_l = 25~ms $ ($f_l = 40~Hz $) entspricht der Updaterate  der Scans des Lasers mit denen die Algorithmen der Positionsbestimmung gespeist werden. Bei der Approximation der Geschwindigkeit ist zu beachten, dass das Positionssignal aufgrund von Sensorrauschen von Laser und Gyroskope sowie der Varianz des \gls{icp}-Algorithmus eine Abweichung vom tatsächlichen Positionswert $ P^n_{k_{tat}} $ aufweist. Diese Abweichung ist nicht konstant und ist als Positionsrauschen $ r_{P_k} $ darzustellen. 
 \begin{equation}
 P^n_k = P^n_{k_{tat}}+r_{P_k}
 \end{equation}
@@ -619,7 +620,7 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  Diese führt nicht dazu, dass wie bei der Geschwindigkeitsbestimmung mittels der Beschleunigungssensoren, der Schätzwert und Realwert auseinander divergieren. Nichtsdestotrotz besitzt das Rauschen einen Einfluss auf die Qualität der Geschwindigkeitsberechnung. So fällt bei niedrigen Geschwindigkeiten der Abstand zwischen zwei Positionswerten geringer aus. Der Betrag des Rauschanteils bleibt konstant. Dies führt vor allem bei Schwebeflügen sowie Flügen mit geringer Dynamik zu einer erhöhten Unsicherheit der Schätzung (Abbildung \ref{fig:VarPosVerschHohe}). Zwar zeigt die Grafik \ref{fig:VarPosVerschNierdrig}, dass der Einfluss des Rauschen auf die Varianz der errechneten Geschwindigkeit (\ref{eq:vn_diskabrau}) mit der Größe der Positionsverschiebung abnimmt. Ungeachtet dessen ist es gerade notwendig für Bewegungen mit geringer Geschwindigkeit den Einfluss des Positionsrauschens zu minimieren.  
  \begin{figure}
  	\centering{
- 		\subfloat[Keine/kleine Positionsverschiebung, hohe Varianz]{
+ 		\subfloat[Keine(geringe) Positionsverschiebung, hohe Varianz]{
  			\includegraphics[width=0.5\textwidth]{images/adapt_varklpos}
  			\label{fig:VarPosVerschHohe}
  		}
@@ -628,7 +629,7 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  			\label{fig:VarPosVerschNierdrig}
  		}
  	}	
- 	\caption[Auswirkung der Positionsverschiebung auf Varianz der Geschwindigkeit]{Auswirkung der Größe der Positionsverschiebung innerhalb eines Schätzwertes auf die Varianz der Geschwindigkeitsschätzung}
+ 	\caption[Auswirkung der Positionsverschiebung auf Varianz der Geschwindigkeit]{Auswirkung der Positionsverschiebung auf Varianz der Geschwindigkeit}
  	\label{fig:VarPosVersch}
  \end{figure}
  Geht man davon aus, dass die Frequenz des Rauschanteils oberhalb des Frequenzbandes der Positionsänderungen liegt, kann das Nutzsignal mittels eines Tiefpassfilters vom Rauschanteil getrennt werden. Das Tiefpassfilter lässt sich dabei mittels eines rekursiven \gls{iir}-Filters realisieren \cite{des14}. Die gefilterte Geschwindigkeit $ \hat{v}^n_k $ hängt dabei nicht nur von den vorherigen Messwerten $v^n $, sondern auch von den vorherigen Filterergebnissen $ \hat{v}^n  $ ab.
@@ -638,30 +639,30 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  \end{equation}
  Mittels der Koeffizienten $ a_j $ und $ b_i $ wird das gewünschte Filterverhalten, zum Beispiel das eines Butterworth-Filters, mit der benötigten Grenzfrequenz realisiert. Die Ordnung $ n $ des Filter beschreibt wie viele der vorangegangenen Messwerten in die Filterung mit einzubeziehen sind. Beim Design des Filters werden jedoch Kompromisse zwischen Zeitverzögerung, Phasenverzerrung, Dämpfung und Stoppbandeigenschaften getroffen. Für die Folgeregelung ist es dabei wichtig, dass die beiden erstgenannten Kriterien möglichst gering ausfallen. Ist dies nicht der Fall, wirkt es destabilisierend auf den Regler. 
  
- Des Weiteren lassen sich Aufgrund der geringen Updaterate von $ 40 Hz $ der Positionsdaten, die Dynamik des Quadrocopters und das Positionsrauschen spektral nicht eindeutig voneinander trennen. Unterdrückt man das Positionsrauschen, werden auch schnelle Positionsänderungen des Quadrocoptes weg gefiltert. Für die hohe Dynamik des Quadrocopters ist die Anwendung eines Tiefpassfilter mit Grenzfrequenz nicht gangbar. Gesucht ist eine Methode, die für Flüge mit geringer Dynamik die Varianz der Geschwindigkeitsschätzung, verursacht durch Positionsrauschen, möglichst stark verringert. Gleichzeitig jedoch der hohen Dynamik des Quadrocopters Folge leisten kann.  
+ Des Weiteren lassen sich aufgrund der geringen Updaterate von $ 40~Hz $ der Positionsdaten, die Dynamik des Quadrocopters und das Positionsrauschen spektral nicht eindeutig voneinander trennen. Unterdrückt man das Positionsrauschen werden auch schnelle Positionsänderungen des Quadrocoptes ausgefiltert. Für die hohe Dynamik des Quadrocopters ist die Anwendung eines Tiefpassfilter mit Grenzfrequenz nicht machbar. Gesucht ist eine Methode, die für Flüge mit geringer Dynamik die Varianz der Geschwindigkeitsschätzung, verursacht durch Positionsrauschen, möglichst stark verringert. Gleichzeitig jedoch der hohen Dynamik des Quadrocopters Folge leisten kann.  
  
- \subsection{Geschwindigkeitsbestimmung über die Methode First-Order Adaptive Windowing }
+ \subsection[Geschwindigkeitsbestimmung mittels der Methode des First-Order Adaptive Windowing]{Geschwindigkeitsbestimmung anhand der Positionsdaten mittels der Methode des First-Order Adaptive Windowing }
  \label{subsec:adaptwind}
- Wie in Kaptiel \ref{subsec:abpos} erläutert, nimmt die Varianz der Geschwindigkeitsschätzung ab, je weiter die Positionswerte auseinander liegen. Hierfür ist auf Grafik \ref{fig:VarPosVerschNierdrig} verwiesen. Der gleiche Effekt tritt auf, je mehr Abtastschritte $ n $ der für die Euler-Approximation verwendete Bezugspunkte $ P^n_{k-n} $ in der Vergangenheit liegen. 
+ Wie in Kaptiel \ref{subsec:abpos} erläutert, nimmt die Varianz der Geschwindigkeitsschätzung ab, je weiter die Positionswerte auseinander liegen. Hierfür sei auf Abbildung \ref{fig:VarPosVersch} verwiesen. Der gleiche Effekt tritt auf, je mehr Abtastschritte $ n $ der für die Euler-Approximation verwendete Bezugspunkt $ P^n_{k-n} $ in der Vergangenheit liegt. 
  \begin{equation}
  \hat{v}^n_k = \frac{P^n_k-P^n_{k-n}}{nT_l}=\frac{1}{n} \sum\limits_{j = 0}^{n-1} \hat{v}^n_{k-j} 
  \label{eq:v_eul_n}
  \end{equation}
- Dabei ist die Verwendung der Bezugsposition $ P^n_{k-n} $ gleichzusetzen mit der Mittlung der letzten $ n $ Geschwindigkeitsschätzungen ($ v^n_k,v^n_{k-1},\cdots,v^n_{k-1} $) mittels (\ref{eq:v_eul}). Deshalb spricht man auch von Fensterung beziehungsweise Windowing. Siehe zur Veranschaulichung Abbildung~\ref{fig:Fensterung}. Vergrößert man das Fenster, besitzt das eine äquivalente Wirkung wie die Reduzierung der Abtastrate.
+ Dabei ist die Verwendung der Bezugsposition $ P^n_{k-n} $ gleichzusetzen mit der Mittlung der letzten $ n $ Geschwindigkeitsschätzungen ($ v^n_k,v^n_{k-1},\cdots,v^n_{k-n} $) mittels (\ref{eq:v_eul}). Deshalb spricht man auch von Fensterung beziehungsweise Windowing. Siehe zur Veranschaulichung Abbildung~\ref{fig:Fensterung}. Vergrößert man das Fenster, besitzt das eine äquivalente Wirkung wie die Reduzierung der Abtastrate.
   \begin{figure}
   	\centering
   	\includegraphics[width = \textwidth]{images/wind_avg}
-  	\caption[Fensterung]{Fensterung} %
+  	\caption[Fensterung (Windowing)]{Fensterung (Windowing)} %
   	\label{fig:Fensterung}
   \end{figure}
  Das Windowing verhält sich wie ein Filter. So führt ein großes Fenster bei geringen Dynamiken zu einer sehr präzisen Geschwindigkeitsschätzung durch Rauschunterdrückung. Schätzungen für hochfrequente Bewegungen des Quadrocopter werden jedoch stark gedämpft und zeitverzögert ausgegeben, womit die Verlässlichkeit der Schätzung abnimmt. Es wirkt ähnlich wie das Filter (\ref{eq:filter}). Allerdings mit dem Vorteil, dass das Filterverhalten nur über einen Parameter einstellbar ist, der Fenstergröße $ n $. So sollte das Window klein sein, wenn der Quadrocopter hochfrequente Änderungen der Bewegung vornimmt, damit die abrupten Geschwindigkeitsänderungen möglichst ungedämpft erfasst werden. Bei geringen Dynamiken soll die Fenstergröße jedoch zunehmen, wodurch der Einfluss des Positionsrauschens minimiert werden soll. 
    \begin{figure}
    	\centering
    	\includegraphics[width = \textwidth]{images/adapt_endfit}
-   	\caption[End-fit \gls{foaw}]{End-fit \gls{foaw}} %
+   	\caption[End-fit \gls{foaw}]{End-fit FOAW} %
    	\label{fig:foaw}
    \end{figure}
- Dabei erfolgt die Anpassung der Fenstergröße online und für jeden Punkt abhängig der Achse des n-frame. Im Paper \cite{adaptWin} wird dafür die Methode des \gls{foaw} vorgestellt. Diese besagt, existiert eine Grade zwischen den Positionswerten $ p^n_k $ und $ p^n_{k-n} $ einer Achse, die alle $ n $ Punkte innerhalb einer Tolerenz $ \pm d $ schneidet, stellt die Steigung dieser und somit die Geschwindigkeit einen optimalen Kompromiss zwischen Rauschunterdrückung (Präzision) und Verlässlichkeit dar. Die möglichen Schätzwerte für die Geschwindigkeit, abhängig von der Fenstergröße $ n $ und der Toleranz $ d $, sind im folgenden Datensatz dargestellt.
+ Dabei erfolgt die Anpassung der Fenstergröße online und für jeden Punkt abhängig der Achse des n-frame. Im Paper \cite{adaptWin} ist dafür die Methode des \gls{foaw} vorgestellt. Diese besagt, existiert eine Grade zwischen den Positionswerten $ p^n_k $ und $ p^n_{k-n} $ einer Achse, die alle $ n $ Punkte innerhalb einer Tolerenz $ \pm d $ schneidet, stellt die Steigung dieser und somit die Geschwindigkeit einen optimalen Kompromiss zwischen Rauschunterdrückung (Präzision) und Verlässlichkeit dar. Die möglichen Schätzwerte für die Geschwindigkeit, abhängig von der Fenstergröße $ n $ und der Toleranz $ d $, sind im folgenden Datensatz dargestellt.
  
  \begin{equation}
  \hat{v}_k \in [\frac{p^n_k-p^n_{k-n}}{n T_l}-\frac{2d}{n T_l}, \frac{p^n_k-p^n_{k-n}}{n T_l}-\frac{2d}{n T_l}]
@@ -670,9 +671,9 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  \begin{equation}
  d = ||r_{max}||
  \end{equation}
-Zu erkennen ist, dass die Varianz der Schätzung für eine steigende Fenstergröße $ n $ abnimmt. Somit ist ausgehend von der aktuellen Position $ p^n_k $ die maximale mögliche Fenstergröße $ n = max\{1,2,3,\dots\} $ zu ermitteln, für die gilt,
+Zu erkennen ist, dass die Varianz der Schätzung für eine steigende Fenstergröße $ n $ abnimmt. Somit ist ausgehend von der aktuellen Position $ p^n_k $ die maximale mögliche Fenstergröße $ n = max\{1,2,3,\dots\} $ zu ermitteln, für die gilt:
 \begin{equation}
-|p^n_{k-i} - \hat{p}^n_{k-i}|\le d \hspace{1.5cm}\forall i \in \{1,2,\dots,n\}
+|p^n_{k-i} - \hat{p}^n_{k-i}|\le d \hspace{1.5cm}\forall~ i \in \{1,2,\dots,n\}
 \label{eq:toleranz}
 \end{equation} 
 Dabei entspricht $ \hat{p}^n_{k-i} $ den Punkten auf der approximierenden Geradengleichung.
@@ -692,7 +693,7 @@ b_n =\frac{p^n_{k} - p^n_{k-n}}{n T_l}
 
 
 
-Da die Steigung $ b_n $ aus den zwei Rändern des Fensters gebildet wird, spricht man von der End-fit-\gls{foaw}.  
+Da die Steigung $ b_n $ aus den zwei Rändern des Fensters gebildet wird, spricht man von der End-fit-\gls{foaw} (Abbildung \ref{fig:foaw}).  
 
 
 Der Ablauf des Interations-Algorithmus sieht wie folgt aus.
@@ -707,10 +708,10 @@ Der Ablauf des Interations-Algorithmus sieht wie folgt aus.
 	 \begin{equation}
 	a_n = p^n_k
 	\end{equation}
-	und $ b_n  $ weiterhin über (\ref{eq:a_n}) berechnet wird. Vorteil, es muss jeweils nur die Steigung neu berechnet werden.
+	und $ b_n  $ weiterhin über (\ref{eq:b_n}) berechnet wird. Vorteil, es muss jeweils nur die Steigung neu berechnet werden.
 	\item \textbf{Schritt 2:} Fenstergröße j = 1.
 	\item \textbf{Schritt 3:} Berechnung des Parameters $b_j $ (\ref{eq:b_n}) der Geradengleichung (\ref{eq:gradengl_t0}) in Abhängigkeit der Fenstergröße $ j $.
-	\item \textbf{Schritt 4:} Überprüfen ob die berechnete Gerade alle im Fester befindlichen Punkte $p^n_{k-i} i \in \{1,2,\dots,j\} $ innerhalb  der Toleranz passiert. Bedingung (\ref{eq:toleranz}) 
+	\item \textbf{Schritt 4:} Überprüfung, ob die berechnete Gerade alle im Fester befindlichen Punkte $p^n_{k-i} i \in \{1,2,\dots,j\} $ innerhalb  der Toleranz passiert (Bedingung (\ref{eq:toleranz})). 
 	\item \textbf{Schritt 5:} Ist Schritt 4 erfüllt, inkrementiere die Fenstergröße $ j =j+1 $ und gehe zu Schritt 2. Wenn Bedingung nicht erfüllt ist, ist die Steigung der vorhergegangen Geradengleichung als Schätzwert der Geschwindigkeit auszugeben. 
 	\begin{equation}
 	 \hat{v}_k = b_{j-1}=b_n
@@ -718,15 +719,14 @@ Der Ablauf des Interations-Algorithmus sieht wie folgt aus.
 	Die maximale Fenstergröße $ n $ entspricht für Position $ p^n_{k} $  somit $ n = j-1 $ 
 \end{itemize} 
 
- Dieser Vorgang wird für jede Aktualisierung  $ k = k+1 $ des Positionswert $ p^n_{k} $ neu gestartet. %Zur Veranschaulichung ist der Algorithmus noch einmal in einen Flussdiagramm (Abbildung \ref{fig:flussfoaw}) dargestellt.  
-
+Dieser Vorgang wird für jede Aktualisierung  $ k = k+1 $ des Positionswert $ p^n_{k} $ neu gestartet. %Zur Veranschaulichung ist der Algorithmus noch einmal in einen Flussdiagramm (Abbildung \ref{fig:flussfoaw}) dargestellt.  
  %\begin{figure}
  %	\centering
  %	\includegraphics[width = \textwidth]{images/Platzhalter}
  %	\caption[Flussdiagramm \gls{foaw}]{Flussdiagramm \gls{foaw}} %
  %	\label{fig:flussfoaw}
 % \end{figure}
- Die End-fit-\gls{foaw} verwendet für den Schätzvorgang die zwei Endpunkte des Fensters. In \cite{adaptWin} wird deshalb zur Verbesserung die Best-fit\gls{foaw} vorgestellt. Dabei wird die Steigung über die Methode, der Summe kleinsten quadratischen Fehler, bestimmt. Das bedeutet für die zeitnormierte Geradengleichung ist eine Steigung $ b_n $ gesucht, für die die Summe der Fehlerquadrat $ e^2 $ ein Minimum aufweist.  
+ Die End-fit-\gls{foaw} verwendet für den Schätzvorgang die zwei Endpunkte des Fensters. In \cite{adaptWin} wird zur Verbesserung die Best-fit\gls{foaw} vorgestellt. Dabei wird die Steigung über die Methode der Summe kleinsten quadratischen Fehler bestimmt. Das bedeutet für die zeitnormierte Geradengleichung ist eine Steigung $ b_n $ gesucht, für die die Summe der Fehlerquadrat $ e^2 $ ein Minimum aufweist.  
  \begin{equation}
  e_{min}^2 = min \sum\limits_{i=0}^{n}(p^n_{k-i} - \hat{p}^n_{k-i})^2
  \label{eq:quade}
@@ -739,12 +739,12 @@ Um das Minimum der Fehlergleichung (\ref{eq:quade}) in Abhängigkeit der Steigung
 \begin{equation}
 \frac{d e^2}{d b_n}=0
 \end{equation}
-Löst man unter dieser Bedingung die Ableitung nach $ b_n $ auf. Erhält man die Steigung die die Summe der kleinsten quadratischen Fehler aufweist.
+Löst man unter dieser Bedingung die Ableitung nach $ b_n $ auf. Erhält man die Steigung, die die Summe der kleinsten quadratischen Fehler aufweist.
 \begin{equation}
 b_n = \frac{(n\sum\limits_{ i=0}^{n}y_{k-1}-2\sum\limits_{i=0}^{n} i\cdot y_{k-1})\cdot 6 }{T_l n(n+1)(n+2)}
 \label{eq:bn_bestfit}
 \end{equation}
-Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Umsetzung der best-fit-\gls{foaw} in der Software erfolgt nach dem gleichen Schema wie bei der end-fit-\gls{foaw}. Einziger Unterschied, zur Berechnung der Steigung $ b_n $ wir die Gleichung (\ref{eq:bn_bestfit}) verwendet. Das Ergebnis ist eine präzisere Schätzung bei gleichbleibender Zuverlässigkeit der Messung. Beide Methoden sind anfällig gegen sogenannte Outlier. Einzelne Signalwerte, die einen höheren Fehler als die maximale durch das Rauschen verursachte Abweichung $ d $ aufweisen. Outliner lassen sich sehr einfach durch ein robustes Abbruchkriterium in Schritt 4 bekämpfen. So gilt die Bedingung (\ref{eq:toleranz}) erst dann für nicht erfüllt, wenn zwei aufeinanderfolgende Werte dem Kriterium nicht gerecht sind. Erst dadurch wird die Vergrößerung des Fensters gestoppt. Diese Variante nennt sich best-fit-\gls{foaw}-R.
+Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Umsetzung der best-fit-\gls{foaw} in der Software erfolgt nach dem gleichen Schema wie bei der end-fit-\gls{foaw}. Einziger Unterschied, zur Berechnung der Steigung $ b_n $ wird die Gleichung (\ref{eq:bn_bestfit}) verwendet. Das Ergebnis ist eine präzisere Schätzung bei gleichbleibender Zuverlässigkeit der Messung. Beide Methoden sind anfällig gegen sogenannte Outlier. Einzelne Signalwerte weisen einen höheren Fehler als die maximal durch das Rauschen verursachte Abweichung $ d $ auf. Outlier lassen sich sehr einfach durch ein robustes Abbruchkriterium in Schritt 4 bekämpfen. So gilt die Bedingung (\ref{eq:toleranz}) erst dann für nicht erfüllt, wenn zwei aufeinanderfolgende Werte dem Kriterium nicht gerecht sind. Erst dadurch wird die Vergrößerung des Fensters gestoppt. Diese Variante nennt sich best-fit-\gls{foaw}-R.
  \begin{figure}
  	
  	\centering{
@@ -772,7 +772,7 @@ Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Um
 
 
 
-Die Methoden des \gls{foaw} bieten eine sehr gute Möglichkeit die Geschwindigkeit auf Basis eines verrauschten Positionssignals zu ermitteln. Problematisch ist allerdings die geringe Abtastrate von $ 40 Hz $ des Lasers. Schon bei Flügen mit mittlerer Dynamik führt das dazu, dass die Fenstergröße stark reduziert wird. Somit auch der Einfluss des Positionsrauschens stark zunimmt. Zu sehen ist dies auch in Abbildung \ref{fig:adap_vergleich} wo die Methoden des FOAW anhand einer realen Messung miteinander verglichen werden. Als Folge kann selbst dieses Konzept, limitiert durch die Tastrate des Lasers, der Dynamik des Quadrocopters nicht folgen. Es ist klar, dass eine Methode benötigt wird, die die Position und die Geschwindigkeit in einer höheren Taktrate zur Verfügung stellt. Gleichzeit müssen beide Signale ausreichend rauschunterdrückt sein. 
+Die Methoden des \gls{foaw} bieten eine sehr gute Möglichkeit die Geschwindigkeit auf Basis eines verrauschten Positionssignals zu ermitteln. Problematisch ist allerdings die geringe Abtastrate von $ 40~Hz $ des Lasers. Schon bei Flügen mit mittlerer Dynamik führt das dazu, dass die Fenstergröße stark reduziert wird. Somit auch der Einfluss des Positionsrauschens stark zunimmt. Zu sehen ist dies auch in Abbildung \ref{fig:adap_vergleich}, wo die Methoden des FOAW anhand einer realen Messung miteinander verglichen werden. Als Folge kann selbst dieses Konzept, limitiert durch die Tastrate des Lasers, der Dynamik des Quadrocopters nicht folgen. Es ist klar, dass eine Methode benötigt wird, die die Position und die Geschwindigkeit in einer höheren Taktrate zur Verfügung stellt. Gleichzeit müssen beide Signale ausreichend rauschunterdrückt sein. 
 
  \subsection{Bestimmung der Zustände mittels eines Fusionsfilter}
  \label{subsec:Fusionsfilter}
