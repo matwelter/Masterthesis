@@ -3,20 +3,30 @@
 \glsgroupheading{A}\relax \glsresetentrylist %
 \glossentry{glos:uart}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{ii}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{7}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{10}}}\glsgroupskip
+\glsgroupheading{F}\relax \glsresetentrylist %
+\glossentry{gls:ftdi}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{i}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{11}}}\glsgroupskip
 \glsgroupheading{I}\relax \glsresetentrylist %
 \glossentry{glos:i2c}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{i}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{7}}}%
+		\setentrycounter[]{page}\glsnumberformat{10}}}%
 \glossentry{glos:ip}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{i}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{9}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{12}}}\glsgroupskip
 \glsgroupheading{S}\relax \glsresetentrylist %
+\glossentry{gls:ssh}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{11}}}%
 \glossentry{glos:spi}{\glossaryentrynumbers{\relax 
-		\setentrycounter[]{page}\glsnumberformat{i}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{7}}}\glsgroupskip
+		\setentrycounter[]{page}\glsnumberformat{ii}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{9}}}%
+\glossentry{gls:slam}{\glossaryentrynumbers{\relax 
+		\setentrycounter[]{page}\glsnumberformat{ii}\delimN 
+		\setentrycounter[]{page}\glsnumberformat{79}}}\glsgroupskip
 \glsgroupheading{V}\relax \glsresetentrylist %
 \glossentry{gls:vslam}{\glossaryentrynumbers{\relax 
 		\setentrycounter[]{page}\glsnumberformat{ii}\delimN 
-		\setentrycounter[]{page}\glsnumberformat{29}}}%
+		\setentrycounter[]{page}\glsnumberformat{33}}}%
 \end{theglossary}\glossarypostamble

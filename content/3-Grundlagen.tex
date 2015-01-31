@@ -1,12 +1,12 @@
-\chapter{Grundlagen}
+\chapter{Einführung in Robot Operation System und die Koordinatensysteme}
 \label{chap:grundlagen}
-Das Kapitel Grundlagen behandelt die Themen, die in mehreren Abschnitten der Arbeit relevant sind. Dabei handelt es sich um das Robot Operation System, die verwendeten Koordinatensysteme und die Transformation zwischen ihnen.
+Diese Kapitel behandelt Themen, die in mehreren Abschnitten der Arbeit relevant sind. Dabei handelt es sich um das Robot Operation System, die verwendeten Koordinatensysteme und die Transformation zwischen ihnen.
 
-\section{Das Robot Operation System ROS}
+\section{Robot Operation System ROS}
 \label{sec:ros}
-Ziel dieses Unterkapitel ist es das Opensource Betriebssystem \gls{ros} mit seinem Aufbau und seinen Vorzügen vorzustellen.\\
+Ziel dieses Unterkapitel ist es das opensource Betriebssystem \gls{ros} mit seinem Aufbau und seinen Vorzügen vorzustellen.\\
 
-\gls{ros} stellt dem Softwareentwickler Bibliotheken und Werkzeuge zur Verfügung, um Roboteranwendungen zu erstellen. Das auf einem \gls{ip}-basierende  modulare Kommunikationsframework ermöglicht die Verknüpfung von Anwendungssoftware, Sensoren und Aktoren, sogar unter mehreren Robotern. Die Grundlage dafür ist die sogenannte Hardwareabstraktion. Durch hardwarespezifische Module wird erreicht, dass Komponenten unterschiedlicher Hersteller miteinander verbunden werden können. Im Rahmen dieser Arbeit gilt dies für Hokuyo Lasersanner und die \gls{fcu} von \gls{asctec}. Des Weiteren ermöglicht es eine hardwareunabhängige Programmierung, die  in den Programmiersprachen C/C++ oder in Python erfolgen kann. Jede Hardwareabstraktion oder Anwendung wird als Node, bzw. Konten bezeichnet und läuft als eigener Prozess.
+\gls{ros} stellt dem Softwareentwickler Bibliotheken und Werkzeuge zur Verfügung, um Roboteranwendungen zu erstellen. Das auf einem \gls{ip} basierende  modulare Kommunikationsframework ermöglicht die Verknüpfung von Anwendungssoftware, Sensoren und Aktoren, sogar unter mehreren Roboter-Plattformen. Grundlage dafür ist die sogenannte Hardwareabstraktion. Durch hardwarespezifische Module wird erreicht, dass Komponenten unterschiedlicher Hersteller miteinander verbunden werden können. Im Rahmen dieser Arbeit gilt das für den Hokuyo Lasersanner und die \gls{fcu} von \gls{asctec}. Des Weiteren ermöglicht \gls{ros} eine hardwareunabhängige Programmierung, die  in den Programmiersprachen C/C++ oder in Python erfolgen kann. Jede Hardwareabstraktion oder Anwendung wird als Node, bzw. im deutschen als Knoten bezeichnet und läuft als eigener Prozess.
 \begin{figure}
 	\centering
 	\includegraphics[width = 0.75\textwidth]{images/TopicUndService}
@@ -14,10 +14,9 @@ Ziel dieses Unterkapitel ist es das Opensource Betriebssystem \gls{ros} mit sein
 	\label{fig:node_kommunikation}
 \end{figure}
 
+Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung~\ref{fig:node_kommunikation}). Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und damit veröffentlicht (publication). Benötigt ein weiterer Knoten den Inhalt eines Topics, kann er es abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert ist, wird sie in den abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt. Es können beliebig viele Topics beschrieben oder empfangen werden. Alternativ zu dieser Art der asynchronen Datenübertragung bietet \gls{ros} die Möglichkeit einer synchronen Kommunikation zwischen zwei Nodes über Services. Auf diese Weise wird auf einem Knoten ein Service gestartet. Dieser dient als Server und agiert nach dem Frage-Antwort-Prinzip. Stellt ein anderer Knoten eine Anfrage, wird ihm die geforderte Nachricht zu gesendet. 
 
-Der Austausch von Daten zwischen den Nodes erfolgt über so genannte Topics (Abbildung~\ref{fig:node_kommunikation}). Dabei werden von den Knoten Nachrichten (engl. Messages) in Topics gepostet und veröffentlicht (publication). Benötigt ein weiterer Knoten den Inhalt eines Topics, kann er es abonnieren (subscription). Sobald die Nachricht im Knoten aktualisiert ist, wird sie in den abonnierenden Knoten übertragen. Dabei sind Knoten nicht auf ein Topic beschränkt. Es können beliebig viele Topics beschrieben oder empfangen werden. Alternativ zu dieser Art der asynchronen Datenübertragung bietet \gls{ros} die Möglichkeit einer synchronen Kommunikation zwischen zwei Nodes über Services. Auf diese Weise wird auf einem Knoten ein Service gestartet. Dieser dient als Server und agiert nach dem Anfrage-Antwort-Prinzip. Schickt ein anderer Knoten eine Anfrage, wird ihm die geforderte Nachricht zu gesendet. 
-
-Anzumerken ist, dass durch das verwendete \gls{ip}-Protokoll keine deterministische Versendung der Nachrichten gewährleistet ist. Es ist möglich, dass Nachrichten gleichen Typs in Paketen zusammengefasst werden. Damit ist Echtzeit unter \gls{ros} nicht garantiert. Dies betrifft vor allem Knoten deren abonnierte Topics mit einer hohen Updaterate gepublished werden. Unkritisch dagegen sind Aktualisierungen in einer Frequenz kleiner $ 100~Hz $, hierbei sind Echtzeitanwendungen möglich. Bei der Programmierung empfiehlt es sich dennoch auf Topics mit einem Zeitstempel (engl. timestamp) zurückzugreifen. %Die Echtzeitfähigkeit des \gls{ros} ist dadurch nicht gefährdet. 
+Anzumerken ist, dass durch das verwendete \gls{ip}-Protokoll keine deterministische Versendung der Nachrichten gewährleistet ist. Es ist möglich, dass Nachrichten gleichen Typs in Paketen zusammengefasst werden. Damit ist Echtzeit unter \gls{ros} nicht garantiert. Dies betrifft vor allem Knoten, deren abonnierte Topics mit einer hohen Updaterate gepublished werden. Unkritisch dagegen sind Aktualisierungen in einer Frequenz kleiner $ 100~Hz $, hierbei sind Echtzeitanwendungen möglich. Bei der Programmierung empfiehlt es sich dennoch auf Topics mit einem Zeitstempel (engl. timestamp) zurückzugreifen. %Die Echtzeitfähigkeit des \gls{ros} ist dadurch nicht gefährdet. 
 
 \begin{figure}
 	\centering
@@ -27,14 +26,14 @@ Anzumerken ist, dass durch das verwendete \gls{ip}-Protokoll keine deterministis
 \end{figure}
 
 
-Der größte Vorzug von \gls{ros} ist die ständig wachsende Community. Hier stellen Forscher aus der ganzen Welt ihre Algorithmen und Hardwareabstraktionen zur Verfügung. Folglich ist es möglich, bei der Erstellung einer Roboteranwendung auf Bausteine zurückzugreifen, die ohne diese Plattform selbst zu implementieren wären. Abgesehen davon, stellt \gls{ros} eine Vielzahl von Hilfsmitteln bereit. Darunter fallen unter anderem Debug-Tools über die sich Topics sowohl auslesen als auch plotten lassen. Des Weiteren steht mit RViz ein Werkzeug bereit, mit dem sich Messdaten in einer 3D-Umgebung visualisieren lassen. Aber auch für die Entwicklung von Anwendungen existieren Hilfsmittel. So gibt es zum Beispiel die Transferfunktion (/tf), über die Daten automatisch in jedes in \gls{ros} definierte Koordinatensystem übertragen werden.   
+Der größte Vorzug von \gls{ros} ist die ständig wachsende Community. Hier stellen Forscher aus der ganzen Welt ihre Algorithmen und Hardwareabstraktionen zur Verfügung. Folglich ist es möglich bei der Erstellung einer Roboteranwendung auf Bausteine zurückzugreifen, die ohne diese Plattform selbst zu implementieren wären. Abgesehen davon, stellt \gls{ros} eine Vielzahl von Hilfsmitteln bereit. Darunter fallen unter anderem Debug-Tools über die sich Topics sowohl auslesen als auch plotten lassen. Des Weiteren steht mit RViz ein Werkzeug bereit, mit dem sich Messdaten in einer 3D-Umgebung visualisieren lassen. Aber auch für die Entwicklung von Anwendungen existieren Hilfsmittel. So gibt es zum Beispiel die Transferfunktion (/tf), über die Daten automatisch in jedes in \gls{ros} definierte Koordinatensystem übertragen werden.   
 
 %benötigten gibt \gls{ros} an die Hand
 %wie zum Beispiel die Transferfunktion (/tf), bereit. An dieser Stelle lassen sich Koordinatensysteme definieren. Die Transformation der Daten wird automatisch von \gls{ros} durchgeführt.
 
-\section{Einführung in die Koordinatensysteme und Koordinatentransformationen}
+\section{Angewandte Koordinatensysteme und  -transformationen}
 \label{sec:koordinatensysteme&transformationen}
-Anhand von Koordinatensystemen und Transformationen lässt sich die Lage von Punkten und Objekten in einem Raum mathematisch beschreiben, die Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (Kapitel \ref{chap:2Dpositionsbestimmung}). Ferner ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters, und stellt die Grundlage zur Modellbildung sowie des Reglerentwurfs dar (Kapitel \ref{chap:Positionsregelung}).  
+Anhand von Koordinatensystemen und Transformationen lässt sich die Lage von Punkten und Objekten in einem Raum mathematisch beschreiben, die Grundvoraussetzung zur Bestimmung der Position des Quadrocopters im 2D-Raum (Kapitel \ref{chap:2Dpositionsbestimmung}). Ferner ermöglicht die Einführung von Koordinatensystemen die mathematisch/physikalische Beschreibung des Quadrocopters und stellt die Grundlage zur Modellbildung sowie des Reglerentwurfs dar (Kapitel \ref{chap:Positionsregelung}).  
 
 \subsection{Koordinatensysteme}
 \label{subsec:koordinatensysteme}
@@ -47,40 +46,40 @@ Anhand von Koordinatensystemen und Transformationen lässt sich die Lage von Punk
 			\includegraphics[width=0.3\textwidth]{images/ENU-koordinatensystem}
 			\label{fig:enu}
 		}
-		\subfloat[NED-Koordimatensystem]{
+		\subfloat[NED-Koordinatensystem]{
 			\includegraphics[width=0.3\textwidth]{images/ned-koordinatensystem}
 			\label{fig:ned}
 		}
 	}
-	\caption[Kovention von Koordinatensystemen]{Kovention von Koordinatensystemen}
+	\caption[Konvention von Koordinatensystemen]{Konvention von Koordinatensystemen}
 	\label{fig:konventionen}
 	
 \end{figure}
 
-Zu Beginn werden zwei Konventionen hinsichtlich der Bezugssysteme vorgestellt. Nummer eins, die in Abbildung \ref{fig:enu} dargestellte \gls{enu} Konvention. Diese wird vor allem in der Landnavigation eingesetzt. In diesem Fall zeigt die z-Achse nach oben. Bei der zweiten Konvention, hauptsächlich eingesetzt in der Wasser-, Luft- und Raumfahrt, handelt es sich um das \gls{ned} Bezugssystem (Abbildung \ref{fig:ned}). Die z-Achse zeigt nach unten. Anzumerken ist, dass in dieser Arbeit die Ausrichtung der x- und y -Achse nicht wie in Abbildung \ref{fig:konventionen} den Himmelsrichtungen entsprechen. Die Begriffe \gls{enu} und \gls{ned} dienen dabei zur Beschreibung der Ausrichtung der Koordinatenachsen in Abhängigkeit der positiven z-Achse.
+Zu Beginn werden zwei Konventionen hinsichtlich der Bezugssysteme vorgestellt. Nummer eins, die in Abbildung \ref{fig:enu} dargestellte \gls{enu} Konvention. Diese wird vor allem in der Landnavigation eingesetzt. In diesem Fall zeigt die z-Achse nach oben. Bei der zweiten Konvention, hauptsächlich eingesetzt in der Wasser-, Luft- und Raumfahrt, handelt es sich um das \gls{ned} Bezugssystem (Abbildung \ref{fig:ned}). Die z-Achse zeigt nach unten. Anzumerken ist, dass in dieser Arbeit die Ausrichtung der x- und y -Achse nicht wie in Abbildung \ref{fig:konventionen} den Himmelsrichtungen entsprechen. Die Begriffe \gls{enu} und \gls{ned} dienen hier zur Beschreibung der Ausrichtung der Koordinatenachsen in Abhängigkeit der positiven z-Achse.
 
-Bei der folgenden Einführung der Koordinatensysteme (Abbildung \ref{fig:koordinatensysteme}) handelt es sich ausschließlich um kartesische, dass heißt, orthogonale Koordinatensysteme, die nach der \gls{enu} Konvention ausgerichtet sind. Das steht erstmals im Widerspruch mit dem Abschnitt zuvor, dort ist das \gls{ned} als Koordinatensystem für Flugkörper eingeführt. Allerdings basieren die \gls{ros} Koordinatensysteme auf der \gls{enu} Konvention. Daraus erfolgt die Wahl von Bezugssystemen mit positiver z-Achse nach oben.
+Bei der folgenden Einführung der Koordinatensysteme (Abbildung \ref{fig:koordinatensysteme}) handelt es sich ausschließlich um kartesische, d.h. orthogonale Koordinatensysteme, die nach der \gls{enu} Konvention ausgerichtet sind. Das steht erstmals im Widerspruch mit dem Abschnitt zuvor, dort ist das \gls{ned} als Koordinatensystem für Flugkörper eingeführt. Allerdings basieren die \gls{ros} Koordinatensysteme auf der \gls{enu} Konvention. Daraus erfolgt die Wahl von Bezugssystemen mit positiver z-Achse nach oben.
 
 \begin{figure}
 	\centering
 	\includegraphics[width = \textwidth]{images/Koordinatensysteme}
-	\caption[Koordinatensysteme]{In der Arbeit angewandte Koordinatensysteme }
+	\caption[Angewandte Koordinatensysteme]{Angewandte Koordinatensysteme }
 	\label{fig:koordinatensysteme}
 \end{figure}
 
 Wie aus Abbildung \ref{fig:koordinatensysteme} zu entnehmen, sind vier xyz-Koordinatensysteme definiert. 
 
 \begin{itemize}
-	\item \textbf{n-frame(Lokaler Navigationsframe):} Ist ein ortsfestes Koordinatensystem zur Beschreibung der Position im Raum. Da es in dieser Arbeit um die horizontale Positionsregelung geht, ist ausschließlich die xy-Ebene von Interesse. Der Ursprung des Koordinatensystem wird bei jedem Systemstart neu initialisiert. Zu beachten ist, dass dies beim vollautonomen Flug in Räumen erfolgt. Dabei beziehen sich die Sollpositionen nicht auf ein Raumkoordinatensystem mit festem Ursprung, sondern auf den beim Systemstart initialsierten Bezugspunkt. Keinen Einfluss hat diese Tatsache auf die Geschwindigkeitsregelung per Fernsteuerung, da an dieser Stelle die relative Bewegung von Interesse ist.
+	\item \textbf{n-frame (Lokaler Navigationsframe):} Ist ein ortsfestes Koordinatensystem zur Beschreibung der Position im Raum. Da es in dieser Arbeit um die horizontale Positionsregelung geht, ist ausschließlich die xy-Ebene von Interesse. Der Ursprung des Koordinatensystem wird bei jedem Systemstart neu initialisiert. Zu beachten dies beim vollautonomen Flug in Räumen. Dabei beziehen sich die Sollpositionen nicht auf ein Raumkoordinatensystem mit festem Ursprung, sondern auf den beim Systemstart initialsierten Bezugspunkt. Keinen Einfluss hat diese Tatsache auf die Geschwindigkeitsregelung per Fernsteuerung, da an dieser Stelle die relative Bewegung von Interesse ist.
 	
-	Anbei der Hinweis, dass die Verwendung eines xyz Navigationsframes die Krümmung der Erdoberfläche vernachlässigt. Das ist legitim, da die Drohne in Gebäuden zum Einsatz kommt. Erfolgt eine weltweit Navigation wird ein
+	Anbei der Hinweis, dass die Verwendung eines xyz Navigationsframes die Krümmung der Erdoberfläche vernachlässigt. Das ist legitim, da die Drohne in Gebäuden zum Einsatz kommt. Erfolgt eine weltweite Navigation wird ein
 	rotationsellipsische Koordinatensystem \cite{Thiel14} benötigt.
 
-	\item \textbf{b-frame(Bodyframe):} Das Koordinatensystem ist fest mit dem Rahmen des Quadrocopters verbunden. Es ist somit ein körperfestes Koordinatensystem. In diesem Fall befindet sich der Ursprung des Systems im Schwerpunkt. Die x-Achse zeigt in die als Vorne definierte Richtung. Die y- und z-Achse sind davon abhängig nach der \gls{enu} Konvention angeordnet. Informationen, die sich auf dieses Referenzsystem beziehen, sind unter anderen die \gls{imu}-Daten. Außerdem lässt sich mit diesem System die Lage des Quadrocopters im n-frame über die Position des Nullpunkts und Drehwinkel beschreiben. 
+	\item \textbf{b-frame (Bodyframe):} Das Koordinatensystem ist fest mit dem Rahmen des Quadrocopters verbunden. Es ist somit ein körperfestes Koordinatensystem. In diesem Fall befindet sich der Ursprung des Systems im Schwerpunkt. Die x-Achse zeigt in die als Vorne definierte Richtung. Die y- und z-Achse sind davon abhängig nach der \gls{enu} Konvention angeordnet. Informationen, die sich auf dieses Referenzsystem beziehen, sind unter anderen die \gls{imu}-Daten. Außerdem lässt sich mit diesem System die Lage des Quadrocopters im n-frame über die Position des Nullpunkts und Drehwinkel beschreiben. 
 	 	
-	\item \textbf{l-frame(Laserframe):} Ist ebenfalls ein körperfestes Koordinatensystem, in dem die Entfernungsmessungen des Lasers aufgetragen werden. Der Bezugspunkt liegt folglich in der Sendequelle des Lasers. Die Ausrichtung der Achsen entspricht der des b-frames, mit Ausnahme eines Offsets in z-Richtung.
+	\item \textbf{l-frame (Laserframe):} Ist ebenfalls ein körperfestes Koordinatensystem, in dem die Entfernungsmessungen des Lasersscanners aufgetragen werden. Der Bezugspunkt liegt folglich in der Sendequelle des Lasers. Die Ausrichtung der Achsen entspricht der des b-frames, mit Ausnahme eines Offsets in z-Richtung.
 	
-	\item \textbf{o-frame(Orthogonalframe):} Es handelt sich um ein objektbezogenes Bezugssystem, welches mit dem b-fame verknüpft ist. Das o-frame beschreibt die Orientierung um die z-Achse sowie die Position des Quadrocopters in der horizontalen Ebene des n-frames. Hiermit wird der Quadrocopter in der zu navigierenden xy-Ebene abgebildet.    
+	\item \textbf{o-frame (Orthogonalframe):} Es handelt sich um ein objektbezogenes Bezugssystem, welches mit dem b-fame verknüpft ist. Das o-frame beschreibt die Orientierung um die z-Achse sowie die Position des Quadrocopters in der horizontalen Ebene des n-frames. Hiermit wird der Quadrocopter in der zu navigierenden xy-Ebene abgebildet.    
 	
 	 \end{itemize}
  
@@ -89,7 +88,7 @@ Nachdem sich die Messwerte, wie zum Beispiel die \gls{imu}-Daten oder die Laserd
  
 \subsection{Koordinatentransformationen}
 \label{subsec:koordinatentransformation}
-Damit Daten eines Referenzsystem in einen anderes transformiert werden können, muss deren Orientierung zueinander beschreibbar sein. Nach  [Buchholz Flugregelung] ist dies über die Rotationswinkel $\phi$ (Rollwinkel/engl. roll), Rotation um die x-Achse sowie der Winkel $\theta$ (Nickwinkel/engl. pitch) und $\psi$ (Gierwinkel/engl. yaw) für die y- und z-Achse erreichbar. Die Reihenfolge, um die die Achsen gedreht werden, ist dabei nicht beliebig. Sie ist in verschiedenen Konventionen festgelegt. In dieser Arbeit wird die in der Luftfahrt- und Fahrzeugtechnik gebräuchliche z,y',x''- Konvention (Abbildung \ref{fig:zyx_konvention}) angewendet.   
+Damit Daten eines Referenzsystem in einen anderes transformiert werden können, muss deren Orientierung zueinander beschreibbar sein. Nach  \cite{Buch14} ist dies über die Rotationswinkel $\phi$ (Rollwinkel/engl. roll), Rotation um die x-Achse sowie der Winkel $\theta$ (Nickwinkel/engl. pitch) und $\psi$ (Gierwinkel/engl. yaw) für die y- und z-Achse erreichbar. Die Reihenfolge, um die die Achsen gedreht werden, ist dabei nicht beliebig. Sie ist in verschiedenen Konventionen festgelegt. In dieser Arbeit wird die in der Luftfahrt- und Fahrzeugtechnik gebräuchliche z,y',x''- Konvention (Abbildung \ref{fig:zyx_konvention}) angewendet.   
 
 \begin{figure}
 	\centering
@@ -99,7 +98,7 @@ Damit Daten eines Referenzsystem in einen anderes transformiert werden können, m
 \end{figure}
 
 Das Koordinatensystem wird zu Beginn um den Winkel $\psi$, d.h. um die z-Achse gedreht. Daraus ergibt sich das in Abbildung \ref{fig:zyx_konvention} grün eingezeichnet Koordinatensystem. Anschließend wird
-dieses um die Achse y' rotiert, sprich den Winkel $\theta$. Zuletzt erfolgt eine Drehung mit dem Winkel $\phi$ um die x''-Achse. Das Ergebnis stellt das rote x'',y'',z''-Koordinatensystem dar. Hierbei ist zu beachten, dass die Reihenfolge der Winkel einzuhalten ist, da sonst die beschriebene von der tatsächlichen Lage abweicht. Ein veranschaulichendes Beispiel, wohin unterschiedliche Abfolgen bei der Rotation führen, ist in der Literatur [Literaturverzeichnis] von Herr Thielecke zu finden.  
+dieses um die Achse y' rotiert, sprich den Winkel $\theta$. Zuletzt erfolgt eine Drehung mit dem Winkel $\phi$ um die x''-Achse. Das Ergebnis stellt das rote x'',y'',z''-Koordinatensystem dar. Hierbei ist zu beachten, dass die Reihenfolge der Winkel einzuhalten ist, da sonst die beschriebene von der tatsächlichen Lage abweicht. Ein veranschaulichendes Beispiel, wohin unterschiedliche Abfolgen bei der Rotation führen, ist in der Literatur \cite{Thiel14} von Herr Thielecke zu finden.  
 
 Nach Luftfahrtkonvention lässt sich eine Transformationsmatrix $M$ aufstellen, mit der sich Vektoren und Koordinaten vom xyz-Koordinatensystem (Bsp.: n-frame) in das x''y''z''-Koordinatensystem (Bsp.: b-frame) überführen lassen. Hierfür sind zunächst die drei Transformationsmatrizen notwendig, die jeweils eine Rotation um eine Koordinatenachse beschreiben \cite{Buch14}. Diese sind wie folgt definiert:
 
@@ -181,7 +180,7 @@ Anzumerken ist, dass wenn es sich bei dem Vektor um eine Koordinate handelt, zus
    \label{eq:inverse_transM}
    \end{equation}
 
-Nunmehr lassen sich Vektoren in beide Richtungen in die verschiedenen Bezugssysteme überführen. Nachteil der Methode mit Eulerwinkel ist, dass diese auf Grund der trigonometrischen Funktionen nur für Winkel $\phi, \theta, \psi = \{x \in  \mathbb{R}| -\pi \le x \le \pi\}$ eindeutig durchführbar sind. Wird dieser Bereich überschritten, lässt sich die Lage über Quaternionen beschreiben. Durch die Beschreibung der dreidimensionalen Orientierung in einem vierdimensionalen Raum ist die Lage auch für Rotationen um ein vielfaches von $2\pi$ eindeutig charakterisiert. Die genaue Definition findet sich in der  Literatur \cite{Thiel14} und \cite{Buch14}. Da der Definitionsbereich der Eulerwinkel für diese Arbeit im betrachteten Bereich ausreicht, ist ausschließlich die Umrechnung der in Quaternion ($w_q$, $x_q$, $y_q$, $z_q$) angegebenen Orientierungsdaten der \gls{imu} in Eulerwinkel ($\phi$, $\theta$, $\psi$) erforderlich. Zu beachten ist, dass die folgende Umwandlung nur für die $z,y',x''$-Konvention Gültigkeit besitzt. 
+Nunmehr lassen sich Vektoren in beide Richtungen in die verschiedenen Bezugssysteme überführen. Nachteil der Methode mit Eulerwinkel ist, dass diese auf Grund der trigonometrischen Funktionen nur für Winkel $\phi, \theta, \psi = \{x \in  \mathbb{R}| -\pi \le x \le \pi\}$ eindeutig durchführbar sind. Wird dieser Bereich überschritten, lässt sich die Lage über Quaternionen beschreiben. Durch die Beschreibung der dreidimensionalen Orientierung in einem vierdimensionalen Raum ist die Lage auch für Rotationen um ein Vielfaches von $2\pi$ eindeutig charakterisiert. Die genaue Definition findet sich in der  Literatur \cite{Thiel14} und \cite{Buch14}. Da der Definitionsbereich der Eulerwinkel für diese Arbeit im betrachteten Bereich ausreicht, ist ausschließlich die Umrechnung der in Quaternion ($w_q$, $x_q$, $y_q$, $z_q$) angegebenen Orientierungsdaten der \gls{imu} in Eulerwinkel ($\phi$, $\theta$, $\psi$) erforderlich. Zu beachten ist, dass die folgende Umwandlung nur für die $z,y',x''$-Konvention Gültigkeit besitzt. 
   
    \begin{equation}
 	   \phi = \arctan(\frac{2(y_qz_q+w_qx_q)}{w_q^2-x_q^2-y_q^2+z_q^2})\\

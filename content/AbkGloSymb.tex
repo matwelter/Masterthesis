@@ -37,7 +37,7 @@ sort=symbollambda, type=symbolslist
 \newacronym{pc}{PC}{Personal Computer}
 \newacronym{rfid}{RFID}{Radio-Frequency IDentification}
 \newacronym{wlan}{WLAN}{Wireless Local Area Network}
-\newacronym{slam}{SLAM}{Simultaneous Localization and Mapping}
+
 \newacronym{mems}{MEMS}{Microelectromechanical systems}
 
 %Eine Abkürzung mit Glossareintrag
@@ -48,13 +48,13 @@ sort=symbollambda, type=symbolslist
 \newacronym{vslam}{VSLAM}{Visual Simultaneous Localization and Mapping \glsadd{gls:vslam}}
 \newacronym{ftdi}{FTDI}{Future Technology Devices International \glsadd{gls:ftdi}}
 \newacronym{ssh}{SSH}{Secure Shell \glsadd{gls:ssh}}
-
+\newacronym{slam}{SLAM}{Simultaneous Localization and Mapping \glsadd{gls:slam}}
 %%%
 %Glossareinträge
 %%%
 \newglossaryentry{glos:spi}{
 	name=Serial Peripherial Interface,
-	description={Ein von Motorola entwickelter Standard eines synchronen seriellen Datenbus zur Vernetzung zweier digitaler Schaltungen nach dem Master-Slave-Prinzip}}
+	description={Ein von Motorola entwickelter Standard eines synchronen seriellen Datenbusses zur Vernetzung zweier digitaler Schaltungen nach dem Master-Slave-Prinzip.}}
 \newglossaryentry{glos:uart}{
 	name= Asynchronous Receiver/Transmitter,
 	description={Eine gängige serielle Schnittstelle zum Senden und Empfangen von Daten über eine Datenleitung. Bildet den Standard der seriellen Schnittstellen an \gls{pc}s und Mikrocontrollern.}}
@@ -63,13 +63,20 @@ sort=symbollambda, type=symbolslist
 	description={Von Philips Semiconductor entwickelter serielles Bussystem. Hauptsächlich zur gerätinternen Kommunikation zwischen verschieden Schaltungsteilen eingesetzt.}}
 \newglossaryentry{glos:ip}{
 	name= Internet Protocol,
-	description={Ist das am weitverbreitete Netzwerkprotokoll in Computernetzen und stellt die Grundlage des Internets dar}}
-\newglossaryentry{gls:vslam}{
-	name= Visual Simultaneous Localization and Mapping,
-	description={SLAM ist eine Methode der mobilen Robotik zur Schätzung der eigenen Position in einer unbekannten Umgebung. Dafür wird eine Karte des Raumes aus den Messdaten erstellt. Der Zusatz V sagt dabei aus, das diese Messdaten von einem visuellen Sensor, sprich einer Kamera zur Verfügung gestellt werden. Im deutschen steht SLAM für Simultane Lokalisierung und Kartenerstellung.}}
+	description={Ist das am weitesten verbreitete Netzwerkprotokoll in Computernetzen und stellt die Grundlage des Internets dar.}}
+\newglossaryentry{gls:slam}{
+	name= Simultaneous Localization and Mapping,
+	description={SLAM ist eine Methode der mobilen Robotik zur Schätzung der eigenen Position in einer unbekannten Umgebung. Dafür wird eine Karte des Raumes aus den Messdaten erstellt. Im deutschen steht SLAM für Simultane Lokalisierung und Kartenerstellung.}}
 \newglossaryentry{gls:ftdi}{
 	name= Future Technology Devices International,
 	description={Die Firma ist für ihre USB-RS232-Interface-Chips bekannt. Diese ermöglichen es eine serielle Schnittstelle über USB verfügbar zu machen.}}
 \newglossaryentry{gls:ssh}{
 	name= Secure Shell,
-	description={Netzwerkprotokoll für verschlüsselte Verbindungen}}
+	description={Netzwerkprotokoll für verschlüsselte Verbindungen.}}
+\newglossaryentry{gls:vslam}{
+	name= Visual Simultaneous Localization and Mapping,
+	description={Der Zusatz V sagt dabei aus, dass diese Messdaten von einem visuellen Sensor, sprich einer Kamera zur Verfügung gestellt werden.}}
+
+
+
+
