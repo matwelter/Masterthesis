@@ -43,7 +43,7 @@ In allgemeiner Form ist dies in Abbildung \ref{fig:laser_proj_allg} dargestellt.
 	\label{fig:laser_proj}
 	
 \end{figure}
-Grundlage für die orthogonalen Projektion ist die Annahme, dass es sich bei den erfassten Objekten hauptsächlich um senkrechte Gegenstände handelt. Das heißt, ihre Form variiert nicht mit der Höhe in der sie erfasst werden.
+Grundlage für die orthogonalen Projektion ist die Annahme, dass es sich bei den erfassten Objekten hauptsächlich um senkrechte Gegenstände handelt. Das heißt ihre Form variiert nicht mit der Höhe in der sie erfasst werden.
 %Das bedeutet sie weisen unabhängig der Höhe in der sie erfasst werden die gleich Formen auf. 
 In geschlossenen Räumen ist diese Annahme zutreffend, da es sich bei den Objekten hauptsächlich um senkrechte Wände handelt. Durch Erfüllung dieser Voraussetzungen sowie der Annahme kleiner Neigungswinkel des Quadrocopters kann die Flughöhe vernachlässigt werden. Das ist aus der Abbildung \ref{fig:laser_proj_pi} entnehmbar. Eine Verschiebung des Koordinatenursprungs des b-frames auf der z-Achse des o-frames hat demzufolge keinen Einfluss auf die Projektion. Folglich kann für beide Koordinatensystem der identische Ursprung angenommen werden. Unter Beachtung dieser Annahmen kann der Einfluss des Roll-($\phi$) und Nickwinkels ($\theta$) auf die Entfernungsmessung eliminiert werden. Die Winkelgrößen liefert die \gls{imu}. Der mathematische Ablauf der orthogonalen Transformation wird basierend auf Literatur \cite{Morris2010}  im Folgenden dargelegt.\\
 
@@ -278,7 +278,7 @@ Somit sind Translation und Rotation für die Summe der kleinsten Quadrate bestimm
 \samepage  
 Die kleinste Summe der quadratischen Fehler für die ermittelte Transformation wird mit
 %Der in Vorgang 4 berechnete quadratische Fehler wird mit 
-dem Schwellwert des maximal zulässigen Fehlers $ E_{max} $ verglichen. Bei Unterschreitung ist das Abbruchkriterium erfüllt. Es handelt sich bei der Rotation $ \Delta\psi^o $ und der Translation $ T $ um die Transformation, welche die neue Position $ P_{neu} $ mit einer ausreichenden Genauigkeit beschreibt. Ist das Kriterium nicht erfüllt, werden die Transformationswerte auf den Scan angewendet und der  \gls{icp}-Algorithmus beginnt iterativ bei Schritt 1 von Neuem.
+dem Schwellwert des maximal zulässigen Fehlers $ E_{max} $ verglichen. Bei Unterschreitung ist das Abbruchkriterium erfüllt. Es handelt sich bei der Rotation $ \Delta\psi^o $ und der Translation $ T $ um die Transformation, welche die neue Position $ P_{neu} $ mit einer ausreichenden Genauigkeit beschreibt. Ist das Kriterium nicht erfüllt, werden die Transformationswerte auf den Scan angewendet und der  \gls{icp}-Algorithmus beginnt iterativ bei Schritt 1 von neuem.
 \end{itemize}
 
 %\begin{figure}
