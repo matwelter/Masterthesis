@@ -267,52 +267,50 @@ $ \theta $ lässt sich aufgrund der trigonometrischen Beziehung $ tan\alpha = \fr
 \label{eq:invtheta}
 \end{equation}
 
-\begin{figure}
+Die Stellgesetze der exakten Zustandslinearisierung sind damit über (\ref{eq:invT}), (\ref{eq:invphi}) und (\ref{eq:invtheta}) mathematisch beschrieben. In Verbindung mit der Koordinatentransformation mittels $ \psi $ ergibt sich die in Abbildung \ref{fig:Gesamtinversion} dargestellte Inversion.
+\begin{figure}[H]
 	\centering
 	\includegraphics[width = .85\textwidth]{images/3intket}
 	\caption[Zustandslinearisiertes Translationsmodell]{Zustandslinearisiertes Translationsmodell} %
 	\label{fig:drIntket}
 \end{figure}
 
-Die Stellgesetze der exakten Zustandslinearisierung sind damit über Gleichung (\ref{eq:invT}), (\ref{eq:invphi}) und (\ref{eq:invtheta}) mathematisch beschrieben. In Verbindung mit der Koordinatentransformation mittels $ \psi $ ergibt sich die in Abbildung \ref{fig:Gesamtinversion} dargestellte Inversion.
-
-Die Richtigkeit lässt sich über eine Simulation beweisen (Abbildung \ref{fig:sim_inversion}). Das Modell besteht dabei aus Translationsmodell (Abbildung \ref{fig:modstrukquad}) und Inversion (Abbildung \ref{fig:Gesamtinversion}). Über den neuen Eingang $ u_f $ werden dabei Beschleunigungswerte im n-frame vorgegeben (Abbildung \ref{fig:inv_uf}). Unter Einfluss ständig wechselnder  
-Orientierung um die Hochachse (Abbildung \ref{fig:inv_psi}) ergeben sich die in der Abbildung \ref{fig:inv_aso} dargestellten Vorgaben für das exakt zustandslinearisierende Stellgesetz. Die daraus resultierende Schubvorgabe (Abbildung \ref{fig:inv_T}) und Winkel (Abbildung \ref{fig:inv_phitheta}) werden dem Bewegungsmodell übergeben. Mit dem Ergebnis, dass die resultierenden Beschleunigungen des Modells den Beschleunigungsvorgaben entsprechen (Abbildung \ref{fig:inv_amdl}).
+Die Richtigkeit lässt sich über eine Simulation beweisen (Abbildung \ref{fig:sim_inversion}). Das Modell besteht dabei aus Translationsmodell (Abbildung \ref{fig:modstrukquad}) und Inversion (Abbildung \ref{fig:Gesamtinversion}). Über den neuen Eingang $ u_f $ werden dabei Beschleunigungswerte im n-frame vorgegeben (Abbildung \ref{fig:inv_uf}).  \begin{figure}[H]
+	
+	\centering{
+		\subfloat[Fiktive Eingänge]{
+			\includegraphics[width=0.5\textwidth]{images/inv_uf}
+			\label{fig:inv_uf}
+		}
+		\subfloat[Orientierung um z-Achse]{
+			\includegraphics[width=0.5\textwidth]{images/inv_psi}
+			\label{fig:inv_psi}
+		}\\
+		\subfloat[Ins o-frame transformierte Beschleunigungsvorgaben]{
+			\includegraphics[width=0.5\textwidth]{images/inv_aso}
+			\label{fig:inv_aso}
+		}
+		\subfloat[Schubvorgabe der Inversion]{
+			\includegraphics[width=0.5\textwidth]{images/inv_T}
+			\label{fig:inv_T}
+		}\\
+		\subfloat[Winkelvorgabe der Inversion]{
+			\includegraphics[width=0.5\textwidth]{images/inv_phitheta}
+			\label{fig:inv_phitheta}
+		}
+		\subfloat[Beschleunigungswerte im Translationsmodell (vgl. Eingangsgrößen Abbildung \ref{fig:inv_uf})]{
+			\includegraphics[width=0.5\textwidth]{images/inv_amdl}
+			\label{fig:inv_amdl}
+		}
+	}	
+	\caption[Simulation der Inversion]{Simulation der Inversion}
+	\label{fig:sim_inversion}
+\end{figure}Unter Einfluss ständig wechselnder Orientierung um die Hochachse (Abbildung \ref{fig:inv_psi}) ergeben sich die in der Abbildung \ref{fig:inv_aso} dargestellten Vorgaben für das exakt zustandslinearisierende Stellgesetz. Die daraus resultierende Schubvorgabe (Abbildung \ref{fig:inv_T}) und Winkel (Abbildung \ref{fig:inv_phitheta}) werden dem Bewegungsmodell übergeben. Mit dem Ergebnis, dass die resultierenden Beschleunigungen des Modells den Beschleunigungsvorgaben entsprechen (Abbildung \ref{fig:inv_amdl}).
 
 Dadurch ist das zu regelnde System als lineares Modell zu sehen, bestehend aus drei entkoppelten Integrierketten (Abbildung \ref{fig:drIntket}). Dieses System ist jedoch instabil. Das bedeutet für die Vorgabe einer konstanten Beschleunigung schwingt der Quadrocopter auf keiner konstanten Position ein, sondern Integriert seine Position immer weiter auf. Begründet ist dieses Verhalten auch durch das Weg-Zeit-Gesetz (Gleichung \ref{eq:weg-zeit}). Jedoch besteht die Möglichkeit einen Beschleunigungsverlauf vorzugeben, für den der Quadrocopter in eine neue Position überführt wird. Dafür wird eine Vorsteuerung benötigt.
 
 
- \begin{figure}
- 	
- 	\centering{
- 		\subfloat[Fiktive Eingänge]{
- 			\includegraphics[width=0.5\textwidth]{images/inv_uf}
- 			\label{fig:inv_uf}
- 		}
- 		\subfloat[Orientierung um z-Achse]{
- 			\includegraphics[width=0.5\textwidth]{images/inv_psi}
- 			\label{fig:inv_psi}
- 		}\\
- 		\subfloat[Ins o-frame transformierte Beschleunigungsvorgaben]{
- 			\includegraphics[width=0.5\textwidth]{images/inv_aso}
- 			\label{fig:inv_aso}
- 		}
- 		\subfloat[Schubvorgabe der Inversion]{
- 			\includegraphics[width=0.5\textwidth]{images/inv_T}
- 			\label{fig:inv_T}
- 		}\\
- 		\subfloat[Winkelvorgabe der Inversion]{
- 			\includegraphics[width=0.5\textwidth]{images/inv_phitheta}
- 			\label{fig:inv_phitheta}
- 		}
- 			\subfloat[Beschleunigungswerte im Translationsmodell (vgl. Eingangsgrößen Abbildung \ref{fig:inv_uf})]{
- 				\includegraphics[width=0.5\textwidth]{images/inv_amdl}
- 				\label{fig:inv_amdl}
- 			}
- 	}	
- 	\caption[Simulation der Inversion]{Simulation der Inversion}
- 	\label{fig:sim_inversion}
- \end{figure}
+
 
 
 
@@ -404,7 +402,7 @@ Mit (\ref{eq:v_Pcmd}) wird das Referenzmodell (\ref{eq:ref_mdl}) gespeist. Darau
 Die Vorsteuerung ist hiermit für alle Anwendungszwecke entworfen. Speist man das exakt zustandslinearisierte Stellgesetz mit den generierten Stellwertverläufen alle drei Achsen, so folgt das Modell des Quadrocopter der Trajektorie. Dies gilt nur für den Fall konsistenter Anfangszustände (Abbildung \ref{fig:vor_ohnestr}). Ist dies nicht gegeben, ist wie in Abbildung \ref{fig:vor_inkonAzust} zu erkennen, dass der Positionsverlauf des Translationsmodells für den gleichen Stellgrößenverlauf nicht der Referenz entspricht. Gleiches gilt für Unsicherheiten bei Modellparametern (Abbildung \ref{fig:vor_unsichmdlpara}). Hierbei berechnet die Inversion einen unzureichenden oder überdimensionierten Schubvektor. 
 %Simuliert man das Modell (Abbildung \ref{fig:Gesamtinversion}) inklusive des Stellgesetzes der Vorsteuerung Gleichung (\ref{eq:ref_mdl}) für konsistente Anfangsbedingungen $ P_{ref0}^n = P_0^n $ so ergibt sich die gewünschte Flugkurve. In der Realität ist die Konsistens der Angfangsbedingungen jedoch nicht immer gegeben. 
 Auch können äußere Kräfte, hervorgerufen durch z.B. Winde wirken, die den Quadrocopter von der Trajektorie ablenken. Um all diesen Effekten entgegenzuwirken ist ein Folgeregler notwendig. Dessen Aufgabe besteht darin, diese Einflüsse zu eliminieren, sodass der Modellverlauf im gestörten Fall der Trajektorie entspricht.
- \begin{figure}
+ \begin{figure}[H]
  	\centering{
  		\subfloat[Konsistente Anfangszustände $ p_{ref_0}~=~p_{mdl_0}~=~0 $ und $ v_{ref_0}~=v_{mdl_0}~=~0 $]{
  			\includegraphics[width=0.5\textwidth]{images/vstr_ohnest}
@@ -482,16 +480,17 @@ Das Stellgesetz für einen Regler mit I-Anteil lässt sich unter Nichtbeachtung de
 u_f = \underset{Vorsteuerung}{u_{f_{ref}}}+ \underset{Folgeregler\ inklusive\ I-Anteil}{\tilde{c}_1 \cdot (\dot{P}^n_{ref}-\dot{P}^n) +\tilde{c}_0\cdot (P^n_{ref} - P^n)+\tilde{c}_{-1} \int e(\tau)d\tau}
 \label{eq:folgreg_stelgeI}
 \end{equation}
-\begin{figure}
+
+Dieses Stellgesetz führt den Quadrocopter entlang der Referenztrajektorie. Zu erkennen ist dies in der Simulation (Abbildung \ref{fig:folg_RefaliasVor}) mit Regler. So wird für inkonsistente Anfangsbedingungen (Abbildung \ref{fig:folg_inkonAzust}) das Fluggerät auf die Trajektorie zurückgeführt. Für Modellunsicherheiten (Abbildung \ref{fig:folg_unsichmdlpara}) passt der Folgeregler das Stellsignal so an, dass der Quadrocopter entlang des vorgegebenen Pfades fliegt.
+\begin{figure}[H]
 	\centering
 	\includegraphics[width = 0.75\textwidth]{images/folgreg}
 	\caption[Strukturbild des Folgereglers]{Strukturbild des Folgereglers} %
 	\label{fig:folgeregler}
 \end{figure}
-Dieses Stellgesetz führt den Quadrocopter entlang der Referenztrajektorie. Zu erkennen ist dies in der Simulation (Abbildung \ref{fig:folg_RefaliasVor}) mit Regler. So wird für inkonsistente Anfangsbedingungen (Abbildung \ref{fig:folg_inkonAzust}) das Fluggerät auf die Trajektorie zurückgeführt. Für Modellunsicherheiten (Abbildung \ref{fig:folg_unsichmdlpara}) passt der Folgeregler das Stellsignal so an, dass der Quadrocopter entlang des vorgegebenen Pfades fliegt.
 
 Wie zuvor kann das Einschwingverhalten für den Folgeregler mit I-Anteil über die Polvorgabe festgelegt werden. Für diesen Fall ist die Differentialgleichung (\ref{eq:ifehlerdyn}) zu verwenden. 
- \begin{figure}
+ \begin{figure}[H]
  	\centering{
  		
  		\subfloat[Inkonsistene Anfangszustände $ p_{ref_0}~=~0~\ne~p_{mdl_0}~=~0.3 $ und $ v_{ref_0}~=~0~\ne~v_{mdl_0}~=~0.2 $, ideales Modell]{
@@ -581,7 +580,7 @@ Unter Betrachtung des Stellgesetz (\ref{eq:folgreg_stelgeI}) für den Folgeregler
  
  Der Zustand der Geschwindigkeit $ v^n $ ist messtechnisch sehr schwer ermittelbar. Eine Möglichkeit zur messtechnischen Erfassung ist die Integration eines Dopplerradars \cite{ras12} auf dem Quadrocopter, der auf dem Doppler-Effekt basiert. Dabei wird ein periodisches Signal ausgesendet und je nach Geschwindigkeit verkleinert sich die Periodendauer, bzw. vergrößert sich für negative Geschwindigkeiten. So kann anhand der Frequenzänderung des reflektierten Signals auf die Geschwindigkeit geschlossen werden. Diese Umsetzung bedeutet die Integration eines weiteren Sensor. Aus Gewichts- und Kostengründen sind deshalb Methoden gefragt, die über die vorhandene Sensorik (IMU und Laser) die Geschwindigkeit des Quadrocopters feststellen.
 
-\subsection{Geschwindigkeitsbestimmung über Integration der Beschleunigungsdaten}
+\subsection[Geschwindigkeitsbestimmung über Integration]{Geschwindigkeitsbestimmung über Integration der Beschleunigungsdaten}
 \label{subsec:Vimu}
 Die \gls{imu} beinhaltet einen 3D-Bewegungssensor. Dieser nimmt die Beschleunigung in $ x^b $, $ y^b $ und $ z^b $-Achse des Quadrocopters auf und stellt die Messwerte mit einer Frequenz von $ 1~kHz $ ($ T_{imu}=1~ms $) zur Verfügung. Aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) lässt sich die Geschwindigkeit über die Integration der Beschleunigung bestimmen. Für den diskreten Fall lässt sich diese mittels des Euler-Verfahrens (\ref{eq:eulva}) approximieren. Zuvor werden dafür die Beschleunigungsmesswerte ins n-frame transformiert (\ref{eq:inverse_transM}).  
 \begin{equation}
@@ -594,7 +593,7 @@ a^b_k = a^b_{k_{tat}} +  r_{a_k}+b
 \end{equation}  
 Das Problem ist, dass der Fehler mit integriert wird. Damit driften geschätzte und reale Geschwindigkeit auseinander. Dadurch ist eine verlässliche Geschwindigkeitsbestimmung ausschließlich über die Inertialsensorik nicht gewährleistet. 
 
-\subsection{Geschwindigkeitsbestimmung über die Ableitung der Positionsdaten}
+\subsection[Geschwindigkeitsbestimmung über Ableitung]{Geschwindigkeitsbestimmung über die Ableitung der Positionsdaten}
 \label{subsec:abpos}
 Ebenfalls auf Basis des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) bestimmt sich die Geschwindigkeit über die Ableitung der Quadrocopterpositionen.
 %lässt sich die Geschwindigkeit aufgrund des Weg-Zeit-Gesetzes (\ref{eq:weg-zeit}) über Ableitung der Quadrocopterpositionen bestimmen. 
@@ -641,7 +640,7 @@ v^n_k = \frac{P^n_k-P^n_{k-1}}{T_l} + \frac{r_{P_k} -r_{P_{k-1}}}{T_l}
  
  Des Weiteren lassen sich aufgrund der geringen Updaterate von $ 40~Hz $ der Positionsdaten, die Dynamik des Quadrocopters und das Positionsrauschen spektral nicht eindeutig voneinander trennen. Unterdrückt man das Positionsrauschen werden auch schnelle Positionsänderungen des Quadrocoptes ausgefiltert. Für die hohe Dynamik des Quadrocopters ist die Anwendung eines Tiefpassfilter mit Grenzfrequenz nicht machbar. Gesucht ist eine Methode, die für Flüge mit geringer Dynamik die Varianz der Geschwindigkeitsschätzung, verursacht durch Positionsrauschen, möglichst stark verringert. Gleichzeitig jedoch der hohen Dynamik des Quadrocopters Folge leisten kann.  
  
- \subsection[Geschwindigkeitsbestimmung mittels der Methode des First-Order Adaptive Windowing]{Geschwindigkeitsbestimmung anhand der Positionsdaten mittels der Methode des First-Order Adaptive Windowing }
+ \subsection[Geschwindigkeitsbestimmung mittels  FOAW]{Geschwindigkeitsbestimmung anhand der Positionsdaten mittels der Methode des First-Order Adaptive Windowing }
  \label{subsec:adaptwind}
  Wie in Kaptiel \ref{subsec:abpos} erläutert, nimmt die Varianz der Geschwindigkeitsschätzung ab, je weiter die Positionswerte auseinander liegen. Hierfür sei auf Abbildung \ref{fig:VarPosVersch} verwiesen. Der gleiche Effekt tritt auf, je mehr Abtastschritte $ n $ der für die Euler-Approximation verwendete Bezugspunkt $ P^n_{k-n} $ in der Vergangenheit liegt. 
  \begin{equation}
@@ -774,11 +773,11 @@ Nun ist die Steigung allgemeingültig für variable Fenstergrößen bestimmt. Die Um
 
 Die Methoden des \gls{foaw} bieten eine sehr gute Möglichkeit die Geschwindigkeit auf Basis eines verrauschten Positionssignals zu ermitteln. Problematisch ist allerdings die geringe Abtastrate von $ 40~Hz $ des Lasers. Schon bei Flügen mit mittlerer Dynamik führt das dazu, dass die Fenstergröße stark reduziert wird. Somit auch der Einfluss des Positionsrauschens stark zunimmt. Zu sehen ist dies auch in Abbildung \ref{fig:adap_vergleich}, wo die Methoden des FOAW anhand einer realen Messung miteinander verglichen werden. Als Folge kann selbst dieses Konzept, limitiert durch die Tastrate des Lasers, der Dynamik des Quadrocopters nicht folgen. Es ist klar, dass eine Methode benötigt wird, die die Position und die Geschwindigkeit in einer höheren Taktrate zur Verfügung stellt. Gleichzeit müssen beide Signale ausreichend rauschunterdrückt sein. 
 
- \subsection{Bestimmung der Zustände mittels eines Fusionsfilter}
+ \subsection{Zustandsschätzung mittels Fusionsfilter}
  \label{subsec:Fusionsfilter}
- Wie aus den vorherigen Unterkapitel zur Zustandsschätzung erkennbar, wird keine der Methoden denen zuvor gestellten Ansprüche gerecht. So erfüllt die Integration der Beschleunigung (Kapitel \ref{subsec:Vimu}) zwar das Kriterium zur Erhöhung der Taktrate, da die Beschleunigungsmesswerte in einem Takt von $ 1 kHz $ zur Verfügung stehen. Durch den Bias des Beschleunigungssensors divergieren jedoch innerhalb kürzester Zeit die geschätzten Zustände von den realen Zuständen. Dieses Phänomen tritt bei den Anwendungen Kapitel \ref{subsec:abpos} und Kapitel \ref{subsec:adaptwind} nicht auf. Der Grund, sie beziehen sich auf die vom Laser berechneten Positionswerte. Die Abweichungen dieser Zustandswerte befinden sich in einem konstanten Rahmen um die tatsächliche Position. Dieses Positionsrauschen sorgt bei der Geschwindigkeitsschätzung über die Ableitung der Positionswerte dafür, dass das errechnete Geschwindigkeitssignal ebenfalls einen Rauschanteil aufweist. Diesen Rauschanteil zu minimieren ist Ziel der \gls{foaw} Methode. Aufgrund der geringen Abtastfrequenz von $ 40Hz  $ kann auch dieser Ansatz der hohen Dynamik nicht Folge leisten. Schon für geringe Dynamiken ist die Fenstergröße stark dezimiert und damit auch die Rauschunterdrückung. Das Ergebnis, Beschleunigungssensor der \gls{imu} und Laser bieten jeweils für sich keine zuverlässigen Zustandswerte. Abhilfe ist die Fusion beider Sensordaten mittels eines Fusionsfilters. Dabei sorgen die Beschleunigungswerte mit ihrer hohen Updaterate von $ 1 Khz $ für eine schnelle Reaktionsfähigkeit und tragen somit der Dynamik des Quadrocopters sorge. Die Positionsdaten des Laser indes verhindern ein Abdriften der Schätzwerte. Als Folge stellen sie die Zuverlässigkeit der Fusionsergebnisse sicher. 
+ Wie aus den vorherigen Unterkapitel zur Zustandsschätzung erkennbar, wird keine der Methoden den zuvor gestellten Ansprüche gerecht. So erfüllt die Integration der Beschleunigung (Kapitel \ref{subsec:Vimu}) zwar das Kriterium zur Erhöhung der Taktrate, da die Beschleunigungsmesswerte mit einer Frequenz von $ 1 kHz $ zur Verfügung stehen. Durch den Bias des Beschleunigungssensors divergieren jedoch innerhalb kürzester Zeit die geschätzten Zustände von den realen Zuständen. Dieses Phänomen tritt bei den Anwendungen Kapitel \ref{subsec:abpos} und Kapitel \ref{subsec:adaptwind} in einer deutlich abgeschwächten Form auf. Der Grund, sie beziehen sich auf die über den Laser berechneten Positionswerte. Die Abweichungen dieser Zustandswerte befinden sich in einem konstanten Rahmen um die tatsächliche Position und unterliegen lediglich dem geringen Drift der Positionsschätzung (Kapitel \ref{chap:2Dpositionsbestimmung}). Das Positionsrauschen sorgt bei der Geschwindigkeitsschätzung über die Ableitung der Positionswerte dafür, dass das errechnete Geschwindigkeitssignal ebenfalls einen Rauschanteil aufweist. Diesen Rauschanteil zu minimieren ist Ziel der \gls{foaw} Methode. Aufgrund der geringen Abtastfrequenz von $ 40~Hz  $ kann dieser Ansatz der hohen Dynamik nicht Folge leisten. Schon für geringe Dynamiken ist die Fenstergröße stark dezimiert und damit auch die Rauschunterdrückung. Das Ergebnis, Beschleunigungssensor der \gls{imu} und Laser bieten jeweils für sich keine zuverlässigen Zustandswerte. Abhilfe ist die Fusion beider Sensordaten mittels eines Fusionsfilters. Dabei sorgen die Beschleunigungswerte mit ihrer hohen Updaterate von $ 1~Khz $ für eine schnelle Reaktionsfähigkeit und tragen somit der Dynamik des Quadrocopters sorge. Die Positionsdaten des Laser gewähren indes ein minimales Abdriften der Schätzwerte über die Zeit. Als Folge stellen sie die Zuverlässigkeit der Fusionsergebnisse sicher. 
  
-Das auf dem \gls{hlp} implementierte Fusionsfilter basiert auf einem Luenberger Beobachter\cite{Achtelik11}. Dieser besteht aus einem linearen Streckenmodell, dessen Zustände $ \hat{x} $ mittels eines Korrekturterms ($ L\cdot (y-\hat{y})$) auf die Zustände $ x $ der Regelstrecke einschwingen. Die Zustandsdifferenzialgleichung eines Luenberger Beobachter stellt sich in allgemeiner Form  \cite{regB12} wie folgt dar.
+Das auf dem \gls{hlp} implementierte Fusionsfilter basiert auf einem Luenberger Beobachter \cite{Achtelik11}. Dieser besteht aus einem linearen Streckenmodell, dessen Zustände $ \hat{x} $ mittels eines Korrekturterms ($ L\cdot (y-\hat{y})$) auf die Zustände $ x $ der Regelstrecke einschwingen. Die Zustandsdifferenzialgleichung eines Luenberger Beobachters stellt sich in allgemeiner Form  \cite{regB12} wie folgt dar.
 \begin{equation}
 \begin{split}
 \dot{\hat{x}} &= A \cdot \hat{x}+ L \cdot (y-\hat{y}) + B \cdot u\\
@@ -786,14 +785,14 @@ Das auf dem \gls{hlp} implementierte Fusionsfilter basiert auf einem Luenberger 
 \end{split}
 \label{eq:algbeo}
 \end{equation} 
-Dabei entspricht $ A $ der Dynamikmatrix, $ B $ der Eingangsmatrix und $ C $ der Ausgangsmatrix des linearen Streckenmodells. Aufgrund der Inversion ist das Bewegungsmodell für jede Achse im n-frame als Integrationsglied 2.Ordnung gegeben (Abbildung \ref{fig:drIntket}). Dabei entsprechen die Eingangsgrößen $ u $ den ins n-frame transformierten Beschleunigungswerten der \gls{imu}. Da die Ketten entkoppelt sind, muss der Beobachter nicht für alle drei Ketten gleichzeitig entworfen werden. Es ist ausreichend ein Integrationsglied 2.Ordnung als Streckenmodell heranzuziehen. Weiterhin ist bekannt, dass die Beschleunigungswerte der \gls{imu} einen Bias $ b $ aufweisen. Um diese Störgröße zu berücksichtigen kann das Streckenmodell nach \cite{mzr13} wie in Abbildung \ref{fig:emod} erweitert werden.  
+Dabei entspricht $ A $ der Dynamikmatrix, $ B $ der Eingangsmatrix und $ C $ der Ausgangsmatrix des linearisierten Streckenmodells. Aufgrund der Inversion ist das Bewegungsmodell für jede Achse im n-frame als Integrationsglied 2.Ordnung gegeben (Abbildung \ref{fig:drIntket}). Dabei entsprechen die Eingangsgrößen $ u $ den ins n-frame transformierten Beschleunigungswerten der \gls{imu}. Da die Ketten entkoppelt sind, muss der Beobachter nicht für alle drei Ketten gleichzeitig entworfen werden. Es ist ausreichend ein Integrationsglied 2.Ordnung als Streckenmodell heranzuziehen. Weiterhin ist bekannt, dass die Beschleunigungswerte der \gls{imu} einen Bias $ b $ aufweisen. Um diese Störgröße zu berücksichtigen kann das Streckenmodell nach \cite{mzr13} wie in Abbildung \ref{fig:emod} erweitert werden.  
    \begin{figure}
    	\centering
    	\includegraphics[width = \textwidth]{images/erwModell}
-   	\caption[Erweitertes Streckenmodell]{Erweitertes Streckenmodell} %
+   	\caption[Erweiterte Streckenmodell]{Um Bias $ b $ erweiterte Streckenmodell} %
    	\label{fig:emod}
    \end{figure}
-Dieses erweiterte Modell ist über die Zustandsdifferenzialgleichung (\ref{eq:emod}) beschrieben
+Dieses erweiterte Modell ist über die Zustandsdifferenzialgleichung (\ref{eq:emod}) beschrieben:
 \begin{equation}
 \begin{split}
 \dot{x} &= \underset{A}{\begin{bmatrix} 
@@ -811,13 +810,13 @@ y &= \underset{C}{\begin{bmatrix}
 \end{split}
 \label{eq:emod}
 \end{equation} 
-mit,
+mit
 \begin{equation}
-\hat{x} = \begin{bmatrix}
+x = \begin{bmatrix}
 p^n&	v^n& 	b
 \end{bmatrix}^T
 \end{equation}
-Anhand von (\ref{eq:algbeo}) folgt daraus für den Beobachter.
+Anhand von (\ref{eq:algbeo}) folgt daraus für den Beobachter:
 \begin{equation}
 \begin{split}
 \dot{\hat{x}} &= \underset{A}{\begin{bmatrix} 
@@ -839,7 +838,7 @@ Anhand von (\ref{eq:algbeo}) folgt daraus für den Beobachter.
 \end{split}
 \label{eq:ewmodelbeo}
 \end{equation} 
-mit,
+mit
 \begin{equation}
 \hat{x} = \begin{bmatrix}
 \hat{p}^n&	\hat{v}^n& 	\hat{b}
@@ -848,11 +847,11 @@ mit,
  \begin{figure}
  	\centering
  	\includegraphics[width = \textwidth]{images/Beobachter}
- 	\caption[Beobachter]{Strukturbild Beobachter} %
+ 	\caption[Luenberger Beobachter]{Strukturbild des Luenberger Beobachters} %
  	\label{fig:strucB}
  \end{figure}
 Vorteil des erweiterten Beobachters (Abbildung \ref{fig:strucB}) ist, dass der Bias des Beschleunigungssensors ebenfalls geschätzt wird. Das sorgt dafür, dass die Zuverlässigkeit der für die Folgeregelung benötigten Zustände $ \hat{v} $ und $ \hat{p} $ steigt. 
-Das Einschwingverhalten mit dem die Beobachterwerte $ \hat{x} $ auf die realen Zustände $ x $ konvergieren, lässt sich über die Beobachtermatrix $ L $ bestimmen. Da der Zustandsfehler $ \tilde{x} = x-\hat{x} $ gilt, ergibt sich für die Dynamik des Zustandsfehlers
+Das Einschwingverhalten mit dem die Beobachterwerte $ \hat{x} $ auf die realen Zustände $ x $ konvergieren, lässt sich über die Beobachtermatrix $ L $ bestimmen. Da für den  Zustandsfehler $ \tilde{x} = x-\hat{x} $ gilt, ergibt sich für die Dynamik des Zustandsfehlers
 \begin{equation}
 \dot{\tilde{x}}=\dot{x}-\dot{\hat{x}}=(A-LC)\cdot \tilde{x}
 \end{equation}
@@ -860,7 +859,7 @@ Um diese mittels Polvorgabe einstellen zu können, muss daraus das charakteristis
 \begin{equation} 
 N(s)=\det(A-LC)
 \end{equation}
-ergibt für das erweitere Zustandsmodell (\ref{eq:ewmodelbeo}),
+Daraus folgt für das erweitere Zustandsmodell (\ref{eq:ewmodelbeo}),
 \begin{equation} 
 N(s)=s^3+l_1\cdot s^2+l_2 \cdot s + l_3
 \end{equation}
@@ -870,11 +869,11 @@ Anhand dieses Polynom sind Koeffizienten der Beobachtermatrix $ L $ nach Kapitel
  \begin{figure}
  	
  	\centering{
- 		\subfloat[Einspeisung]{
+ 		\subfloat[Eingespeiste Beschleunigung]{
  			\includegraphics[width=0.5\textwidth]{images/ua}
  			\label{fig:bo_ua}
  		}
- 		\subfloat[Einschwingverhalten Bias]{
+ 		\subfloat[Bias]{
  			\includegraphics[width=0.5\textwidth]{images/bias}
  			\label{fig:bo_bias}
  		}\\
@@ -897,7 +896,7 @@ Anhand dieses Polynom sind Koeffizienten der Beobachtermatrix $ L $ nach Kapitel
  
  
  
- Um Beispielhaft das Einschwingverhalten des Fusionsfilters für eine Bebachtermatrix mit $ L= \begin{bmatrix} 18 & 46 & 3.75 \end{bmatrix}^T $ aufzeigen zu können, wird das zustandslinearisierte Streckenmodell mit einem variierenden Beschleunigungssignal gespeist. Um dem Beobachter ein realistischen Beschleunigungswert zur Verfügung zustellen, wird diesem ein Signal mit überlagerten Rauschen und einem Bias zugeführt (Abbildung \ref{fig:bo_ua}). Auch das Positionsergebnis des Streckenmodells wird für das Fusionsfilter mit einem Rauschen beaufschlagt. Zusätzlich wird dieses verrauschte Positionssignal mit einer Frequenz von $ 40~Hz $ abgetastet, die der Abtastrate des Lasers entspricht. Mit diesen störbehafteten Eingangsgrößen wird der Beobachter gespeist. Abbildung \ref{fig:bo_bias} zeigt, wie der geschätzte Bias $ \hat{b} $ auf den invertierten Wert des Beschleunigungsoffset einschwingt. Auf diese Weise wird der Bias $ b $ kompensiert (Abbildung \ref{fig:bo_beschl}). In Abbildung \ref{fig:bo_geschw} ist deutlich zu erkennen, welchen Einfluss dies auf die Qualität der Geschwindigkeitsschätzung nimmt. Im Gesamtergebnis stellt die Datenfusion dem Folgeregler ein rauschreduziertes Geschwindigkeits- (Abbildung \ref{fig:bo_geschw}) als auch Positionssignal (Abbildung \ref{fig:bo_pos}) zur Verfügung, das obendrauf noch die Daten mit einer Taktrate von $ 1~kHz $ bereit stellt. In Sachen Zuverlässigkeit und Genauigkeit ist diese Methode allen vorher genannten Methodiken überlegen. Womit deren Sinnhaftigkeit zur Zustandsschätzung im Rahmen des asctec\_hl\_framework dargelegt ist. Im Ergebnis ist damit der letzte Bestandteil der Positionsregelung hergeleitet und verifiziert. 
+ Um beispielhaft das Einschwingverhalten des Fusionsfilters für eine Bebachtermatrix mit $ L= \begin{bmatrix} 18 & 46 & 3.75 \end{bmatrix}^T $ aufzeigen zu können, wird das zustandslinearisierte Streckenmodell mit einem variierenden Beschleunigungssignal gespeist. Um dem Beobachter ein realistischen Beschleunigungswert zur Verfügung zustellen, wird diesem ein Signal mit überlagerten Rauschen und einem Bias zugeführt (Abbildung \ref{fig:bo_ua}). Auch das Positionsergebnis des Streckenmodells wird für das Fusionsfilter mit einem Rauschen beaufschlagt. Zusätzlich wird dieses verrauschte Positionssignal mit der Abtastfrequenz von $ 40~Hz $ des Lasers diskretisiert. Mit diesen störbehafteten Eingangsgrößen wird der Beobachter gespeist. Abbildung \ref{fig:bo_bias} zeigt, wie der geschätzte Bias $ \hat{b} $ auf den invertierten Wert des Beschleunigungsoffset einschwingt. Auf diese Weise wird der Bias $ b $ kompensiert (Abbildung \ref{fig:bo_beschl}). In Abbildung \ref{fig:bo_geschw} ist deutlich zu erkennen, welchen Einfluss dies auf die Qualität der Geschwindigkeitsschätzung nimmt. Im Gesamtergebnis stellt die Datenfusion dem Folgeregler ein rauschreduziertes Geschwindigkeits- (Abbildung \ref{fig:bo_geschw}) als auch Positionssignal (Abbildung \ref{fig:bo_pos}) zur Verfügung, das obendrauf noch die Daten mit einer Taktrate von $ 1~kHz $ bereit stellt. In Sachen Zuverlässigkeit und Genauigkeit ist diese Methode allen vorher genannten Methodiken überlegen. Womit deren Sinnhaftigkeit zur Zustandsschätzung im Rahmen des asctec\_hl\_framework dargelegt ist. Im Ergebnis ist damit der letzte Bestandteil der Positionsregelung hergeleitet und verifiziert. 
  
  %Das resultierende Positionssignals Abbildung  wird ebenfalls dem Beobachter zugeführt. Bei der Simulation des Beobachters     
   
@@ -917,12 +916,12 @@ Anhand dieses Polynom sind Koeffizienten der Beobachtermatrix $ L $ nach Kapitel
 %  	\caption[Verbesserung des Fusionsfilter im Vergleich \gls{foaw}]{Verbesserung des Fusionsfilter im Vergleich \gls{foaw}}
 %  	\label{fig:bo_sim}
 %  \end{figure} 
- 
- \section{Simulation der Positionsreglung}
+ \clearpage
+ \section{Simulation der vollständigen Positionsreglung}
  \label{sec:sim_posreg}
-In den vorangegangen Unterkapiteln \ref{sec:exkt.zstdlin} bis \ref{sec:Zustandsbestimmung} wurden die einzelnen Komponenten der Positionsregelung durchleuchtet, deren Herleitung aufgezeigt und ihr Richtigkeit mittels eines Simulationsbeispiels dargelegt. Aufgabe dieses Kapitels ist es, die Funktionsfähigkeit des Gesamtsystems mittels einer Simulation zu beweisen.
+In den vorangegangen Unterkapiteln \ref{sec:exkt.zstdlin} bis \ref{sec:Zustandsbestimmung} wurden die einzelnen Komponenten der Positionsregelung durchleuchtet, deren Herleitung aufgezeigt und ihr Richtigkeit mittels eines Simulationsbeispiels eruiert. Aufgabe dieses Kapitels ist es, die Funktionsfähigkeit des Gesamtsystems mittels einer Simulation  zu beweisen.
 
-Der Simulationsaufbau basiert auf dem in Kapitel \ref{sec:Modelbildung} eingeführten Bewegungsmodell des Quadrocopters. Um die Simulation möglichst realistisch zu gestalten sind die Ausgangsgrößen denen der Realität angenähert. So sind die Beschleunigungswerte als auch die Positionsdaten mit einem weißen Rauschen überlagert. Darüber hinaus, wird die Postion nur in einem diskreten Zeitintervall von $ T_l = 25~ms $ aktualisiert. Aus diesen Ausgangswerten interpoliert das Fusionsfilter die Positionsdaten und bestimmt den Zustand der Geschwindigkeit. Parametriert ist der Beobachter (Gleichung (\ref{eq:ewmodelbeo})) mit $ L= \begin{bmatrix} 18 & 46 & 3.75 \end{bmatrix}^T $. Die Eingangsgrößen des Bewegungsmodells bestehen aus der Schubvorgabe sowie den Winkeln zur Beschreibung der Orientierung  ($ u = \begin{bmatrix}T &\phi &\theta &\psi \end{bmatrix}^T $). Daran angeschlossen befindet sich die Inversion (Kapitel \ref{sec:exkt.zstdlin}), welche das System zustandslinearisiert, so dass als neue Eingangsgrößen die Beschleunigungsgrößen in Richtung der n-frame Koordinatensysteme vorgegeben werden. Die Vorgabe eines Beschleunigungsverlaufs zur Überführung des Modells in eine neue Position ist Aufgabe der Kapitel \ref{sec:referenzmodell} beschriebene Vorsteuerung. Diese ist in Form eines Referenzmodell realisiert und liefert zusätzlich Referenzwerte zum Pfad und des Geschwindigkeitsverlaufs. Die Dynamik (Gleichung (\ref{eq:ref_mdl})) mit der die Überführung statt findet, ist für die Simulation mit $ \omega =1.5  $ und  $ D = 1 $ festgelegt. Weichen Zustände des Bewegungsmodelles, ermittelt durch den Beobachter, von der vorgegeben Trajektorie des Referenzmodells ab, greift der lineare Folgeregler ein. Dieser sorgt dafür, das der simulierte Bewegungspfad des Quadrocopter mit dem des Referenzmodells konvergiert. Somit eliminiert er Modellunsicherheiten beim Entwurf der Positionsregelung sowie externe Störungen. Die Koeffizienten der mit einem I-Anteil ausgeführten Regelung (Gleichung (\ref{eq:folgreg_stelgeI})) sind mit $ \tilde{c}_1 = 4 $, $ \tilde{c}_0 = 5 $ und $ \tilde{c}_1 = 0.01 $ festgelegt.
+Der Simulationsaufbau (Anhang \ref{anh:simulink}) basiert auf dem in Kapitel \ref{sec:Modelbildung} eingeführten Bewegungsmodell des Quadrocopters. Um die Simulation möglichst realistisch zu gestalten sind die Ausgangsgrößen denen der Realität angenähert. So sind die Beschleunigungswerte als auch die Positionsdaten mit einem weißen Rauschen überlagert. Darüber hinaus, wird die Postion nur in einem diskreten Zeitintervall von $ T_l = 25~ms $ aktualisiert. Aus diesen Ausgangswerten interpoliert das Fusionsfilter die Positionsdaten und schätzt den Zustand der Geschwindigkeit. Parametriert ist der Beobachter (\ref{eq:ewmodelbeo}) mit $ L= \begin{bmatrix} 18 & 46 & 3.75 \end{bmatrix}^T $. Die Eingangsgrößen des Bewegungsmodells bestehen aus der Schubvorgabe sowie den Winkeln zur Beschreibung der Orientierung  ($ u = \begin{bmatrix}T &\phi &\theta &\psi \end{bmatrix}^T $). Daran angeschlossen befindet sich die Inversion (Kapitel \ref{sec:exkt.zstdlin}), welche das System zustandslinearisiert, so dass als neue Eingangsgrößen die Beschleunigungsgrößen in Richtung der n-frame Koordinatensysteme vorgegeben werden. Die Vorgabe eines Beschleunigungsverlaufs zur Überführung des Modells in eine neue Position ist Aufgabe der Kapitel \ref{sec:referenzmodell} beschriebene Vorsteuerung. Diese ist in Form eines Referenzmodell realisiert und liefert zusätzlich Referenzwerte zum Pfad und des Geschwindigkeitsverlaufs. Die Dynamik (\ref{eq:ref_mdl}), mit der die Überführung statt findet, ist für die Simulation mit $ \omega =1.5  $ und  $ D = 1 $ festgelegt. Weichen Zustände des Bewegungsmodells, ermittelt durch den Beobachter, von der vorgegeben Trajektorie des Referenzmodells ab, greift der lineare Folgeregler ein. Dieser sorgt dafür, dass der simulierte Bewegungspfad des Quadrocopters mit dem des Referenzmodells konvergiert. Somit eliminiert er Modellunsicherheiten beim Entwurf der Positionsregelung sowie externe Störungen. Die Koeffizienten, der mit einem I-Anteil ausgeführten Regelung  (\ref{eq:folgreg_stelgeI}), sind mit $ \tilde{c}_1 = 4 $, $ \tilde{c}_0 = 5 $ und $ \tilde{c}_1 = 0.01 $ festgelegt.
  \begin{figure}
  	\centering
  	\includegraphics[width = .75 \textwidth]{images/gessim_xy}
@@ -930,9 +929,9 @@ Der Simulationsaufbau basiert auf dem in Kapitel \ref{sec:Modelbildung} eingefüh
  	\label{fig:gessim_xy}
  \end{figure}
  
-Simuliert wird eine Positionsverschiebung des Quadrocopters in der horizontalen Ebene des n-frames. Dabei wird das Modell vom Ursprung des Koordinatensystems in den Punkt $ x = - 2~m $ und $ y = 1~m $ überführt. In Abbildung \ref{fig:gessim_xy} ist das dazugehörige Simulationsergebnis dargestellt. Dort ist zu sehen, wie das Bewegungsmodell entlang des vorgegebenen Pfades in die neue Koordinate übergeführt wird. Zu erkennen ist, dass trotz der filternden Wirkung des Beobachters der Einfluss des Rauschen als auch der niederfrequenten Abtastung nicht vollständig eliminiert wird. Der zeitliche Verlauf der Zustände dieses simulierten Anflugs der neuen Koordinate ist in Abbildung \ref{fig:gessim} separat für die x- und y-Achse dargelegt. Da die Simulation auf eine Variation des $ \psi $ Winkels verzichtet und damit die Orientierung des o-frames mit der des n-frames über den Simulationszeitraum übereinstimmt, können die Neigungswinkel des Quadrocopters einer Achsebewegung des n-frames zugeordnet werden. Somit ist der eingestellte Nickwinkel $ \theta $ (Abbildung \ref{fig:gessim_theta}) für die Bewegung auf der x-Achse, bzw. der Rollwinkel $ \phi $ (Abbildung \ref{fig:gessim_phi}) für die Bewegung auf der y-Achse ausschlaggebende Größe. Dabei ist in beiden Verläufen (Abbildung \ref{fig:gessim_phi} und \ref{fig:gessim_theta}) zu erkennen, dass sich im Zeitpunkt der Übergabe des neuen Positionswert die Winkel sprunghaft ändern. Das liegt daran, dass die Winkel mittels der Inversion aus den Beschleunigungsvorgaben bestimmt werden. Aufgrund der Stetigkeitsbedingung mit der die Vorsteuerung  entworfen ist(Kapitel \ref{sec:referenzmodell}), müssen die Beschleunigungsvorgaben nur stückweise existieren, das bedeutet diese können sich sprungartig ändern. Da zudem in der Simulation die Zeitkonstanten der Lageregelung vernachlässigt sind, folgt das Bewegungsmodell der Vorgabe eins zu eins.
+Simuliert wird eine Positionsverschiebung des Quadrocopters in der horizontalen Ebene des n-frames. Dabei wird das Modell vom Ursprung des Koordinatensystems in den Punkt $ x = - 2~m $ und $ y = 1~m $ überführt. In Abbildung \ref{fig:gessim_xy} ist das dazugehörige Simulationsergebnis dargestellt. Dort ist zu sehen, wie das Bewegungsmodell entlang des vorgegebenen Pfades in die neue Koordinate überführt wird. Zu erkennen ist, dass trotz der filternden Wirkung des Beobachters, der Einfluss des Rauschen als auch der niederfrequenten Abtastung nicht vollständig eliminiert wird. Der zeitliche Verlauf der Zustände dieses simulierten Anflugs der neuen Koordinate ist in Abbildung \ref{fig:gessim} separat für die x- und y-Achse dargelegt. Da die Simulation auf eine Variation des $ \psi $ Winkels verzichtet und damit die Orientierung des o-frames mit der des n-frames über den Simulationszeitraum übereinstimmt, können die Neigungswinkel des Quadrocopters einer Achsebewegung des n-frames zugeordnet werden. Somit ist der eingestellte Nickwinkel $ \theta $ (Abbildung \ref{fig:gessim_theta}) für die Bewegung auf der x-Achse, bzw. der Rollwinkel $ \phi $ (Abbildung \ref{fig:gessim_phi}) für die Bewegung auf der y-Achse die ausschlaggebende Größe. Dabei ist in beiden Verläufen (Abbildung \ref{fig:gessim_phi} und \ref{fig:gessim_theta}) zu erkennen, dass sich im Zeitpunkt der Übergabe des neuen Positionswert die Winkel sprunghaft ändern. Das liegt daran, dass die Winkel mittels der Inversion aus den Beschleunigungsvorgaben bestimmt werden. Aufgrund der Stetigkeitsbedingung mit der die Vorsteuerung  entworfen ist (Kapitel \ref{sec:referenzmodell}), müssen die Beschleunigungsvorgaben nur stückweise existieren, das bedeutet diese können sich sprungartig ändern. Zudem sind in der Simulation die Zeitkonstanten der Lageregelung vernachlässigt sind, somit folgt das Bewegungsmodell der Vorgabe eins zu eins.
 
-Alles in allem zeigen die Simulationsergebnisse, dass die Regelung in der Theorie die an sie gestellten Ansprüche erfüllt. Um die Positionsregelung abschließend verifizieren zu können, ist deren Funktionsfähigkeit auf dem realen Quadrocopter zu untersuchen. 
+Alles in allem zeigen die Simulationsergebnisse (Abbildung \ref{fig:gessim}), dass die Regelung in der Theorie die an sie gestellten Ansprüche erfüllt. Um die Positionsregelung abschließend verifizieren zu können, ist deren Funktionsfähigkeit auf dem realen Quadrocopter zu untersuchen. 
 
  
   \begin{figure}
@@ -963,7 +962,7 @@ Alles in allem zeigen die Simulationsergebnisse, dass die Regelung in der Theori
   			\label{fig:gessim_phi}
   		}
   	}	
-  	\caption[Simulation Gesamtmodell]{Simulationsergebnisse des Gesamtmodells}
+  	\caption[Simulationsergebnisse Gesamtmodell]{Simulationsergebnisse des Gesamtmodells}
   	\label{fig:gessim}
   \end{figure}
  
